@@ -1,0 +1,11 @@
+{
+    "name": "Thorn",
+    "author": "end_4",
+    "version_number": "0.1.0",
+    "website_url": "https://github.com/end-4/ultrakill-thorn-client",
+    "description": "Utility mod for ULTRAKILL.",
+    "dependencies": [
+        "BepInEx-BepInExPack-5.4.2100",
+        "end_4-NukeLib-0.3.0"
+    ]
+}
