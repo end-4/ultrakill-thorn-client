@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using ThornClient.Core;
+using ThornClient.Managers;
 using ThornClient.Settings;
 using UnityEngine.SceneManagement;
 
@@ -10,12 +12,20 @@ public class FullBright : Module {
 
     public FullBright() : base("FullBright", "Adjustable brightness for accessibility", ModuleCategory.Render,
         KeyCode.Semicolon) {
-        Brightness = RegisterSetting("Brightness", "How bright the world should be.", 0.2f);
+        Brightness = RegisterSetting("Brightness", "How bright the world should be", 0.2f);
     }
 
     private bool lastFogEnabled;
     private Color lastAmbientColor = Color.black;
     private bool isStateSaved = false;
+
+    public override string? CheatReason {
+        get {
+            List<string> darkLevels = ["Level 0-S", "Level 4-3"];
+            bool isCheaty = IsEnabled && darkLevels.Contains(SceneHelper.CurrentScene);
+            return isCheaty ? "Darkness is a core challenge of this level" : "";
+        }
+    }
 
     protected override void OnEnable() {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -27,7 +37,7 @@ public class FullBright : Module {
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        // isStateSaved = false;
+        isStateSaved = false;
         ApplyFullBright();
     }
 
@@ -53,6 +63,7 @@ public class FullBright : Module {
     private void UpdateAmbientLightColor(float brightness) {
         if (!isStateSaved) return; // Don't touch light matrices if baseline isn't cached
         RenderSettings.ambientLight = Color.white * brightness;
+        CheatManager.UpdateCheatiness();
     }
 
     protected override void OnDisable() {
