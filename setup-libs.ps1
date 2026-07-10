@@ -29,6 +29,7 @@ if (-not (Test-Path $ukManaged)) {
 }
 $ukDlls = @(
     "Assembly-CSharp.dll"
+    "Newtonsoft.Json.dll"
     "Unity.Addressables.dll"
     "Unity.ResourceManager.dll"
     "Unity.TextMeshPro.dll"

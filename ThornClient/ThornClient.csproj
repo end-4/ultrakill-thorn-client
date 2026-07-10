@@ -2,9 +2,9 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
-        <LangVersion>Latest</LangVersion>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
-        
+
         <DebugType>embedded</DebugType>
         <Deterministic>true</Deterministic>
         <RepoRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))</RepoRoot>
@@ -20,6 +20,9 @@
       </Reference>
       <Reference Include="BepInEx">
         <HintPath>..\libs\BepInEx.dll</HintPath>
+      </Reference>
+      <Reference Include="Newtonsoft.Json">
+        <HintPath>..\libs\Newtonsoft.Json.dll</HintPath>
       </Reference>
       <Reference Include="Notiffy">
         <HintPath>..\libs\Notiffy.dll</HintPath>
