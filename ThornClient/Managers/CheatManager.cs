@@ -10,6 +10,8 @@ namespace ThornClient.Managers;
 public static class CheatManager {
     private static bool _cheating = false;
 
+    private static string _hexColor = "#44ff45";
+
     static CheatManager() {
         SceneManager.sceneLoaded += ResetCheatiness;
     }
@@ -38,9 +40,9 @@ public static class CheatManager {
 
         if (!lastCheaty && _cheating) {
             NotificationSystem.NotifySend(
-                "Thorn: Cheat manager",
-                "Leaderboard disabled for this run:\n" +
-                string.Join("\n", cheaties.Select(module => $"- <u>{module.Name}</u>: {module.CheatReason}")),
+                $"Thorn: <color={_hexColor}>Cheats</color>",
+                "Leaderboard disabled for this run\n" +
+                string.Join("\n", cheaties.Select(module => $"- <color={_hexColor}><u>{module.Name}</u></color>: {module.CheatReason}")),
                 iconFilePath: Plugin.PluginIconPath
             );
         }

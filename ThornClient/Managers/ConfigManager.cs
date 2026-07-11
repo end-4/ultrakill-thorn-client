@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using BepInEx;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -19,7 +20,14 @@ public static class ConfigManager {
         public Dictionary<string, object> Settings { get; set; } = [];
     }
 
-    private static string ConfigPathForName(string name) => Path.Combine(ConfigFolder, $"{name}.json");
+    /// <summary>
+    /// Generates a safe file path using the module's (friendly) name string
+    /// </summary>
+    public static string GetConfigPath(Configurable configurable) {
+        string safeName = Regex.Replace(configurable.Name, @"[^a-zA-Z0-9_\-\s]", "");
+        safeName = safeName.Replace(" ", "_");
+        return Path.Combine(ConfigFolder, $"{safeName}.json");
+    }
 
     /// <summary>
     /// Saves a Configurable's settings to disk
@@ -41,7 +49,7 @@ public static class ConfigManager {
             }
 
             string jsonString = JsonConvert.SerializeObject(dto, Formatting.Indented);
-            string filePath = ConfigPathForName(configurable.Name);
+            string filePath = GetConfigPath(configurable);
 
             File.WriteAllText(filePath, jsonString);
         } catch (Exception e) {
@@ -57,7 +65,7 @@ public static class ConfigManager {
     public static void LoadConfig(Configurable configurable) {
         if (IsSyncing) return;
         IsSyncing = true;
-        string filePath = ConfigPathForName(configurable.Name);
+        string filePath = GetConfigPath(configurable);
         if (!File.Exists(filePath)) return;
 
         try {
@@ -128,7 +136,7 @@ public static class ConfigManager {
         _watcher.Changed += OnConfigFileChanged;
         _watcher.EnableRaisingEvents = true;
 
-        Plugin.Log.LogInfo("[ConfigManager] Background configuration hot-reload watcher is active.");
+        Plugin.Log.LogInfo("[ConfigManager] Background configuration hot-reload watcher is active");
     }
 
     private static void OnConfigFileChanged(object sender, FileSystemEventArgs e) {
@@ -137,8 +145,20 @@ public static class ConfigManager {
         if (lastWriteTime - _lastRead < TimeSpan.FromMilliseconds(100)) return;
         _lastRead = lastWriteTime;
 
-        var moduleName = Path.GetFileNameWithoutExtension(e.Name);
-        var targetModule = ModuleManager.GetByName(moduleName);
+        string processedFileName = Path.GetFileNameWithoutExtension(e.Name);
+
+        Configurable? targetModule = null;
+
+        // While module has this file name?
+        foreach (var module in ModuleManager.Modules) {
+            string expectedFileName = Path.GetFileNameWithoutExtension(GetConfigPath(module));
+
+            // Case insensitive match because Windows Explorer is sloppy
+            if (string.Equals(expectedFileName, processedFileName, StringComparison.OrdinalIgnoreCase)) {
+                targetModule = module;
+                break;
+            }
+        }
 
         if (targetModule != null) {
             LoadConfig(targetModule);
