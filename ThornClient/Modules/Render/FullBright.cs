@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Managers;
@@ -10,6 +11,7 @@ namespace ThornClient.Modules.Render;
 public class FullBright : Module {
     public Setting<float> Brightness { get; }
 
+    public override string IconName => "light_bulb";
     public FullBright() : base("FullBright", "Adjustable brightness for accessibility", ModuleCategory.Render,
         KeyCode.Semicolon) {
         Brightness = RegisterSetting("Brightness", "How bright the world should be", 0.2f);
@@ -55,7 +57,7 @@ public class FullBright : Module {
 
             RenderSettings.fog = false;
             UpdateAmbientLightColor(Brightness.Value);
-        } catch (System.Exception e) {
+        } catch (Exception e) {
             Plugin.Log.LogError($"[FullBright] RenderSettings not ready yet: {e}");
         }
     }

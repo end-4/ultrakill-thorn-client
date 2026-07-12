@@ -1,0 +1,52 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using NukeLib.UI;
+using ThornClient.Core;
+using ThornClient.Managers;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace ThornClient.System.ClickGUIComponents;
+
+internal class ModuleButtonController : MonoBehaviour {
+    public Module? TargetModule;
+    private GameObject? _checkmark;
+
+    private void Start() {
+        if (TargetModule == null) {
+            Plugin.Log.LogWarning("ModuleButtonController has no TargetModule assigned");
+            return;
+        }
+
+        _checkmark = gameObject.FindRecursive("Checkbox/Mark");
+
+        var buttonIcon = gameObject.FindRecursive("Icon").GetComponent<Image>();
+        try {
+            buttonIcon.sprite = ClickGUI.Bundle.LoadAsset<Sprite>(TargetModule.IconName);
+        } catch (Exception e) {
+            Plugin.Log.LogError($"Failed to load icon for module '{TargetModule.Name}': {e}");
+        }
+
+        var buttonText = gameObject.FindRecursive("Name").GetComponent<TextMeshProUGUI>();
+        buttonText.text = TargetModule.Name;
+
+        var button = gameObject.GetComponent<Button>();
+        button.onClick.AddListener(() => {
+            TargetModule.Toggle();
+        });
+        UpdateCheckbox(TargetModule.IsEnabled);
+        TargetModule.OnToggleStateChanged += UpdateCheckbox;
+    }
+
+    private void OnDestroy() {
+        if (TargetModule == null) return;
+        TargetModule.OnToggleStateChanged -= UpdateCheckbox;
+    }
+
+    private void UpdateCheckbox(bool isEnabled) {
+        if (_checkmark == null) return;
+        _checkmark.SetActive(isEnabled);
+    }
+}

@@ -11,6 +11,7 @@ public class UIScaler : Module {
     private float _savedDefaultScale;
     public Setting<float> Scale { get; }
 
+    public override string IconName => "screen_scale";
     public UIScaler() : base("UI Scaler", "Changes the scale of the user interface", ModuleCategory.Render) {
         Scale = RegisterSetting("Scale", "Smaller = smaller UI elements", 1.0f);
     }
@@ -24,9 +25,9 @@ public class UIScaler : Module {
 
     private void UpdateScale(float value) {
         // Find stuff to work on
-        var camCon = CanvasController.Instance;
-        if (camCon == null) return;
-        var canvas = camCon.gameObject;
+        var canCon = CanvasController.Instance;
+        if (canCon == null) return;
+        var canvas = canCon.gameObject;
         var scalerComp = canvas.GetComponent<CanvasScaler>();
 
         // Save defaults

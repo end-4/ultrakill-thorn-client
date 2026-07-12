@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using ThornClient.Managers;
 using ThornClient.Settings;
@@ -11,6 +12,8 @@ public abstract class Configurable {
     [JsonIgnore] public string Description { get; }
     [JsonIgnore] public List<Setting> Settings { get; } = [];
 
+    public event Action<bool>? OnToggleStateChanged;
+
     public bool IsEnabled {
         get;
         set {
@@ -20,7 +23,10 @@ public abstract class Configurable {
             if (field) OnEnable();
             else OnDisable();
 
+            OnToggleStateChanged?.Invoke(field);
+
             // Auto-save on change
+            // Plugin.Log.LogInfo($"[ConfigManager] Toggled {Name} to {value}, saving");
             ConfigManager.SaveConfig(this);
         }
     }
@@ -51,8 +57,6 @@ public abstract class Configurable {
 
     public void Toggle() {
         IsEnabled = !IsEnabled;
-        if (IsEnabled) OnEnable();
-        else OnDisable();
     }
 
     /// <summary>
