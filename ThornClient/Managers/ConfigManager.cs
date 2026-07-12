@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -13,7 +14,11 @@ public static class ConfigManager {
     private static readonly string ConfigFolder = Path.Combine(Paths.ConfigPath, "ThornClient", "Default");
     private static FileSystemWatcher? _watcher;
     private static DateTime _lastRead = DateTime.MinValue;
-    public static bool IsSyncing { get; private set; }
+
+    private static readonly HashSet<Configurable> ActiveModuleSyncs = [];
+    private static readonly object SyncLock = new();
+    private static bool _isBatchSyncing = false;
+    private static readonly ConcurrentQueue<Configurable> MainThreadQueue = new();
 
     private class ModuleConfigDataTransferObject {
         public bool IsEnabled { get; set; }
@@ -33,8 +38,10 @@ public static class ConfigManager {
     /// Saves a Configurable's settings to disk
     /// </summary>
     public static void SaveConfig(Configurable configurable) {
-        if (IsSyncing) return;
-        IsSyncing = true;
+        lock (SyncLock) {
+            if (_isBatchSyncing || ActiveModuleSyncs.Contains(configurable)) return;
+            ActiveModuleSyncs.Add(configurable);
+        }
 
         try {
             if (!Directory.Exists(ConfigFolder)) Directory.CreateDirectory(ConfigFolder);
@@ -43,7 +50,6 @@ public static class ConfigManager {
                 IsEnabled = configurable.IsEnabled
             };
 
-            // Map all explicitly registered settings to clean string keys
             foreach (var setting in configurable.Settings) {
                 dto.Settings[setting.Name] = setting.GetValue();
             }
@@ -55,7 +61,9 @@ public static class ConfigManager {
         } catch (Exception e) {
             Plugin.Log.LogError($"[ConfigManager] Failed to save {configurable.Name}: {e}");
         } finally {
-            IsSyncing = false;
+            lock (SyncLock) {
+                ActiveModuleSyncs.Remove(configurable);
+            }
         }
     }
 
@@ -63,37 +71,42 @@ public static class ConfigManager {
     /// Loads a Configurable's settings from disk
     /// </summary>
     public static void LoadConfig(Configurable configurable) {
-        if (IsSyncing) return;
-        IsSyncing = true;
+        lock (SyncLock) {
+            if (ActiveModuleSyncs.Contains(configurable)) return;
+            ActiveModuleSyncs.Add(configurable);
+        }
+
         string filePath = GetConfigPath(configurable);
-        if (!File.Exists(filePath)) return;
+        if (!File.Exists(filePath)) {
+            lock (SyncLock) { ActiveModuleSyncs.Remove(configurable); }
+            return;
+        }
 
         try {
             string jsonString = File.ReadAllText(filePath);
             var dto = JsonConvert.DeserializeObject<ModuleConfigDataTransferObject>(jsonString);
             if (dto == null) return;
 
-            if (dto.IsEnabled != configurable.IsEnabled) configurable.Toggle();
-            Plugin.Log.LogInfo($"[ConfigManager] Reloading settings for feature {configurable.Name}");
+            if (dto.IsEnabled != configurable.IsEnabled) {
+                configurable.Toggle();
+            }
+
             foreach (var setting in configurable.Settings) {
-                if (dto.Settings.TryGetValue(setting.Name, out var savedValue)) {
-                    if (savedValue != null) {
-                        if (savedValue is JToken token) {
-                            object primitiveValue = token.ToObject(typeof(object));
-                            if (primitiveValue != null) {
-                                setting.SetValue(primitiveValue);
-                            }
-                        } else {
-                            // Fallback safe assignment
-                            setting.SetValue(savedValue);
-                        }
+                if (dto.Settings.TryGetValue(setting.Name, out var savedValue) && savedValue != null) {
+                    if (savedValue is JToken token) {
+                        object primitiveValue = token.ToObject(typeof(object));
+                        if (primitiveValue != null) setting.SetValue(primitiveValue);
+                    } else {
+                        setting.SetValue(savedValue);
                     }
                 }
             }
         } catch (Exception e) {
             Plugin.Log.LogError($"[ConfigManager] Failed to load {configurable.Name}: {e}");
         } finally {
-            IsSyncing = false;
+            lock (SyncLock) {
+                ActiveModuleSyncs.Remove(configurable);
+            }
         }
     }
 
@@ -101,26 +114,42 @@ public static class ConfigManager {
     /// Saves all settings
     /// </summary>
     public static void SaveAll() {
-        foreach (var module in ModuleManager.Modules) {
-            SaveConfig(module);
+        lock (SyncLock) {
+            if (_isBatchSyncing) return;
+            _isBatchSyncing = true;
         }
 
-        Plugin.Log.LogInfo("[ConfigManager] Saved all module settings");
+        try {
+            foreach (var module in ModuleManager.Modules) {
+                SaveConfig(module);
+            }
+            // Plugin.Log.LogInfo("[ConfigManager] Saved all module settings");
+        } finally {
+            lock (SyncLock) { _isBatchSyncing = false; }
+        }
     }
 
     /// <summary>
     /// Loads all settings
     /// </summary>
     public static void LoadAll() {
-        foreach (var module in ModuleManager.Modules) {
-            LoadConfig(module);
+        lock (SyncLock) {
+            if (_isBatchSyncing) return;
+            _isBatchSyncing = true;
         }
 
-        Plugin.Log.LogInfo("[ConfigManager] Loaded all module settings");
+        try {
+            foreach (var module in ModuleManager.Modules) {
+                LoadConfig(module);
+            }
+            // Plugin.Log.LogInfo("[ConfigManager] Loaded all module settings");
+        } finally {
+            lock (SyncLock) { _isBatchSyncing = false; }
+        }
     }
 
     /// <summary>
-    /// Initializes a live background listener that updates variables on text save events
+    /// Initializes a background listener that updates variables on text save events
     /// </summary>
     public static void SetupFileWatcher() {
         if (!Directory.Exists(ConfigFolder)) Directory.CreateDirectory(ConfigFolder);
@@ -132,7 +161,6 @@ public static class ConfigManager {
             NotifyFilter = NotifyFilters.LastWrite
         };
 
-        // Hook the changed event
         _watcher.Changed += OnConfigFileChanged;
         _watcher.EnableRaisingEvents = true;
 
@@ -146,7 +174,6 @@ public static class ConfigManager {
         _lastRead = lastWriteTime;
 
         string processedFileName = Path.GetFileNameWithoutExtension(e.Name);
-
         Configurable? targetModule = null;
 
         // While module has this file name?
@@ -161,7 +188,18 @@ public static class ConfigManager {
         }
 
         if (targetModule != null) {
-            LoadConfig(targetModule);
+            // Push to queue to safely process on the main engine update tick loop
+            MainThreadQueue.Enqueue(targetModule);
+        }
+    }
+
+    /// <summary>
+    /// To drain config hot reloads
+    /// </summary>
+    public static void UpdateMainThreadQueue() {
+        while (MainThreadQueue.TryDequeue(out var module)) {
+            // Plugin.Log.LogInfo($"[ConfigManager] Processing hot-reload thread action for: {module.Name}");
+            LoadConfig(module);
         }
     }
 }

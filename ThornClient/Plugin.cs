@@ -33,6 +33,7 @@ public class Plugin : BaseUnityPlugin {
     }
 
     private void Update() {
+        ConfigManager.UpdateMainThreadQueue();
         ThornClient.Managers.InputManager.Update();
         foreach (var module in ModuleManager.Modules) {
             if (module.IsEnabled) {
