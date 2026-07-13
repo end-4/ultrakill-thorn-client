@@ -20,7 +20,7 @@ internal class ModuleCategoryController : MonoBehaviour {
         { ModuleCategory.World, "compass" },
         { ModuleCategory.Misc, "shapes" },
     };
-    
+
     private void Start() {
         SetupModules();
     }
@@ -31,11 +31,12 @@ internal class ModuleCategoryController : MonoBehaviour {
 
         var moduleCol = gameObject.FindRecursive("Modules");
 
-        // Header
+        // Header: icon, text, dragging behavior
         var categoryIcon = gameObject.FindRecursive("Header/Icon").GetComponent<Image>();
         var categoryText = gameObject.FindRecursive("Header/CategoryName").GetComponent<TextMeshProUGUI>();
         categoryIcon.sprite = ClickGUI.Bundle.LoadAsset<Sprite>(_iconNameMap[Category]);
         categoryText.text = Category.ToString().ToUpper();
+        gameObject.FindRecursive("Header").AddComponent<TitlebarDragHandler>();
 
         // Populate with modules
         if (ClickGUI.ModuleButtonPrefab == null) {

@@ -8,7 +8,10 @@ public class Zoom : Module {
     public Setting<float> ZoomFov { get; }
 
     public override string IconName => "loupe";
-    public Zoom() : base("Zoom", "Look more closely", ModuleCategory.Render, KeyCode.C, KeyCode.LeftAlt, true) {
+
+    public Zoom() : base("Zoom",
+        "Look more closely. Note: zooming only happens when the game is running, so use a keybind to toggle it",
+        ModuleCategory.Render, KeyCode.C, KeyCode.LeftAlt, true) {
         ZoomFov = RegisterSetting("Zoom FOV", "Zoom amount. Lower = more zoomed in", 30.0f);
     }
 

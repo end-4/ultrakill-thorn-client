@@ -6,12 +6,15 @@ using ThornClient.Core;
 using ThornClient.System.ClickGUIComponents;
 using UnityEngine.SceneManagement;
 using System;
+using NukeLib.Text;
 using NukeLib.UI;
+using TMPro;
 using Object = UnityEngine.Object;
 
 namespace ThornClient.System;
 
 internal class ClickGUI : SystemModule {
+    internal static ClickGUI? Instance;
     internal static readonly string BundlePath = Path.Combine(Plugin.workingDir, "assets", "thorn_clickgui.bundle");
     internal static GameObject? ModuleCategoryPrefab { get; private set; }
     internal static GameObject? ModuleButtonPrefab { get; private set; }
@@ -32,15 +35,18 @@ internal class ClickGUI : SystemModule {
     private GameObject? _canvas;
     private GameObject? _tabBar;
     private GameObject? _modulePage;
+    private GameObject? _tooltip;
     private List<GameObject?> _tabPages = [];
 
     private bool InitializeIfNeeded() {
-        if (_isInitialized && _canvas != null) return true;
+        if (Instance != null || (_isInitialized && _canvas != null)) return true;
+        Instance = this;
         // Plugin.Log.LogInfo("Loading ClickGUI");
 
         var basePrefab = Bundle.LoadAsset<GameObject>("ThornClickGUICanvas");
         var tabBarPrefab = Bundle.LoadAsset<GameObject>("TabBar");
         var pagePrefab = Bundle.LoadAsset<GameObject>("Page");
+        var tooltipPrefab = Bundle.LoadAsset<GameObject>("Tooltip");
         ModuleCategoryPrefab = Bundle.LoadAsset<GameObject>("ModuleCategory");
         ModuleButtonPrefab = Bundle.LoadAsset<GameObject>("ModuleButton");
 
@@ -59,18 +65,39 @@ internal class ClickGUI : SystemModule {
         _tabBar.GetOrAddComponent<TabBarController>();
 
         // Populate page: Module
-        var moduleGroupRow = Object.Instantiate(Bundle.LoadAsset<GameObject>("ModuleGroupRow"), _modulePage.transform);
+        float canvasWidth = ((RectTransform)_canvas.transform).sizeDelta.x;
+        float canvasHeight = ((RectTransform)_canvas.transform).sizeDelta.y;
+        float tabBarWidth = ((RectTransform)_tabBar.transform).sizeDelta.x;
+        float tabBarHeight = ((RectTransform)_tabBar.transform).sizeDelta.y;
+        float screenPadding = canvasHeight / 2 - _tabBar.transform.localPosition.y;
+
+        float baseYPos = _tabBar.transform.localPosition.y - tabBarHeight - screenPadding * 2; // * 2 shouldn't be necessary but uhh idk
+        float baseXPos = -canvasWidth / 2 + screenPadding;
+        float currXPos = baseXPos;
+        float spacing = 8;
+
+        _canvas.SetActive(true); // For size updates to happen
         for (int i = 0; i < Enum.GetValues(typeof(ModuleCategory)).Length; i++) {
             var category = (ModuleCategory)i;
-            var categoryObj = Object.Instantiate(ModuleCategoryPrefab, moduleGroupRow.transform);
+            var categoryObj = Object.Instantiate(ModuleCategoryPrefab, _modulePage.transform);
             var catController = categoryObj.GetOrAddComponent<ModuleCategoryController>();
             catController.Category = category;
+            catController.SetupModules();
+            categoryObj.UnfuckLayoutHack();
+            categoryObj.transform.localPosition = new Vector3(currXPos, baseYPos, 0f);
+            currXPos += ((RectTransform)categoryObj.transform).sizeDelta.x + spacing;
+            // TODO add size
         }
-        moduleGroupRow.UnfuckLayoutHack();
+        _modulePage.UnfuckLayoutHack();
+        _canvas.SetActive(false);
 
 
         _tabPages.Add(_modulePage);
         // Plugin.Log.LogInfo("Loaded ClickGUI successfully");
+
+        // Tooltip
+        _tooltip = Object.Instantiate(tooltipPrefab, _canvas.transform);
+        _tooltip.SetActive(false);
         return true;
     }
 
@@ -96,5 +123,35 @@ internal class ClickGUI : SystemModule {
         Pauser.Pause(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        if (_tooltip != null) _tooltip.SetActive(false);
+    }
+
+    public override void OnUpdate() {
+        UpdateTooltipPos();
+    }
+
+    private void UpdateTooltipPos() {
+        if (_tooltip == null) return;
+        RectTransform rt = (RectTransform)_tooltip.transform;
+        rt.position = Input.mousePosition + new Vector3(50f + rt.sizeDelta.x / 2, 40f - rt.sizeDelta.y / 2, 0f);
+    }
+
+    public static void SetTooltipText(string text) {
+        var wrappedText = text.WrapText(30);
+        if (Instance == null || Instance._tooltip == null) return;
+        Instance._tooltip.FindRecursive("Text").GetComponent<TextMeshProUGUI>().text = wrappedText;
+        Instance._tooltip.SetActive(true);
+        Instance._tooltip.UnfuckLayoutHack();
+        Instance.UpdateTooltipPos();
+    }
+
+    public static void SurrenderTooltipText(string text) {
+        var wrappedText = text.WrapText(30);
+        if (Instance == null || Instance._tooltip == null) return;
+        var comp = Instance._tooltip.FindRecursive("Text").GetComponent<TextMeshProUGUI>();
+        if (comp.text == wrappedText) {
+            Instance._tooltip.SetActive(false);
+            comp.text = "";
+        }
     }
 }

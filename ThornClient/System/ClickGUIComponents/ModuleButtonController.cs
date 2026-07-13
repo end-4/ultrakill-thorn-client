@@ -22,6 +22,7 @@ internal class ModuleButtonController : MonoBehaviour {
 
         _checkmark = gameObject.FindRecursive("Checkbox/Mark");
 
+        // Set icon
         var buttonIcon = gameObject.FindRecursive("Icon").GetComponent<Image>();
         try {
             buttonIcon.sprite = ClickGUI.Bundle.LoadAsset<Sprite>(TargetModule.IconName);
@@ -29,15 +30,21 @@ internal class ModuleButtonController : MonoBehaviour {
             Plugin.Log.LogError($"Failed to load icon for module '{TargetModule.Name}': {e}");
         }
 
+        // Set text
         var buttonText = gameObject.FindRecursive("Name").GetComponent<TextMeshProUGUI>();
         buttonText.text = TargetModule.Name;
 
+        // Setup click
         var button = gameObject.GetComponent<Button>();
         button.onClick.AddListener(() => {
             TargetModule.Toggle();
         });
         UpdateCheckbox(TargetModule.IsEnabled);
         TargetModule.OnToggleStateChanged += UpdateCheckbox;
+
+        // Setup hover
+        var tooltipComp = gameObject.AddComponent<ClickGUITooltipHandler>();
+        tooltipComp.text = TargetModule.Description;
     }
 
     private void OnDestroy() {
