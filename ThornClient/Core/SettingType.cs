@@ -1,4 +1,4 @@
-﻿namespace ThornClient.Settings;
+﻿namespace ThornClient.Core;
 
 public enum SettingType {
     Boolean,

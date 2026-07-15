@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using ThornClient.Settings;
+using ThornClient.Core;
 
 namespace ThornClient.Core;
 

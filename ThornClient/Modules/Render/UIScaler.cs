@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 using ThornClient.Core;
-using ThornClient.Settings;
+using ThornClient.Core;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 

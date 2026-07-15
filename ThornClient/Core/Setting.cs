@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace ThornClient.Settings;
+namespace ThornClient.Core;
 
 public abstract class Setting {
     public string Name { get; }
@@ -47,6 +47,7 @@ public class Setting<T> : Setting {
             Type t when t == typeof(string) => SettingType.Text,
             Type t when t == typeof(Color) => SettingType.Color,
             Type t when t == typeof(KeyCode) => SettingType.Bind,
+            Type t when t == typeof(Keybind) => SettingType.Bind,
             _ => SettingType.Text
         };
     }

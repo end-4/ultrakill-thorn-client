@@ -6,9 +6,12 @@ using ThornClient.Core;
 using ThornClient.System.ClickGUIComponents;
 using UnityEngine.SceneManagement;
 using System;
+using System.Linq;
 using NukeLib.Text;
 using NukeLib.UI;
 using TMPro;
+using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace ThornClient.System;
@@ -20,6 +23,7 @@ internal class ClickGUI : SystemModule {
     internal static GameObject? ModuleButtonPrefab { get; private set; }
 
     private static AssetBundle? _assetBundle = null;
+
     internal static AssetBundle Bundle {
         get {
             if (_assetBundle == null) _assetBundle = AssetBundle.LoadFromFile(BundlePath);
@@ -35,8 +39,11 @@ internal class ClickGUI : SystemModule {
     private GameObject? _canvas;
     private GameObject? _tabBar;
     private GameObject? _modulePage;
+    private GameObject? _hudPage;
+    private GameObject? _settingsPage;
     private GameObject? _tooltip;
-    private List<GameObject?> _tabPages = [];
+    private GameObject? _tabBarButtonRow;
+    private List<Tuple<string, GameObject>> _tabPages = new();
 
     private bool InitializeIfNeeded() {
         if (Instance != null || (_isInitialized && _canvas != null)) return true;
@@ -47,6 +54,7 @@ internal class ClickGUI : SystemModule {
         var tabBarPrefab = Bundle.LoadAsset<GameObject>("TabBar");
         var pagePrefab = Bundle.LoadAsset<GameObject>("Page");
         var tooltipPrefab = Bundle.LoadAsset<GameObject>("Tooltip");
+        var tabButtonPrefab = Bundle.LoadAsset<GameObject>("TabButton");
         ModuleCategoryPrefab = Bundle.LoadAsset<GameObject>("ModuleCategory");
         ModuleButtonPrefab = Bundle.LoadAsset<GameObject>("ModuleButton");
 
@@ -56,13 +64,18 @@ internal class ClickGUI : SystemModule {
         Object.DontDestroyOnLoad(_canvas);
         _canvas.SetActive(false);
 
-        // Make the tab bar and pages
-        _modulePage = Object.Instantiate(pagePrefab, _canvas.transform);
-        _modulePage.SetActive(true);
-
+        // Tab bar
         _tabBar = Object.Instantiate(tabBarPrefab, _canvas.transform);
         _tabBar.SetActive(true);
         _tabBar.GetOrAddComponent<TabBarController>();
+
+        // Make pages
+        _modulePage = Object.Instantiate(pagePrefab, _canvas.transform);
+        _modulePage.SetActive(true);
+        _hudPage = Object.Instantiate(pagePrefab, _canvas.transform);
+        _hudPage.SetActive(false);
+        _settingsPage = Object.Instantiate(pagePrefab, _canvas.transform);
+        _settingsPage.SetActive(false);
 
         // Populate page: Module
         float canvasWidth = ((RectTransform)_canvas.transform).sizeDelta.x;
@@ -71,7 +84,9 @@ internal class ClickGUI : SystemModule {
         float tabBarHeight = ((RectTransform)_tabBar.transform).sizeDelta.y;
         float screenPadding = canvasHeight / 2 - _tabBar.transform.localPosition.y;
 
-        float baseYPos = _tabBar.transform.localPosition.y - tabBarHeight - screenPadding * 2; // * 2 shouldn't be necessary but uhh idk
+        float baseYPos =
+            _tabBar.transform.localPosition.y - tabBarHeight -
+            screenPadding * 2; // * 2 shouldn't be necessary but uhh idk
         float baseXPos = -canvasWidth / 2 + screenPadding;
         float currXPos = baseXPos;
         float spacing = 8;
@@ -86,14 +101,31 @@ internal class ClickGUI : SystemModule {
             categoryObj.UnfuckLayoutHack();
             categoryObj.transform.localPosition = new Vector3(currXPos, baseYPos, 0f);
             currXPos += ((RectTransform)categoryObj.transform).sizeDelta.x + spacing;
-            // TODO add size
         }
+
         _modulePage.UnfuckLayoutHack();
         _canvas.SetActive(false);
 
+        // Populate page: HUD
+        // _hudPage
 
-        _tabPages.Add(_modulePage);
+        _tabPages.Add(Tuple.Create("Modules", _modulePage));
+        _tabPages.Add(Tuple.Create("HUD", _hudPage));
+        _tabPages.Add(Tuple.Create("Settings", _settingsPage));
         // Plugin.Log.LogInfo("Loaded ClickGUI successfully");
+
+        // Add buttons to tab bar
+        _tabBarButtonRow = _tabBar.FindRecursive("Tabs");
+        _canvas.SetActive(true);
+        foreach (var tup in _tabPages) {
+            var key = tup.Item1;
+            var tabButton = Object.Instantiate(tabButtonPrefab, _tabBarButtonRow.transform);
+            tabButton.FindRecursive("Text").GetComponent<TextMeshProUGUI>().text = key;
+            tabButton.GetComponent<Button>().onClick.AddListener(() => { SetTab(key); });
+        }
+
+        _tabBarButtonRow.UnfuckLayoutHack();
+        _canvas.SetActive(false);
 
         // Tooltip
         _tooltip = Object.Instantiate(tooltipPrefab, _canvas.transform);
@@ -111,6 +143,7 @@ internal class ClickGUI : SystemModule {
         if (canvasComp != null) {
             canvasComp.sortingOrder = 69;
         }
+
         Pauser.Pause(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -133,7 +166,7 @@ internal class ClickGUI : SystemModule {
     private void UpdateTooltipPos() {
         if (_tooltip == null) return;
         RectTransform rt = (RectTransform)_tooltip.transform;
-        rt.position = Input.mousePosition + new Vector3(50f + rt.sizeDelta.x / 2, 40f - rt.sizeDelta.y / 2, 0f);
+        rt.position = Input.mousePosition + new Vector3(70f + rt.sizeDelta.x / 2, -40f - rt.sizeDelta.y / 2, 0f);
     }
 
     public static void SetTooltipText(string text) {
@@ -152,6 +185,26 @@ internal class ClickGUI : SystemModule {
         if (comp.text == wrappedText) {
             Instance._tooltip.SetActive(false);
             comp.text = "";
+        }
+    }
+
+    public static void SetTab(string tabName) {
+        if (Instance == null) return;
+        var pages = Instance._tabPages;
+        var tabButtonRow = Instance._tabBarButtonRow;
+        int currIndex = 0;
+        for (int i = 0; i < pages.Count; i++) {
+            var (key, val) = pages[i];
+            val.SetActive(tabName == key);
+            if (val != null && tabName == key) {
+                currIndex = i;
+            }
+        }
+
+        if (tabButtonRow != null) return;
+        for (int i = 0; i < tabButtonRow.transform.childCount; i++) {
+            tabButtonRow.transform.GetChild(i).GetComponent<Image>().sprite = Addressables
+                .LoadAssetAsync<Sprite>(i == currIndex ? "Round_FillLarge" : "Round_BorderLarge").WaitForCompletion();
         }
     }
 }

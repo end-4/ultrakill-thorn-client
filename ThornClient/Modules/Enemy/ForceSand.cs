@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Managers;
-using ThornClient.Settings;
+using ThornClient.Core;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 

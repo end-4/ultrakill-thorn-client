@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using ThornClient.Core;
-using ThornClient.Settings;
+using ThornClient.Core;
 
 namespace ThornClient.Modules.Render;
 

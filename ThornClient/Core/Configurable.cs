@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using ThornClient.Core;
 using ThornClient.Managers;
-using ThornClient.Settings;
 using UnityEngine;
 
 namespace ThornClient.Core;
@@ -14,7 +14,7 @@ public abstract class Configurable {
 
     public event Action<bool>? OnToggleStateChanged;
 
-    public bool IsEnabled {
+    public virtual bool IsEnabled {
         get;
         set {
             if (field == value) return;
@@ -31,7 +31,7 @@ public abstract class Configurable {
         }
     }
 
-    [JsonIgnore] public Setting<KeyCode> KeybindModifier { get; }
+    [JsonIgnore] public Setting<KeyCode> KeybindModifier { get; } // TODO change to keybind and adapt the InputManager
     [JsonIgnore] public Setting<KeyCode> Keybind { get; }
     [JsonIgnore] public Setting<bool> ToggleOnRelease { get; }
 
