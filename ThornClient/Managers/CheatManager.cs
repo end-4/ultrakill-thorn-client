@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Notiffy.API;
-using NukeLib.Scores;
+using NukeLib.Game.Scores;
 using ThornClient.Core;
 using UnityEngine.SceneManagement;
 
