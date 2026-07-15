@@ -7,10 +7,10 @@ public abstract class HudComponent : Configurable {
     [JsonIgnore] public Setting<float> OffsetX { get; }
     [JsonIgnore] public Setting<float> OffsetY { get; }
 
-    protected HudComponent(string name, string description, float defaultOffsetX = 0, float defaultOffsetY = 0)
-        : base(name, description, UnityEngine.KeyCode.None) {
-        OffsetX = RegisterSetting("Offset X", "Horizontal position relative to center", defaultOffsetX);
-        OffsetY = RegisterSetting("Offset Y", "Vertical position relative to center", defaultOffsetY);
+    protected HudComponent(string guid, string name, string description, float defaultOffsetX = 0, float defaultOffsetY = 0)
+        : base(guid, name, description, UnityEngine.KeyCode.None) {
+        OffsetX = RegisterSetting("offsetX", "Offset X", "Horizontal position relative to center", defaultOffsetX);
+        OffsetY = RegisterSetting("offsetY", "Offset Y", "Vertical position relative to center", defaultOffsetY);
     }
 
     public UnityEngine.Vector2 GetAbsolutePosition() {

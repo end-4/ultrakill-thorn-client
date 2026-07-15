@@ -11,7 +11,7 @@ namespace ThornClient.Modules.Enemy;
 
 public class ForceSand : Module {
     public override string IconName => "sand";
-    public ForceSand() : base("Force Sand", "Makes enemies sanded, removing bleeding. You'll have to rely on parries for healing.", ModuleCategory.Enemy) {
+    public ForceSand() : base("thorn.forceSand", "Force Sand", "Makes enemies sanded, removing bleeding. You'll have to rely on parries for healing.", ModuleCategory.Enemy) {
     }
 
     public override string? CheatReason => IsEnabled ? "Enables non-standard gameplay" : "";

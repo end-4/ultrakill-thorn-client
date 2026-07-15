@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using ThornClient.Core;
 using ThornClient.Managers;
 using UnityEngine;
 
 namespace ThornClient.Core;
 
 public abstract class Configurable {
+    [JsonIgnore] public string GUID;
     [JsonIgnore] public string Name { get; }
     [JsonIgnore] public string Description { get; }
     [JsonIgnore] public List<Setting> Settings { get; } = [];
+
+    [JsonIgnore] public Setting<Keybind> ToggleKeybind { get; }
+    [JsonIgnore] public Setting<bool> ToggleOnRelease { get; }
 
     public event Action<bool>? OnToggleStateChanged;
 
@@ -20,32 +23,61 @@ public abstract class Configurable {
             if (field == value) return;
             field = value;
 
+            OnToggleStateChanged?.Invoke(field);
+
             if (field) OnEnable();
             else OnDisable();
 
-            OnToggleStateChanged?.Invoke(field);
-
-            // Auto-save on change
-            // Plugin.Log.LogInfo($"[ConfigManager] Toggled {Name} to {value}, saving");
+            Plugin.Log.LogInfo($"[ConfigManager] Toggled {Name} to {value}, saving");
             ConfigManager.SaveConfig(this);
         }
     }
 
-    [JsonIgnore] public Setting<KeyCode> KeybindModifier { get; } // TODO change to keybind and adapt the InputManager
-    [JsonIgnore] public Setting<KeyCode> Keybind { get; }
-    [JsonIgnore] public Setting<bool> ToggleOnRelease { get; }
-
-    protected Configurable(string name, string description, KeyCode defaultKey = KeyCode.None, KeyCode defaultModifier = KeyCode.None, bool defaultToggleOnRelease = false) {
+    protected Configurable(
+        string guid,
+        string name,
+        string description,
+        KeyCode defaultKey = KeyCode.None,
+        KeyCode defaultModifier = KeyCode.None,
+        bool defaultToggleOnRelease = false)
+    {
+        GUID = guid;
         Name = name;
         Description = description;
 
-        KeybindModifier = RegisterSetting("Modifier", "Key that must be held with the keybind to toggle", defaultModifier);
-        Keybind = RegisterSetting("Keybind", "The key to toggle this feature", defaultKey);
-        ToggleOnRelease = RegisterSetting("Toggle On Release", "Acts as a temporary hold-to-activate when enabled", defaultToggleOnRelease);
+        ToggleOnRelease = RegisterSetting(
+            "toggleOnRelease",
+            "Toggle On Release",
+            "Acts as a temporary hold-to-(de)activate when enabled",
+            defaultToggleOnRelease
+        );
+
+        var defaultBind = new Keybind(defaultKey, modifier: defaultModifier);
+        ToggleKeybind = RegisterSetting("toggleKeybind", "Toggle Keybind", "The key combo used to turn this feature on and off", defaultBind);
+
+        UpdateToggleCallbacks();
+        ToggleOnRelease.InternalOnValueChanged += UpdateToggleCallbacks;
+        ToggleKeybind.InternalOnValueChanged += UpdateToggleCallbacks;
     }
 
-    protected Setting<T> RegisterSetting<T>(string name, string description, T defaultValue) {
-        var setting = new Setting<T>(name, description, defaultValue);
+    /// <summary>
+    /// Swaps the Keybind's behavior loops depending on ToggleOnRelease
+    /// </summary>
+    private void UpdateToggleCallbacks() {
+        var keybind = ToggleKeybind?.Value;
+        if (keybind == null) return;
+
+        if (ToggleOnRelease.Value) {
+            keybind.OnPress = () => IsEnabled = !IsEnabled;
+            keybind.OnRelease = () => IsEnabled = !IsEnabled;
+        } else {
+            keybind.OnPress = Toggle;
+            keybind.OnRelease = null;
+        }
+    }
+
+    protected Setting<T> RegisterSetting<T>(string guid, string name, string description, T defaultValue) {
+        var setting = new Setting<T>(guid, name, description, defaultValue);
 
         setting.InternalOnValueChanged += () => {
             ConfigManager.SaveConfig(this);

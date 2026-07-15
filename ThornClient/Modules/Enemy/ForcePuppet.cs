@@ -11,7 +11,7 @@ namespace ThornClient.Modules.Enemy;
 
 public class ForcePuppet : Module {
     public override string IconName => "puppet";
-    public ForcePuppet() : base("Force Puppet", "Makes enemies puppeted (become blood bois)", ModuleCategory.Enemy) {
+    public ForcePuppet() : base("thorn.forcePuppet", "Force Puppet", "Makes enemies puppeted (become blood bois)\nWarning: This breaks Cybergrind", ModuleCategory.Enemy) {
     }
 
     public override string? CheatReason => IsEnabled ? "Enables non-standard gameplay" : "";

@@ -14,8 +14,8 @@ public class ForceRadiance : Module {
 
     public override string IconName => "rainbow";
 
-    public ForceRadiance() : base("Force Radiance", "Makes all enemies radiant, buffing them", ModuleCategory.Enemy) {
-        RadianceTier = RegisterSetting("Radiance tier", "How much to buff enemies", 1f);
+    public ForceRadiance() : base("thorn.forceRadiance", "Force Radiance", "Makes all enemies radiant, buffing them", ModuleCategory.Enemy) {
+        RadianceTier = RegisterSetting("radianceTier", "Radiance tier", "How much to buff enemies", 1f);
     }
 
     public override string? CheatReason => IsEnabled ? "Enables non-standard gameplay" : "";

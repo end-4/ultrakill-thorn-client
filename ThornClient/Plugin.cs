@@ -4,9 +4,7 @@ using System.Reflection;
 using BepInEx;
 using BepInEx.Logging;
 using Notiffy.API;
-using ThornClient.Core;
 using ThornClient.Managers;
-using Module = System.Reflection.Module;
 
 namespace ThornClient;
 

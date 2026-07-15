@@ -1,18 +1,20 @@
 ﻿using System;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace ThornClient.Core;
 
 public abstract class Setting {
+    public string GUID { get; }
     public string Name { get; }
     public string Description { get; }
     [JsonIgnore] public SettingType Type { get; protected set; }
 
-    // Internal event used exclusively by Configurable for auto-saving
-    [JsonIgnore] internal Action InternalOnValueChanged { get; set; }
+    [JsonIgnore] internal Action? InternalOnValueChanged { get; set; }
 
-    protected Setting(string name, string description) {
+    protected Setting(string guid, string name, string description) {
+        GUID = guid;
         Name = name;
         Description = description;
     }
@@ -34,9 +36,9 @@ public class Setting<T> : Setting {
     }
 
     [JsonIgnore] public T DefaultValue { get; }
-    [JsonIgnore] public Action<T> OnValueChanged { get; set; }
+    [JsonIgnore] public Action<T>? OnValueChanged { get; set; }
 
-    public Setting(string name, string description, T defaultValue) : base(name, description) {
+    public Setting(string guid, string name, string description, T defaultValue) : base(guid, name, description) {
         Value = defaultValue;
         DefaultValue = defaultValue;
 
@@ -52,19 +54,46 @@ public class Setting<T> : Setting {
         };
     }
 
-    public override object GetValue() => Value;
+    public override object GetValue() => Value!;
 
     public override void SetValue(object value) {
         try {
+            // Normal matching type
+            if (value is T directValue) {
+                Value = directValue;
+                return;
+            }
+
+            // JToken handling
+            if (value is JToken token) {
+                Value = token.ToObject<T>()!;
+                return;
+            }
+
+            // Handle ThornClient.Core.Keybind
+            if (typeof(T) == typeof(Keybind) && value is string keybindString) {
+                // Deserialize using your existing custom converter logic by wrapping it as a JSON string
+                var parsedKeybind = JsonConvert.DeserializeObject<Keybind>($"\"{keybindString}\"");
+
+                // Preserve the callbacks from the current keybind instance so they don't break
+                if (parsedKeybind != null && Value is Keybind currentKeybind) {
+                    parsedKeybind.OnPress = currentKeybind.OnPress;
+                    parsedKeybind.OnRelease = currentKeybind.OnRelease;
+                }
+
+                Value = (T)(object)parsedKeybind!;
+                return;
+            }
+
+            // Fallback
             if (typeof(T).IsEnum) {
                 Value = (T)Enum.ToObject(typeof(T), Convert.ToInt32(value));
             } else {
                 Value = (T)Convert.ChangeType(value, typeof(T));
             }
         } catch (Exception e) {
-            Plugin.Log.LogInfo(
+            Plugin.Log.LogError(
                 $"[Setting] Failed to set {Name}'s value {value} to {typeof(T).Name}: {e}");
         }
     }
 }
-

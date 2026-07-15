@@ -12,8 +12,8 @@ public class UIScaler : Module {
     public Setting<float> Scale { get; }
 
     public override string IconName => "screen_scale";
-    public UIScaler() : base("UI Scaler", "Changes the scale of the user interface", ModuleCategory.Render) {
-        Scale = RegisterSetting("Scale", "Smaller = smaller UI elements", 1.0f);
+    public UIScaler() : base("thorn.uiScaler", "UI Scaler", "Changes the scale of the user interface", ModuleCategory.Render) {
+        Scale = RegisterSetting("scale", "Scale", "Smaller = smaller UI elements", 1.0f);
     }
 
     protected override void OnEnable() {

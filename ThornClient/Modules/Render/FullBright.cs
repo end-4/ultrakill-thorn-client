@@ -12,9 +12,9 @@ public class FullBright : Module {
     public Setting<float> Brightness { get; }
 
     public override string IconName => "light_bulb";
-    public FullBright() : base("FullBright", "Adjustable brightness for accessibility", ModuleCategory.Render,
+    public FullBright() : base("thorn.fullBright", "FullBright", "Adjustable brightness for accessibility", ModuleCategory.Render,
         KeyCode.Semicolon) {
-        Brightness = RegisterSetting("Brightness", "How bright the world should be", 0.2f);
+        Brightness = RegisterSetting("brightness", "Brightness", "How bright the world should be", 0.2f);
     }
 
     private bool lastFogEnabled;

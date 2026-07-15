@@ -31,7 +31,7 @@ internal class ClickGUI : SystemModule {
         }
     }
 
-    public ClickGUI() : base("ClickGUI", "The main interaction panel", KeyCode.RightShift) {
+    public ClickGUI() : base("thorn.clickGui", "ClickGUI", "The main interaction panel") { // Keybind is registered in ThornModule
         SceneManager.sceneLoaded += (_, __) => _isInitialized = InitializeIfNeeded();
     }
 
@@ -110,7 +110,7 @@ internal class ClickGUI : SystemModule {
         // _hudPage
 
         _tabPages.Add(Tuple.Create("Modules", _modulePage));
-        _tabPages.Add(Tuple.Create("HUD", _hudPage));
+        // _tabPages.Add(Tuple.Create("HUD", _hudPage));
         _tabPages.Add(Tuple.Create("Settings", _settingsPage));
         // Plugin.Log.LogInfo("Loaded ClickGUI successfully");
 
@@ -134,7 +134,7 @@ internal class ClickGUI : SystemModule {
     }
 
     protected override void OnEnable() {
-        // Plugin.Log.LogInfo($"Show ClickGUI, null={_canvas==null}");
+        Plugin.Log.LogInfo($"Show ClickGUI, null={_canvas==null}");
         if (_canvas == null) return;
         _canvas.transform.SetAsLastSibling(); // Show on top of everything
         _canvas.SetActive(true);
@@ -150,7 +150,7 @@ internal class ClickGUI : SystemModule {
     }
 
     protected override void OnDisable() {
-        // Plugin.Log.LogInfo($"Hide ClickGUI, null={_canvas==null}");
+        Plugin.Log.LogInfo($"Hide ClickGUI, null={_canvas==null}");
         if (_canvas == null) return;
         _canvas.SetActive(false);
         Pauser.Pause(false);

@@ -29,9 +29,7 @@ public static class ConfigManager {
     /// Generates a safe file path using the module's (friendly) name string
     /// </summary>
     public static string GetConfigPath(Configurable configurable) {
-        string safeName = Regex.Replace(configurable.Name, @"[^a-zA-Z0-9_\-\s]", "");
-        safeName = safeName.Replace(" ", "_");
-        return Path.Combine(ConfigFolder, $"{safeName}.json");
+        return Path.Combine(ConfigFolder, $"{configurable.GUID}.json");
     }
 
     /// <summary>
@@ -51,7 +49,7 @@ public static class ConfigManager {
             };
 
             foreach (var setting in configurable.Settings) {
-                dto.Settings[setting.Name] = setting.GetValue();
+                dto.Settings[setting.GUID] = setting.GetValue();
             }
 
             string jsonString = JsonConvert.SerializeObject(dto, Formatting.Indented);
@@ -92,7 +90,7 @@ public static class ConfigManager {
             }
 
             foreach (var setting in configurable.Settings) {
-                if (dto.Settings.TryGetValue(setting.Name, out var savedValue) && savedValue != null) {
+                if (dto.Settings.TryGetValue(setting.GUID, out var savedValue) && savedValue != null) {
                     if (savedValue is JToken token) {
                         object primitiveValue = token.ToObject(typeof(object));
                         if (primitiveValue != null) setting.SetValue(primitiveValue);
