@@ -45,6 +45,9 @@ public abstract class Configurable {
         Name = name;
         Description = description;
 
+        var defaultBind = new Keybind(defaultKey, modifier: defaultModifier);
+        ToggleKeybind = RegisterSetting("toggleKeybind", "Toggle Keybind", "The key combo used to turn this feature on and off", defaultBind);
+        
         ToggleOnRelease = RegisterSetting(
             "toggleOnRelease",
             "Toggle On Release",
@@ -52,8 +55,6 @@ public abstract class Configurable {
             defaultToggleOnRelease
         );
 
-        var defaultBind = new Keybind(defaultKey, modifier: defaultModifier);
-        ToggleKeybind = RegisterSetting("toggleKeybind", "Toggle Keybind", "The key combo used to turn this feature on and off", defaultBind);
 
         UpdateToggleCallbacks();
         ToggleOnRelease.InternalOnValueChanged += UpdateToggleCallbacks;

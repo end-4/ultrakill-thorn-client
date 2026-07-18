@@ -67,8 +67,8 @@ public class ColorSettingController : MonoBehaviour {
     }
 
     private void TrySaveNewHex(string hex) {
-        Plugin.Log.LogInfo($"Try save hex {hex}");
         if (TargetSetting == null) return;
+        if (!hex.StartsWith("#")) hex = "#" + hex;
         if (ColorUtility.TryParseHtmlString(hex, out Color color)) {
             TargetSetting.Value = new Color(color.r, color.g, color.b, TargetSetting.Value.a);
         } else {
@@ -76,6 +76,7 @@ public class ColorSettingController : MonoBehaviour {
             TargetSetting.Value = new Color(TargetSetting.Value.r, TargetSetting.Value.g, TargetSetting.Value.b,
                 TargetSetting.Value.a);
         }
+        UpdateDisplay(TargetSetting.Value);
     }
 
     private void TrySaveNewValue(float value, int index) {

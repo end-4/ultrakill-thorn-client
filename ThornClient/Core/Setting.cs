@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using NukeLib.Utils;
 
 namespace ThornClient.Core;
 
@@ -54,7 +55,18 @@ public class Setting<T> : Setting {
     public event Action? OnRelease;
 
     [JsonIgnore]
-    public override bool IsDefault => EqualityComparer<T>.Default.Equals(Value, DefaultValue);
+    public override bool IsDefault {
+        get {
+            if (Value is Color valColor && DefaultValue is Color defaultColor) {
+                return valColor.Approximately(defaultColor);
+            }
+            if (Value is float valFloat && DefaultValue is float defaultFloat) {
+                return Mathf.Approximately(valFloat, defaultFloat);
+            }
+
+            return EqualityComparer<T>.Default.Equals(Value, DefaultValue);
+        }
+    }
 
     public Setting(string guid, string name, string description, T defaultValue) : base(guid, name, description) {
         Value = defaultValue;
