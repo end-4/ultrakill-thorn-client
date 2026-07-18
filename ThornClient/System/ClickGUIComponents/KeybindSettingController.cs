@@ -39,6 +39,7 @@ public class KeybindSettingController : MonoBehaviour {
     }
 
     private void ActivateKeyListen() {
+        ThornClient.Managers.InputManager.BlockInput = true;
         if (_listeningInstance != null) {
             _listeningInstance.SetBorderColor(NormalColor);
         }
@@ -50,6 +51,7 @@ public class KeybindSettingController : MonoBehaviour {
     }
 
     private void DeactivateKeyListen() {
+        ThornClient.Managers.InputManager.BlockInput = false;
         if (IsListening()) {
             _listeningInstance = null;
         }
