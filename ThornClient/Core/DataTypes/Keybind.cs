@@ -3,8 +3,11 @@ using GameConsole.pcon;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace ThornClient.Core;
+namespace ThornClient.Core.DataTypes;
 
+/// <summary>
+/// A pair of KeyCodes consisting of one main key and optionally a modifier
+/// </summary>
 [JsonConverter(typeof(KeybindJsonConverter))]
 public class Keybind : IEquatable<Keybind> {
     public KeyCode Key { get; set; }

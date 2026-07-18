@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
 using UnityEngine;
 

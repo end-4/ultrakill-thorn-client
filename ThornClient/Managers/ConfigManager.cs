@@ -7,6 +7,7 @@ using BepInEx;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ThornClient.Core;
+using ThornClient.Core.DataTypes;
 
 namespace ThornClient.Managers;
 

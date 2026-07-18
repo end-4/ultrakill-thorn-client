@@ -3,6 +3,7 @@ using Notiffy.API;
 using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Core;
+using ThornClient.Core.DataTypes;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

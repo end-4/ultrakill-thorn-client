@@ -1,8 +1,9 @@
 ﻿﻿using System;
 using Newtonsoft.Json;
+using ThornClient.Core.DataTypes;
 using UnityEngine;
 
-namespace ThornClient.Core;
+namespace ThornClient.Core.DataTypes;
 
 public class KeybindJsonConverter : JsonConverter<Keybind> {
     public override void WriteJson(JsonWriter writer, Keybind? value, JsonSerializer serializer) {

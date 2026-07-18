@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using NukeLib.Utils;
+using ThornClient.Core.DataTypes;
 
 namespace ThornClient.Core;
 

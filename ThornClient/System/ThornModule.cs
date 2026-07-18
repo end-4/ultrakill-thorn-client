@@ -1,5 +1,6 @@
 ﻿﻿using Notiffy.API;
 using ThornClient.Core;
+using ThornClient.Core.DataTypes;
 using UnityEngine;
 
 namespace ThornClient.System;

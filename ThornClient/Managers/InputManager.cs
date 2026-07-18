@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ThornClient.Core;
+using ThornClient.Core.DataTypes;
 using UnityEngine;
 
 namespace ThornClient.Managers;

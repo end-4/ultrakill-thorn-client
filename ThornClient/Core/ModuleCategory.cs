@@ -1,9 +1,9 @@
 ﻿namespace ThornClient.Core;
 
 public enum ModuleCategory {
-    Enemy, // tracers
+    Enemy, // mitosis
     Player, // minecraft fly
     Render,
-    World, // waypoints
+    World, // waypoints, tracers
     Misc,
 }
