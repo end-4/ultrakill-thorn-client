@@ -46,15 +46,9 @@ public class NumberSettingController<T> : MonoBehaviour {
     }
 
     private void SaveNewValue(string str) {
-        try {
-            if (double.TryParse(str, out var number)) {
-                TargetSetting.Value = (T)Convert.ChangeType(number, typeof(T));
-            }
-        } catch {
-            // Revert if invalid
-            if (_inputField != null) {
-                _inputField.text = _lastString;
-            }
+        if (double.TryParse(str, out var number)) {
+            TargetSetting.Value = (T)Convert.ChangeType(number, typeof(T));
+        } else {
             UpdateFieldValue(TargetSetting.Value);
         }
     }
