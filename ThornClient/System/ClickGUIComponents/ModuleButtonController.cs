@@ -6,11 +6,12 @@ using ThornClient.Core;
 using ThornClient.Managers;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-internal class ModuleButtonController : MonoBehaviour {
+internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
     public Module? TargetModule;
     private GameObject? _checkmark;
 
@@ -36,9 +37,7 @@ internal class ModuleButtonController : MonoBehaviour {
 
         // Setup click
         var button = gameObject.GetComponent<Button>();
-        button.onClick.AddListener(() => {
-            TargetModule.Toggle();
-        });
+        button.onClick.AddListener(() => { TargetModule.Toggle(); });
         UpdateCheckbox(TargetModule.IsEnabled);
         TargetModule.OnToggleStateChanged += UpdateCheckbox;
 
@@ -55,5 +54,13 @@ internal class ModuleButtonController : MonoBehaviour {
     private void UpdateCheckbox(bool isEnabled) {
         if (_checkmark == null) return;
         _checkmark.SetActive(isEnabled);
+    }
+
+    public void OnPointerClick(PointerEventData eventData) {
+        if (eventData.button == PointerEventData.InputButton.Right) {
+            if (TargetModule == null) return;
+            ClickGUI.OpenConfig(TargetModule);
+            ClickGUI.SurrenderTooltipText(TargetModule.Description);
+        }
     }
 }

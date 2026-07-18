@@ -20,9 +20,17 @@ public static class ConfigManager {
     private static bool _isBatchSyncing = false;
     private static readonly ConcurrentQueue<Configurable> MainThreadQueue = new();
 
+    private static readonly JsonSerializerSettings SerializerSettings = new() {
+        Formatting = Formatting.Indented,
+        Converters = {
+            new ColorJsonConverter(),
+            new KeybindJsonConverter()
+        }
+    };
+
     private class ModuleConfigDataTransferObject {
         public bool IsEnabled { get; set; }
-        public Dictionary<string, object> Settings { get; set; } = [];
+        public Dictionary<string, JToken> Settings { get; set; } = [];
     }
 
     /// <summary>
@@ -49,10 +57,16 @@ public static class ConfigManager {
             };
 
             foreach (var setting in configurable.Settings) {
-                dto.Settings[setting.GUID] = setting.GetValue();
+                var rawValue = setting.GetValue();
+                if (rawValue != null) {
+                    // Convert the raw object to a JToken using your custom serializer settings
+                    dto.Settings[setting.GUID] = JToken.FromObject(rawValue, JsonSerializer.Create(SerializerSettings));
+                } else {
+                    dto.Settings[setting.GUID] = JValue.CreateNull();
+                }
             }
 
-            string jsonString = JsonConvert.SerializeObject(dto, Formatting.Indented);
+            string jsonString = JsonConvert.SerializeObject(dto, Formatting.Indented, settings: SerializerSettings);
             string filePath = GetConfigPath(configurable);
 
             File.WriteAllText(filePath, jsonString);
@@ -76,26 +90,41 @@ public static class ConfigManager {
 
         string filePath = GetConfigPath(configurable);
         if (!File.Exists(filePath)) {
-            lock (SyncLock) { ActiveModuleSyncs.Remove(configurable); }
+            lock (SyncLock) {
+                ActiveModuleSyncs.Remove(configurable);
+            }
+
             return;
         }
 
         try {
             string jsonString = File.ReadAllText(filePath);
-            var dto = JsonConvert.DeserializeObject<ModuleConfigDataTransferObject>(jsonString);
+            var dto = JsonConvert.DeserializeObject<ModuleConfigDataTransferObject>(jsonString,
+                settings: SerializerSettings);
             if (dto == null) return;
 
             if (dto.IsEnabled != configurable.IsEnabled) {
                 configurable.Toggle();
             }
 
+            // Plugin.Log.LogInfo($"--- Checking {configurable.GUID}, json: {dto}");
+
             foreach (var setting in configurable.Settings) {
-                if (dto.Settings.TryGetValue(setting.GUID, out var savedValue) && savedValue != null) {
-                    if (savedValue is JToken token) {
-                        object primitiveValue = token.ToObject(typeof(object));
-                        if (primitiveValue != null) setting.SetValue(primitiveValue);
-                    } else {
-                        setting.SetValue(savedValue);
+                // Plugin.Log.LogInfo($"  - Setting {setting}");
+                if (dto.Settings.TryGetValue(setting.GUID, out var token) && token != null) {
+                    try {
+                        // Get the inner type of the Setting (e.g., UnityEngine.Color or Keybind)
+                        Type targetType = setting.GetType().GetGenericArguments()[0];
+
+                        // Deserialize directly to the correct type using your serializer settings
+                        object? deserializedValue =
+                            token.ToObject(targetType, JsonSerializer.Create(SerializerSettings));
+
+                        if (deserializedValue != null) {
+                            setting.SetValue(deserializedValue);
+                        }
+                    } catch (Exception ex) {
+                        Plugin.Log.LogError($"[ConfigManager] Failed to convert setting {setting.GUID}: {ex.Message}");
                     }
                 }
             }
@@ -123,7 +152,9 @@ public static class ConfigManager {
             }
             // Plugin.Log.LogInfo("[ConfigManager] Saved all module settings");
         } finally {
-            lock (SyncLock) { _isBatchSyncing = false; }
+            lock (SyncLock) {
+                _isBatchSyncing = false;
+            }
         }
     }
 
@@ -142,7 +173,9 @@ public static class ConfigManager {
             }
             // Plugin.Log.LogInfo("[ConfigManager] Loaded all module settings");
         } finally {
-            lock (SyncLock) { _isBatchSyncing = false; }
+            lock (SyncLock) {
+                _isBatchSyncing = false;
+            }
         }
     }
 

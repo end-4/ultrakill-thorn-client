@@ -11,7 +11,7 @@ public class Zoom : Module {
 
     public Zoom() : base("thorn.zoom", "Zoom",
         "Look more closely. Note: zooming only happens when the game is running, so use a keybind to toggle it",
-        ModuleCategory.Render, KeyCode.C, KeyCode.LeftAlt, true) {
+        ModuleCategory.Render, KeyCode.None, KeyCode.None, true) {
         ZoomFov = RegisterSetting("zoomFov", "Zoom FOV", "Zoom amount. Lower = more zoomed in", 30.0f);
     }
 

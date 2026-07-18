@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ThornClient.Core;
 
 [JsonConverter(typeof(KeybindJsonConverter))]
-public class Keybind {
+public class Keybind : IEquatable<Keybind> {
     public KeyCode Key { get; set; }
     public KeyCode Modifier { get; set; }
 
@@ -25,6 +25,12 @@ public class Keybind {
         OnRelease = onRelease;
     }
 
+    public bool Equals(Keybind? other) {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Key == other.Key && Modifier == other.Modifier;
+    }
+
     /// <summary>
     /// Checks for key events and invokes actions accordingly. To be called by the Input Manager.
     /// </summary>
@@ -35,7 +41,7 @@ public class Keybind {
         if (!modifierSatisfied) return;
 
         if (Input.GetKeyDown(Key)) {
-            Plugin.Log.LogInfo($"Pressed {Key}");
+            // Plugin.Log.LogInfo($"Pressed {Key}");
             OnPress?.Invoke();
         }
 

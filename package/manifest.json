@@ -6,7 +6,7 @@
     "description": "Utility mod for ULTRAKILL.",
     "dependencies": [
         "BepInEx-BepInExPack-5.4.2100",
-        "end_4-NukeLib-0.5.0",
+        "end_4-NukeLib-0.6.0",
         "end_4-Notiffy-0.1.3"
     ]
 }

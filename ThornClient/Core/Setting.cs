@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -10,8 +11,10 @@ public abstract class Setting {
     public string Name { get; }
     public string Description { get; }
     [JsonIgnore] public SettingType Type { get; protected set; }
+    [JsonIgnore] public abstract bool IsDefault { get; }
 
     [JsonIgnore] internal Action? InternalOnValueChanged { get; set; }
+    public event Action? OnChanged;
 
     protected Setting(string guid, string name, string description) {
         GUID = guid;
@@ -19,8 +22,15 @@ public abstract class Setting {
         Description = description;
     }
 
+    protected void RaiseOnChanged() => OnChanged?.Invoke();
+
     public abstract object GetValue();
     public abstract void SetValue(object value);
+
+    /// <summary>
+    /// Resets the setting back to its original default value.
+    /// </summary>
+    public abstract void Reset();
 }
 
 public class Setting<T> : Setting {
@@ -32,18 +42,22 @@ public class Setting<T> : Setting {
 
             OnValueChanged?.Invoke(field);
             InternalOnValueChanged?.Invoke();
+            RaiseOnChanged();
         }
     }
 
     [JsonIgnore] public T DefaultValue { get; }
     [JsonIgnore] public Action<T>? OnValueChanged { get; set; }
 
+    [JsonIgnore]
+    public override bool IsDefault => EqualityComparer<T>.Default.Equals(Value, DefaultValue);
+
     public Setting(string guid, string name, string description, T defaultValue) : base(guid, name, description) {
         Value = defaultValue;
         DefaultValue = defaultValue;
 
         Type = typeof(T) switch {
-            Type t when t == typeof(bool) => SettingType.Boolean,
+            Type t when t == typeof(bool) => SettingType.Bool,
             Type t when t == typeof(float) => SettingType.Float,
             Type t when t == typeof(int) => SettingType.Int,
             Type t when t == typeof(string) => SettingType.Text,
@@ -55,6 +69,9 @@ public class Setting<T> : Setting {
     }
 
     public override object GetValue() => Value!;
+    public override void Reset() {
+        Value = DefaultValue;
+    }
 
     public override void SetValue(object value) {
         try {

@@ -28,7 +28,7 @@ public abstract class Configurable {
             if (field) OnEnable();
             else OnDisable();
 
-            Plugin.Log.LogInfo($"[ConfigManager] Toggled {Name} to {value}, saving");
+            // Plugin.Log.LogInfo($"[ConfigManager] Toggled {Name} to {value}, saving");
             ConfigManager.SaveConfig(this);
         }
     }

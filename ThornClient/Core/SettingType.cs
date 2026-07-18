@@ -1,10 +1,10 @@
 ﻿namespace ThornClient.Core;
 
 public enum SettingType {
-    Boolean,
+    Bool,
     Int,
     Float,
+    Bind,
     Text,
     Color,
-    Bind
 }

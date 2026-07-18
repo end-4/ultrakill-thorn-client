@@ -32,8 +32,9 @@ internal class ModuleCategoryController : MonoBehaviour {
         var moduleCol = gameObject.FindRecursive("Modules");
 
         // Header: icon, text, dragging behavior
-        var categoryIcon = gameObject.FindRecursive("Header/Icon").GetComponent<Image>();
-        var categoryText = gameObject.FindRecursive("Header/CategoryName").GetComponent<TextMeshProUGUI>();
+        gameObject.FindRecursive("Header/TitleButton").GetComponent<Button>().interactable = false;
+        var categoryIcon = gameObject.FindRecursive("Header/TitleButton/TitleIcon").GetComponent<Image>();
+        var categoryText = gameObject.FindRecursive("Header/TitleName").GetComponent<TextMeshProUGUI>();
         categoryIcon.sprite = ClickGUI.Bundle.LoadAsset<Sprite>(_iconNameMap[Category]);
         categoryText.text = Category.ToString().ToUpper();
         gameObject.FindRecursive("Header").AddComponent<TitlebarDragHandler>();

@@ -20,7 +20,15 @@ internal class ClickGUI : SystemModule {
     internal static ClickGUI? Instance;
     internal static readonly string BundlePath = Path.Combine(Plugin.workingDir, "assets", "thorn_clickgui.bundle");
     internal static GameObject? ModuleCategoryPrefab { get; private set; }
-    internal static GameObject? ModuleButtonPrefab { get; private set; }
+    internal static GameObject ModuleButtonPrefab { get; private set; }
+    internal static GameObject ModuleDescriptionPrefab { get; private set; }
+    internal static GameObject SettingRowWrapperPrefab { get; private set; }
+    internal static GameObject BoolSettingPrefab { get; private set; }
+    internal static GameObject NumberSettingPrefab { get; private set; }
+    internal static GameObject KeybindSettingPrefab { get; private set; }
+    internal static GameObject TextSettingPrefab { get; private set; }
+    internal static GameObject ColorSettingPrefab { get; private set; }
+    private static GameObject? _pagePrefab;
 
     private static AssetBundle? _assetBundle = null;
 
@@ -31,7 +39,8 @@ internal class ClickGUI : SystemModule {
         }
     }
 
-    public ClickGUI() : base("thorn.clickGui", "ClickGUI", "The main interaction panel") { // Keybind is registered in ThornModule
+    public ClickGUI() : base("thorn.clickGui", "ClickGUI", "The main interaction panel") {
+        // Keybind is registered in ThornModule
         SceneManager.sceneLoaded += (_, __) => _isInitialized = InitializeIfNeeded();
     }
 
@@ -41,9 +50,12 @@ internal class ClickGUI : SystemModule {
     private GameObject? _modulePage;
     private GameObject? _hudPage;
     private GameObject? _settingsPage;
+    private GameObject? _configPopupPage;
     private GameObject? _tooltip;
     private GameObject? _tabBarButtonRow;
     private List<Tuple<string, GameObject>> _tabPages = new();
+
+    private static OptionsManager? opts => OptionsManager.Instance;
 
     private bool InitializeIfNeeded() {
         if (Instance != null || (_isInitialized && _canvas != null)) return true;
@@ -52,11 +64,19 @@ internal class ClickGUI : SystemModule {
 
         var basePrefab = Bundle.LoadAsset<GameObject>("ThornClickGUICanvas");
         var tabBarPrefab = Bundle.LoadAsset<GameObject>("TabBar");
-        var pagePrefab = Bundle.LoadAsset<GameObject>("Page");
+        _pagePrefab = Bundle.LoadAsset<GameObject>("Page");
         var tooltipPrefab = Bundle.LoadAsset<GameObject>("Tooltip");
         var tabButtonPrefab = Bundle.LoadAsset<GameObject>("TabButton");
         ModuleCategoryPrefab = Bundle.LoadAsset<GameObject>("ModuleCategory");
         ModuleButtonPrefab = Bundle.LoadAsset<GameObject>("ModuleButton");
+        ModuleDescriptionPrefab = Bundle.LoadAsset<GameObject>("ModuleDescription");
+        SettingRowWrapperPrefab = Bundle.LoadAsset<GameObject>("SettingRowWrapper");
+        BoolSettingPrefab = Bundle.LoadAsset<GameObject>("BoolSetting");
+        NumberSettingPrefab = Bundle.LoadAsset<GameObject>("NumberSetting");
+        KeybindSettingPrefab = Bundle.LoadAsset<GameObject>("KeybindSetting");
+        TextSettingPrefab = Bundle.LoadAsset<GameObject>("TextSetting");
+        ColorSettingPrefab = Bundle.LoadAsset<GameObject>("ColorSetting");
+
 
         // Make the canvas
         _canvas = Object.Instantiate(basePrefab);
@@ -70,12 +90,17 @@ internal class ClickGUI : SystemModule {
         _tabBar.GetOrAddComponent<TabBarController>();
 
         // Make pages
-        _modulePage = Object.Instantiate(pagePrefab, _canvas.transform);
+        _modulePage = Object.Instantiate(_pagePrefab, _canvas.transform);
         _modulePage.SetActive(true);
-        _hudPage = Object.Instantiate(pagePrefab, _canvas.transform);
-        _hudPage.SetActive(false);
-        _settingsPage = Object.Instantiate(pagePrefab, _canvas.transform);
+        // _hudPage = Object.Instantiate(_pagePrefab, _canvas.transform);
+        // _hudPage.SetActive(false);
+        _settingsPage = Object.Instantiate(_pagePrefab, _canvas.transform);
         _settingsPage.SetActive(false);
+
+        _tabPages.Add(Tuple.Create("Modules", _modulePage));
+        // _tabPages.Add(Tuple.Create("HUD", _hudPage));
+        _tabPages.Add(Tuple.Create("Settings", _settingsPage));
+        lastTabName = "Modules";
 
         // Populate page: Module
         float canvasWidth = ((RectTransform)_canvas.transform).sizeDelta.x;
@@ -106,13 +131,13 @@ internal class ClickGUI : SystemModule {
         _modulePage.UnfuckLayoutHack();
         _canvas.SetActive(false);
 
-        // Populate page: HUD
-        // _hudPage
-
-        _tabPages.Add(Tuple.Create("Modules", _modulePage));
-        // _tabPages.Add(Tuple.Create("HUD", _hudPage));
-        _tabPages.Add(Tuple.Create("Settings", _settingsPage));
-        // Plugin.Log.LogInfo("Loaded ClickGUI successfully");
+        // Populate page: Settings
+        var settingsObj = Object.Instantiate(ModuleCategoryPrefab, _settingsPage.transform);
+        var settingRect = (RectTransform)settingsObj.transform;
+        settingRect.pivot = new Vector2(0.5f, 0.5f);
+        settingRect.localPosition = new Vector3(0f, 0f, 0f);
+        var configController = settingsObj.GetOrAddComponent<ConfigurableWindowController>();
+        configController.TargetConfigurable = ThornModule.Instance;
 
         // Add buttons to tab bar
         _tabBarButtonRow = _tabBar.FindRecursive("Tabs");
@@ -134,7 +159,7 @@ internal class ClickGUI : SystemModule {
     }
 
     protected override void OnEnable() {
-        Plugin.Log.LogInfo($"Show ClickGUI, null={_canvas==null}");
+        // Plugin.Log.LogInfo($"Show ClickGUI, null={_canvas == null}");
         if (_canvas == null) return;
         _canvas.transform.SetAsLastSibling(); // Show on top of everything
         _canvas.SetActive(true);
@@ -145,12 +170,14 @@ internal class ClickGUI : SystemModule {
         }
 
         Pauser.Pause(true);
+        if (opts != null) opts.dontUnpause = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     protected override void OnDisable() {
-        Plugin.Log.LogInfo($"Hide ClickGUI, null={_canvas==null}");
+        // Plugin.Log.LogInfo($"Hide ClickGUI, null={_canvas == null}");
+        if (opts != null) opts.dontUnpause = false;
         if (_canvas == null) return;
         _canvas.SetActive(false);
         Pauser.Pause(false);
@@ -164,9 +191,10 @@ internal class ClickGUI : SystemModule {
     }
 
     private void UpdateTooltipPos() {
-        if (_tooltip == null) return;
+        if (_tooltip == null || !_tooltip.activeInHierarchy) return;
         RectTransform rt = (RectTransform)_tooltip.transform;
         rt.position = Input.mousePosition + new Vector3(70f + rt.sizeDelta.x / 2, -40f - rt.sizeDelta.y / 2, 0f);
+        _tooltip.transform.SetAsLastSibling();
     }
 
     public static void SetTooltipText(string text) {
@@ -197,6 +225,7 @@ internal class ClickGUI : SystemModule {
             var (key, val) = pages[i];
             val.SetActive(tabName == key);
             if (val != null && tabName == key) {
+                lastTabName = tabName;
                 currIndex = i;
             }
         }
@@ -206,5 +235,50 @@ internal class ClickGUI : SystemModule {
             tabButtonRow.transform.GetChild(i).GetComponent<Image>().sprite = Addressables
                 .LoadAssetAsync<Sprite>(i == currIndex ? "Round_FillLarge" : "Round_BorderLarge").WaitForCompletion();
         }
+    }
+
+    private static string lastTabName = "";
+    public static void OpenConfig(Configurable config) {
+        if (Instance == null || Instance._canvas == null) return;
+        if (Instance._configPopupPage == null) {
+            Instance._configPopupPage = Object.Instantiate(_pagePrefab, Instance._canvas.transform);
+        }
+        if (Instance._configPopupPage == null) return;
+        Instance._configPopupPage.SetActive(true);
+
+        // Hide other pages
+        var tabButtonRow = Instance._tabBarButtonRow;
+        if (tabButtonRow != null) tabButtonRow.SetActive(false);
+        var pages = Instance._tabPages;
+        for (int i = 0; i < pages.Count; i++) {
+            pages[i].Item2.SetActive(false);
+        }
+
+        // Clear previous stuff
+        foreach (Transform g in Instance._configPopupPage.transform) {
+            Object.Destroy(g.gameObject);
+        }
+
+        // Add new panel
+        var configurableObj = Object.Instantiate(ModuleCategoryPrefab, Instance._configPopupPage.transform);
+        if (configurableObj == null) return;
+        // Center it
+        var settingRect = (RectTransform)configurableObj.transform;
+        settingRect.pivot = new Vector2(0.5f, 0.5f);
+        settingRect.localPosition = new Vector3(0f, 0f, 0f);
+        // Add controller
+        var configController = configurableObj.GetOrAddComponent<ConfigurableWindowController>();
+        configController.IsPopup = true;
+        configController.TargetConfigurable = config;
+    }
+
+    public static void CloseConfig() {
+        if (Instance == null) return;
+
+        var tabButtonRow = Instance._tabBarButtonRow;
+        if (tabButtonRow != null) tabButtonRow.SetActive(true);
+
+        if (Instance._configPopupPage != null) Instance._configPopupPage.SetActive(false);
+        SetTab(lastTabName);
     }
 }
