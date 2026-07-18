@@ -32,7 +32,6 @@ internal class ClickGUI : SystemModule {
     private static GameObject? _pagePrefab;
 
     private static AssetBundle? _assetBundle = null;
-
     internal static AssetBundle Bundle {
         get {
             if (_assetBundle == null) _assetBundle = AssetBundle.LoadFromFile(BundlePath);
