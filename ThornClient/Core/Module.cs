@@ -15,8 +15,9 @@ public abstract class Module : Configurable {
         ModuleCategory moduleCategory,
         KeyCode defaultKey = KeyCode.None,
         KeyCode defaultModifier = KeyCode.None,
-        bool defaultToggleOnRelease = false)
-        : base(guid, name, description, defaultKey, defaultModifier, defaultToggleOnRelease)
+        bool defaultToggleOnRelease = false,
+        bool hasToggling = true)
+        : base(guid, name, description, defaultKey, defaultModifier, defaultToggleOnRelease, hasToggling)
     {
         Category = moduleCategory;
     }

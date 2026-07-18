@@ -22,6 +22,7 @@ internal class ClickGUI : SystemModule {
     internal static GameObject? ModuleCategoryPrefab { get; private set; }
     internal static GameObject ModuleButtonPrefab { get; private set; }
     internal static GameObject ModuleDescriptionPrefab { get; private set; }
+    internal static GameObject EnabledButtonPrefab { get; private set; }
     internal static GameObject SettingRowWrapperPrefab { get; private set; }
     internal static GameObject BoolSettingPrefab { get; private set; }
     internal static GameObject NumberSettingPrefab { get; private set; }
@@ -70,6 +71,7 @@ internal class ClickGUI : SystemModule {
         ModuleCategoryPrefab = Bundle.LoadAsset<GameObject>("ModuleCategory");
         ModuleButtonPrefab = Bundle.LoadAsset<GameObject>("ModuleButton");
         ModuleDescriptionPrefab = Bundle.LoadAsset<GameObject>("ModuleDescription");
+        EnabledButtonPrefab = Bundle.LoadAsset<GameObject>("EnabledButton");
         SettingRowWrapperPrefab = Bundle.LoadAsset<GameObject>("SettingRowWrapper");
         BoolSettingPrefab = Bundle.LoadAsset<GameObject>("BoolSetting");
         NumberSettingPrefab = Bundle.LoadAsset<GameObject>("NumberSetting");
@@ -232,8 +234,8 @@ internal class ClickGUI : SystemModule {
 
         if (tabButtonRow != null) return;
         for (int i = 0; i < tabButtonRow.transform.childCount; i++) {
-            tabButtonRow.transform.GetChild(i).GetComponent<Image>().sprite = Addressables
-                .LoadAssetAsync<Sprite>(i == currIndex ? "Round_FillLarge" : "Round_BorderLarge").WaitForCompletion();
+            tabButtonRow.transform.GetChild(i).GetComponent<Image>().sprite = Bundle
+                .LoadAsset<Sprite>(i == currIndex ? "Round_FillLarge" : "Round_BorderLarge");
         }
     }
 

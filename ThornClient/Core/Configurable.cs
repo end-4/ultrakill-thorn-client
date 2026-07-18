@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using ThornClient.Managers;
@@ -39,26 +39,27 @@ public abstract class Configurable {
         string description,
         KeyCode defaultKey = KeyCode.None,
         KeyCode defaultModifier = KeyCode.None,
-        bool defaultToggleOnRelease = false)
-    {
+        bool defaultToggleOnRelease = false, bool hasToggling = true) {
         GUID = guid;
         Name = name;
         Description = description;
 
-        var defaultBind = new Keybind(defaultKey, modifier: defaultModifier);
-        ToggleKeybind = RegisterSetting("toggleKeybind", "Toggle Keybind", "The key combo used to turn this feature on and off", defaultBind);
-        
-        ToggleOnRelease = RegisterSetting(
-            "toggleOnRelease",
-            "Toggle On Release",
-            "Acts as a temporary hold-to-(de)activate when enabled",
-            defaultToggleOnRelease
-        );
+        if (hasToggling) {
+            var defaultBind = new Keybind(defaultKey, modifier: defaultModifier);
+            ToggleKeybind = RegisterSetting("toggleKeybind", "Toggle Keybind",
+                "The key combo used to turn this feature on and off", defaultBind);
 
+            ToggleOnRelease = RegisterSetting(
+                "toggleOnRelease",
+                "Toggle On Release",
+                "Acts as a temporary hold-to-(de)activate when enabled",
+                defaultToggleOnRelease
+            );
+            ToggleOnRelease.InternalOnValueChanged += UpdateToggleCallbacks;
+            ToggleKeybind.InternalOnValueChanged += UpdateToggleCallbacks;
+        }
 
         UpdateToggleCallbacks();
-        ToggleOnRelease.InternalOnValueChanged += UpdateToggleCallbacks;
-        ToggleKeybind.InternalOnValueChanged += UpdateToggleCallbacks;
     }
 
     /// <summary>
@@ -85,9 +86,7 @@ public abstract class Configurable {
     protected Setting<T> RegisterSetting<T>(string guid, string name, string description, T defaultValue) {
         var setting = new Setting<T>(guid, name, description, defaultValue);
 
-        setting.InternalOnValueChanged += () => {
-            ConfigManager.SaveConfig(this);
-        };
+        setting.InternalOnValueChanged += () => { ConfigManager.SaveConfig(this); };
 
         if (setting is Setting<Keybind> keybindSetting) {
             Managers.InputManager.RegisterKeybindSetting(keybindSetting);
@@ -104,10 +103,12 @@ public abstract class Configurable {
     /// <summary>
     /// Stuff to run when the module is enabled
     /// </summary>
-    protected virtual void OnEnable() { }
+    protected virtual void OnEnable() {
+    }
 
     /// <summary>
     /// Stuff to run when the module is disabled
     /// </summary>
-    protected virtual void OnDisable() { }
+    protected virtual void OnDisable() {
+    }
 }

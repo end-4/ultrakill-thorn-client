@@ -39,6 +39,12 @@ internal class ConfigurableWindowController : MonoBehaviour {
         Transform listBody = gameObject.FindRecursive("Modules").transform; // Note that we reuse ModuleCategory prefab for this
         var desc = Instantiate(ClickGUI.ModuleDescriptionPrefab!, listBody);
         desc.FindRecursive("DescText").GetComponent<TextMeshProUGUI>().text = TargetConfigurable.Description;
+        if (TargetConfigurable is not SystemModule) {
+            var enabledButton = Instantiate(ClickGUI.EnabledButtonPrefab, listBody);
+            var enabledButtonComp = enabledButton.AddComponent<EnabledButtonController>();
+            enabledButtonComp.configurable = TargetConfigurable;
+        }
+
         foreach (var setting in TargetConfigurable.Settings) {
             GameObject wrapper = Object.Instantiate(ClickGUI.SettingRowWrapperPrefab, listBody);
             var wrapperComp = wrapper.AddComponent<SettingRowController>();
