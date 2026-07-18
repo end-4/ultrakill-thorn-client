@@ -63,11 +63,7 @@ public class KeybindSettingController : MonoBehaviour {
             _caughtKey = _caughtModifier;
             _caughtModifier = KeyCode.None;
         }
-        TargetSetting.Value.Key = _caughtKey;
-        TargetSetting.Value.Modifier = _caughtModifier;
-        // Set to itself to trigger change + save
-        TargetSetting.Value = TargetSetting.Value;
-        UpdateKeyDisplay();
+        TargetSetting.Value = new Keybind(key: _caughtKey, modifier: _caughtModifier);
     }
 
     private bool IsListening() {

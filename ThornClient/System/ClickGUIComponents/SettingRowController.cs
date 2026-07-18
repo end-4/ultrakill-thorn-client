@@ -1,4 +1,5 @@
 ﻿using NukeLib.UI;
+using NukeLib.Utils;
 using ThornClient.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,8 +30,9 @@ public class SettingRowController : MonoBehaviour {
 
     private void UpdateResetVisibility() {
         if (TargetSetting == null || _resetButton == null || _resetButtonIconImage == null) return;
-        _resetButtonIconImage.sprite = ClickGUI.Bundle.LoadAsset<Sprite>(TargetSetting.IsDefault ? "dot" : "revert");
-        _resetButtonComp.interactable = !TargetSetting.IsDefault;
+        bool revertable = !TargetSetting.IsDefault;
+        _resetButtonIconImage.sprite = ClickGUI.Bundle.LoadAsset<Sprite>(revertable ? "revert" : "dot");
+        _resetButtonComp.interactable = revertable;
     }
 
     private void ResetSetting() {
