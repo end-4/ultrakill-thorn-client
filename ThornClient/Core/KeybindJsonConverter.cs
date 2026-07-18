@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -23,24 +23,24 @@ public class KeybindJsonConverter : JsonConverter<Keybind> {
         JsonSerializer serializer) {
         string? rawValue = reader.Value?.ToString();
         if (string.IsNullOrEmpty(rawValue) || rawValue == "None") {
-            return new Keybind(KeyCode.None, existingValue?.OnPress, existingValue?.OnRelease);
+            return new Keybind(KeyCode.None);
         }
 
         try {
             string[] tokens = rawValue.Split('+');
 
             if (tokens.Length == 2) { // Has modifier
-                KeyCode mod = (KeyCode)Enum.Parse(typeof(KeyCode), tokens[0]);
-                KeyCode key = (KeyCode)Enum.Parse(typeof(KeyCode), tokens[1]);
-                return new Keybind(key, existingValue?.OnPress, existingValue?.OnRelease, mod);
+                var mod = (KeyCode)Enum.Parse(typeof(KeyCode), tokens[0], true);
+                var key = (KeyCode)Enum.Parse(typeof(KeyCode), tokens[1], true);
+                return new Keybind(key, mod);
             } else if (tokens.Length == 1) { // Key only
-                KeyCode key = (KeyCode)Enum.Parse(typeof(KeyCode), tokens[0]);
-                return new Keybind(key, existingValue?.OnPress, existingValue?.OnRelease);
+                var key = (KeyCode)Enum.Parse(typeof(KeyCode), tokens[0], true);
+                return new Keybind(key);
             }
         } catch (Exception e) {
             Plugin.Log.LogError($"[KeybindJsonConverter] Failed to parse keybind config string \"{rawValue}\": {e.Message}");
         }
 
-        return new Keybind(KeyCode.None, existingValue?.OnPress, existingValue?.OnRelease);
+        return new Keybind(KeyCode.None);
     }
 }

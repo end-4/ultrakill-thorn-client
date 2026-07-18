@@ -24,7 +24,7 @@ public class TestModule : Module {
         Inoue = RegisterSetting("inoue", "Takina Inoue-chan", "int field!!", 2);
         Flatorte = RegisterSetting("flatorte", "Flatorte-chan", "float field!!", 4f);
         Tung = RegisterSetting("tung", "Here bro have a tung tung", "text field!!", "sahur");
-        Carbonara = RegisterSetting("carbonara", "Carbonara color", "color!!", new Color(219, 209, 180));
+        Carbonara = RegisterSetting("carbonara", "Carbonara color", "Color field description", new Color(219, 209, 180, 88));
     }
 
     protected override void OnEnable() {

@@ -49,6 +49,10 @@ public class Setting<T> : Setting {
     [JsonIgnore] public T DefaultValue { get; }
     [JsonIgnore] public Action<T>? OnValueChanged { get; set; }
 
+    // Specific events for Keybind settings
+    public event Action? OnPress;
+    public event Action? OnRelease;
+
     [JsonIgnore]
     public override bool IsDefault => EqualityComparer<T>.Default.Equals(Value, DefaultValue);
 
@@ -67,6 +71,10 @@ public class Setting<T> : Setting {
             _ => SettingType.Text
         };
     }
+
+    internal void RaiseOnPress() => OnPress?.Invoke();
+    internal void RaiseOnRelease() => OnRelease?.Invoke();
+
 
     public override object GetValue() => Value!;
     public override void Reset() {
@@ -88,17 +96,8 @@ public class Setting<T> : Setting {
             }
 
             // Handle ThornClient.Core.Keybind
-            if (typeof(T) == typeof(Keybind) && value is string keybindString) {
-                // Deserialize using your existing custom converter logic by wrapping it as a JSON string
-                var parsedKeybind = JsonConvert.DeserializeObject<Keybind>($"\"{keybindString}\"");
-
-                // Preserve the callbacks from the current keybind instance so they don't break
-                if (parsedKeybind != null && Value is Keybind currentKeybind) {
-                    parsedKeybind.OnPress = currentKeybind.OnPress;
-                    parsedKeybind.OnRelease = currentKeybind.OnRelease;
-                }
-
-                Value = (T)(object)parsedKeybind!;
+            if (value is string s && typeof(T) == typeof(Keybind)) {
+                Value = (T)(object)JsonConvert.DeserializeObject<Keybind>($"\"{s}\"")!;
                 return;
             }
 

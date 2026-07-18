@@ -1,4 +1,4 @@
-﻿using Notiffy.API;
+﻿﻿using Notiffy.API;
 using ThornClient.Core;
 using UnityEngine;
 
@@ -16,7 +16,7 @@ internal class ThornModule : SystemModule {
         if (Instance != null) return;
         Instance = this;
         OpenClickGUI = RegisterSetting("openClickGui", "Open GUI keybind", "Keybind to open Thorn's ClickGUI interface", new Keybind(KeyCode.RightShift));
-        OpenClickGUI.Value.OnPress = () => {
+        OpenClickGUI.OnPress += () => {
             // Plugin.Log.LogInfo("Opening ClickGUI");
             if (ClickGUI.Instance == null) return;
             ClickGUI.Instance.Toggle();

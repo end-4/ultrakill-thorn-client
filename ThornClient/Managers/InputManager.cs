@@ -1,4 +1,6 @@
-﻿using ThornClient.Core;
+﻿using System.Collections.Generic;
+using ThornClient.Core;
+using UnityEngine;
 
 namespace ThornClient.Managers;
 
@@ -16,14 +18,30 @@ public static class InputManager {
         }
     } = false;
 
+    private static readonly List<Setting<Keybind>> KeybindSettings = [];
+
+    public static void RegisterKeybindSetting(Setting<Keybind> setting) {
+        if (!KeybindSettings.Contains(setting)) {
+            KeybindSettings.Add(setting);
+        }
+    }
+
     public static void Update() {
         if (BlockInput) return;
 
-        foreach (var module in ModuleManager.Modules) {
-            foreach (var setting in module.Settings) {
-                if (setting.GetValue() is Keybind dynamicKeybind) {
-                    dynamicKeybind.CheckInput();
-                }
+        foreach (var setting in KeybindSettings) {
+            var keybind = setting.Value;
+            if (keybind.Key == KeyCode.None) continue;
+
+            bool modifierSatisfied = (keybind.Modifier == KeyCode.None) || Input.GetKey(keybind.Modifier);
+            if (!modifierSatisfied) continue;
+
+            if (Input.GetKeyDown(keybind.Key)) {
+                setting.RaiseOnPress();
+            }
+
+            if (Input.GetKeyUp(keybind.Key)) {
+                setting.RaiseOnRelease();
             }
         }
     }

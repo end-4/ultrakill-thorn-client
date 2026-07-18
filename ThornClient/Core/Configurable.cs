@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using ThornClient.Managers;
@@ -64,17 +64,22 @@ public abstract class Configurable {
     /// Swaps the Keybind's behavior loops depending on ToggleOnRelease
     /// </summary>
     private void UpdateToggleCallbacks() {
-        var keybind = ToggleKeybind?.Value;
-        if (keybind == null) return;
+        if (ToggleKeybind == null) return;
+
+        // Clear existing listeners to avoid duplicates
+        ToggleKeybind.OnPress -= HandlePress;
+        ToggleKeybind.OnRelease -= HandleRelease;
 
         if (ToggleOnRelease.Value) {
-            keybind.OnPress = () => IsEnabled = !IsEnabled;
-            keybind.OnRelease = () => IsEnabled = !IsEnabled;
+            ToggleKeybind.OnPress += HandlePress;
+            ToggleKeybind.OnRelease += HandleRelease;
         } else {
-            keybind.OnPress = Toggle;
-            keybind.OnRelease = null;
+            ToggleKeybind.OnPress += HandlePress;
         }
     }
+
+    private void HandlePress() => IsEnabled = !IsEnabled;
+    private void HandleRelease() => IsEnabled = !IsEnabled;
 
     protected Setting<T> RegisterSetting<T>(string guid, string name, string description, T defaultValue) {
         var setting = new Setting<T>(guid, name, description, defaultValue);
@@ -82,6 +87,10 @@ public abstract class Configurable {
         setting.InternalOnValueChanged += () => {
             ConfigManager.SaveConfig(this);
         };
+
+        if (setting is Setting<Keybind> keybindSetting) {
+            Managers.InputManager.RegisterKeybindSetting(keybindSetting);
+        }
 
         Settings.Add(setting);
         return setting;
