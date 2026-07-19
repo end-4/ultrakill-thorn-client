@@ -22,7 +22,16 @@ public abstract class Module : Configurable {
         Category = moduleCategory;
     }
 
+    /// <summary>
+    /// Invoked every frame, similar to MonoBehavior.Update()
+    /// </summary>
     public virtual void OnUpdate() {
     }
+
+    /// <summary>
+    /// Invoked every frame during the late screen rendering pass.
+    /// Place raw low-level vector drawings (GL code) inside this method block.
+    /// </summary>
+    public virtual void OnRender() { }
 }
 

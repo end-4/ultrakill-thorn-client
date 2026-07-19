@@ -25,6 +25,7 @@ public class Plugin : BaseUnityPlugin {
     private void Awake() {
         Log = Logger;
         ModuleManager.Initialize();
+        RenderManager.Initialize();
         ConfigManager.LoadAll();
         ConfigManager.SetupFileWatcher();
         Log.LogInfo($"Thorn is loaded");
@@ -48,6 +49,10 @@ public class Plugin : BaseUnityPlugin {
                 }
             }
         }
+    }
+
+    private void OnRenderObject() {
+        RenderManager.RenderPipeline();
     }
 
     private void OnDestroy() {
