@@ -14,6 +14,9 @@ namespace ThornClient.System.ClickGUIComponents;
 internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
     public Module? TargetModule;
     private GameObject? _checkmark;
+    private Colorizer? _iconColorizer;
+    private Colorizer? _textColorizer;
+    private Colorizer? _checkIconColorizer;
 
     private void Start() {
         if (TargetModule == null) {
@@ -38,22 +41,32 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
         // Setup click
         var button = gameObject.GetComponent<Button>();
         button.onClick.AddListener(() => { TargetModule.Toggle(); });
-        UpdateCheckbox(TargetModule.IsEnabled);
-        TargetModule.OnToggleStateChanged += UpdateCheckbox;
 
         // Setup hover
         var tooltipComp = gameObject.AddComponent<ClickGUITooltipHandler>();
         tooltipComp.text = TargetModule.Description;
+
+        // Setup visuals
+        _iconColorizer = buttonIcon.GetOrAddComponent<Colorizer>();
+        _textColorizer = buttonText.GetOrAddComponent<Colorizer>();
+        _checkmark.SetActive(true);
+        _checkIconColorizer = _checkmark.GetOrAddComponent<Colorizer>();
+        _checkmark.SetActive(false);
+        TargetModule.OnToggleStateChanged += UpdateVisualState;
+        UpdateVisualState(TargetModule.IsEnabled);
     }
 
     private void OnDestroy() {
         if (TargetModule == null) return;
-        TargetModule.OnToggleStateChanged -= UpdateCheckbox;
+        TargetModule.OnToggleStateChanged -= UpdateVisualState;
     }
 
-    private void UpdateCheckbox(bool isEnabled) {
+    private void UpdateVisualState(bool isEnabled) {
         if (_checkmark == null) return;
         _checkmark.SetActive(isEnabled);
+        if (_iconColorizer != null) _iconColorizer.UpdateHighlight(isEnabled);
+        if (_textColorizer != null) _textColorizer.UpdateHighlight(isEnabled);
+        if (_checkIconColorizer != null) _checkIconColorizer.UpdateHighlight(isEnabled);
     }
 
     public void OnPointerClick(PointerEventData eventData) {

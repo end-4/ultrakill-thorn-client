@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using NukeLib.Game.Controls;
 using UnityEngine;
@@ -30,8 +30,10 @@ internal class ClickGUI : SystemModule {
     internal static GameObject TextSettingPrefab { get; private set; }
     internal static GameObject ColorSettingPrefab { get; private set; }
     private static GameObject? _pagePrefab;
+    private static GameObject? _layoutedPagePrefab;
 
     private static AssetBundle? _assetBundle = null;
+
     internal static AssetBundle Bundle {
         get {
             if (_assetBundle == null) _assetBundle = AssetBundle.LoadFromFile(BundlePath);
@@ -54,6 +56,7 @@ internal class ClickGUI : SystemModule {
     private GameObject? _tooltip;
     private GameObject? _tabBarButtonRow;
     private List<Tuple<string, GameObject>> _tabPages = new();
+    private const string ModuleTabName = "Modules";
 
     private static OptionsManager? opts => OptionsManager.Instance;
 
@@ -65,6 +68,7 @@ internal class ClickGUI : SystemModule {
         var basePrefab = Bundle.LoadAsset<GameObject>("ThornClickGUICanvas");
         var tabBarPrefab = Bundle.LoadAsset<GameObject>("TabBar");
         _pagePrefab = Bundle.LoadAsset<GameObject>("Page");
+        _layoutedPagePrefab = Bundle.LoadAsset<GameObject>("LayoutedPage");
         var tooltipPrefab = Bundle.LoadAsset<GameObject>("Tooltip");
         var tabButtonPrefab = Bundle.LoadAsset<GameObject>("TabButton");
         ModuleCategoryPrefab = Bundle.LoadAsset<GameObject>("ModuleCategory");
@@ -83,7 +87,7 @@ internal class ClickGUI : SystemModule {
         _canvas = Object.Instantiate(basePrefab);
         _canvas.hideFlags = HideFlags.DontSave;
         Object.DontDestroyOnLoad(_canvas);
-        _canvas.SetActive(false);
+        _canvas.SetActive(true); // For size updates to happen... will disable later down below, at least I think this should work
 
         // Tab bar
         _tabBar = Object.Instantiate(tabBarPrefab, _canvas.transform);
@@ -91,33 +95,18 @@ internal class ClickGUI : SystemModule {
         _tabBar.GetOrAddComponent<TabBarController>();
 
         // Make pages
-        _modulePage = Object.Instantiate(_pagePrefab, _canvas.transform);
-        _modulePage.SetActive(true);
+        _modulePage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
         // _hudPage = Object.Instantiate(_pagePrefab, _canvas.transform);
         // _hudPage.SetActive(false);
+        // _settingsPage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
         _settingsPage = Object.Instantiate(_pagePrefab, _canvas.transform);
-        _settingsPage.SetActive(false);
 
-        _tabPages.Add(Tuple.Create("Modules", _modulePage));
+        _tabPages.Add(Tuple.Create(ModuleTabName, _modulePage));
         // _tabPages.Add(Tuple.Create("HUD", _hudPage));
         _tabPages.Add(Tuple.Create("Settings", _settingsPage));
         lastTabName = "Modules";
 
         // Populate page: Module
-        float canvasWidth = ((RectTransform)_canvas.transform).sizeDelta.x;
-        float canvasHeight = ((RectTransform)_canvas.transform).sizeDelta.y;
-        float tabBarWidth = ((RectTransform)_tabBar.transform).sizeDelta.x;
-        float tabBarHeight = ((RectTransform)_tabBar.transform).sizeDelta.y;
-        float screenPadding = canvasHeight / 2 - _tabBar.transform.localPosition.y;
-
-        float baseYPos =
-            _tabBar.transform.localPosition.y - tabBarHeight -
-            screenPadding * 2; // * 2 shouldn't be necessary but uhh idk
-        float baseXPos = -canvasWidth / 2 + screenPadding;
-        float currXPos = baseXPos;
-        float spacing = 8;
-
-        _canvas.SetActive(true); // For size updates to happen
         for (int i = 0; i < Enum.GetValues(typeof(ModuleCategory)).Length; i++) {
             var category = (ModuleCategory)i;
             var categoryObj = Object.Instantiate(ModuleCategoryPrefab, _modulePage.transform);
@@ -125,12 +114,9 @@ internal class ClickGUI : SystemModule {
             catController.Category = category;
             catController.SetupModules();
             categoryObj.UnfuckLayoutHack();
-            categoryObj.transform.localPosition = new Vector3(currXPos, baseYPos, 0f);
-            currXPos += ((RectTransform)categoryObj.transform).sizeDelta.x + spacing;
         }
 
         _modulePage.UnfuckLayoutHack();
-        _canvas.SetActive(false);
 
         // Populate page: Settings
         var settingsObj = Object.Instantiate(ModuleCategoryPrefab, _settingsPage.transform);
@@ -139,10 +125,12 @@ internal class ClickGUI : SystemModule {
         settingRect.localPosition = new Vector3(0f, 0f, 0f);
         var configController = settingsObj.GetOrAddComponent<ConfigurableWindowController>();
         configController.TargetConfigurable = ThornModule.Instance;
+        settingsObj.UnfuckLayoutHack();
+        _settingsPage.UnfuckLayoutHack();
+        _settingsPage.SetActive(false);
 
         // Add buttons to tab bar
         _tabBarButtonRow = _tabBar.FindRecursive("Tabs");
-        _canvas.SetActive(true);
         foreach (var tup in _tabPages) {
             var key = tup.Item1;
             var tabButton = Object.Instantiate(tabButtonPrefab, _tabBarButtonRow.transform);
@@ -151,24 +139,30 @@ internal class ClickGUI : SystemModule {
         }
 
         _tabBarButtonRow.UnfuckLayoutHack();
-        _canvas.SetActive(false);
 
         // Tooltip
         _tooltip = Object.Instantiate(tooltipPrefab, _canvas.transform);
         _tooltip.SetActive(false);
+
+        // Hide canvas
+        var cgroupComp = _canvas.GetComponent<CanvasGroup>();
+        if(cgroupComp != null) cgroupComp.alpha = 1;
+        SetTab(ModuleTabName);
+        _canvas.SetActive(false);
         return true;
     }
 
     protected override void OnEnable() {
-        // Plugin.Log.LogInfo($"Show ClickGUI, null={_canvas == null}");
+        Plugin.Log.LogInfo($"[ClickGUI] Enable");
         if (_canvas == null) return;
         _canvas.transform.SetAsLastSibling(); // Show on top of everything
         _canvas.SetActive(true);
-        _canvas.UnfuckLayoutHack();
         var canvasComp = _canvas.GetComponent<Canvas>();
         if (canvasComp != null) {
-            canvasComp.sortingOrder = 69;
+            canvasComp.sortingOrder = 69; // On top of most things
         }
+
+        _canvas.UnfuckLayoutHack();
 
         Pauser.Pause(true);
         if (opts != null) opts.dontUnpause = true;
@@ -177,7 +171,7 @@ internal class ClickGUI : SystemModule {
     }
 
     protected override void OnDisable() {
-        // Plugin.Log.LogInfo($"Hide ClickGUI, null={_canvas == null}");
+        Plugin.Log.LogInfo($"[ClickGUI] Disable");
         if (opts != null) opts.dontUnpause = false;
         if (_canvas == null) return;
         _canvas.SetActive(false);
@@ -225,6 +219,7 @@ internal class ClickGUI : SystemModule {
         for (int i = 0; i < pages.Count; i++) {
             var (key, val) = pages[i];
             val.SetActive(tabName == key);
+            val.UnfuckLayoutHack();
             if (val != null && tabName == key) {
                 lastTabName = tabName;
                 currIndex = i;
@@ -239,17 +234,18 @@ internal class ClickGUI : SystemModule {
     }
 
     private static string lastTabName = "";
+
     public static void OpenConfig(Configurable config) {
         if (Instance == null || Instance._canvas == null) return;
         if (Instance._configPopupPage == null) {
             Instance._configPopupPage = Object.Instantiate(_pagePrefab, Instance._canvas.transform);
         }
+
         if (Instance._configPopupPage == null) return;
         Instance._configPopupPage.SetActive(true);
 
         // Hide other pages
         var tabButtonRow = Instance._tabBarButtonRow;
-        if (tabButtonRow != null) tabButtonRow.SetActive(false);
         var pages = Instance._tabPages;
         for (int i = 0; i < pages.Count; i++) {
             pages[i].Item2.SetActive(false);
@@ -276,10 +272,14 @@ internal class ClickGUI : SystemModule {
     public static void CloseConfig() {
         if (Instance == null) return;
 
-        var tabButtonRow = Instance._tabBarButtonRow;
-        if (tabButtonRow != null) tabButtonRow.SetActive(true);
-
         if (Instance._configPopupPage != null) Instance._configPopupPage.SetActive(false);
         SetTab(lastTabName);
+    }
+
+    public static void NavigateBack() {
+        if (Instance == null) return;
+
+        if (Instance._configPopupPage != null && Instance._configPopupPage.activeSelf) CloseConfig();
+        else if (Instance.IsEnabled) Instance.Toggle();
     }
 }

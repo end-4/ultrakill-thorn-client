@@ -45,6 +45,7 @@ public static class ConfigManager {
     /// Saves a Configurable's settings to disk
     /// </summary>
     public static void SaveConfig(Configurable configurable) {
+        // Plugin.Log.LogInfo($"Saving {configurable.Name} to {GetConfigPath(configurable)}");
         lock (SyncLock) {
             if (_isBatchSyncing || ActiveModuleSyncs.Contains(configurable)) return;
             ActiveModuleSyncs.Add(configurable);
@@ -59,8 +60,8 @@ public static class ConfigManager {
 
             foreach (var setting in configurable.Settings) {
                 var rawValue = setting.GetValue();
+                // Plugin.Log.LogInfo($"Setting {setting.Name} -> {rawValue}");
                 if (rawValue != null) {
-                    // Convert the raw object to a JToken using your custom serializer settings
                     dto.Settings[setting.GUID] = JToken.FromObject(rawValue, JsonSerializer.Create(SerializerSettings));
                 } else {
                     dto.Settings[setting.GUID] = JValue.CreateNull();

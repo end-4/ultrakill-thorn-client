@@ -8,27 +8,29 @@ using UnityEngine.UI;
 namespace ThornClient.System.ClickGUIComponents;
 
 public class EnabledButtonController : MonoBehaviour {
-    public Configurable configurable;
+    public Configurable? Configurable;
     private TextMeshProUGUI? _textComp;
     private Image? _buttonImageComp;
+    private Colorizer? _colorizer;
 
     private void Start() {
-        if (configurable == null) return;
+        if (Configurable == null) return;
         GetComponent<Button>().onClick.AddListener(ToggleIt);
         _textComp = gameObject.FindRecursive("Text").GetComponent<TextMeshProUGUI>();
         _buttonImageComp = gameObject.GetComponent<Image>();
-        configurable.OnToggleStateChanged += UpdateAppearance;
-        UpdateAppearance(configurable.IsEnabled);
+        _colorizer = gameObject.GetOrAddComponent<Colorizer>();
+        Configurable.OnToggleStateChanged += UpdateAppearance;
+        UpdateAppearance(Configurable.IsEnabled);
     }
 
     private void OnDestroy() {
+        if (Configurable == null) return;
         GetComponent<Button>().onClick.RemoveListener(ToggleIt);
-        configurable.OnToggleStateChanged -= UpdateAppearance;
-        if (configurable == null) return;
+        Configurable.OnToggleStateChanged -= UpdateAppearance;
     }
 
     private void ToggleIt() {
-        configurable.Toggle();
+        Configurable?.Toggle();
     }
 
     private void UpdateAppearance(bool isEnabled) {
@@ -40,6 +42,10 @@ public class EnabledButtonController : MonoBehaviour {
         if (_buttonImageComp != null) {
             _buttonImageComp.sprite = ClickGUI.Bundle
                 .LoadAsset<Sprite>(isEnabled ? "Round_FillLarge" : "Round_BorderLarge");
+        }
+
+        if (_colorizer != null) {
+            _colorizer.UpdateHighlight(isEnabled);
         }
     }
 }

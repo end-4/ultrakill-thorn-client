@@ -43,7 +43,7 @@ internal class ConfigurableWindowController : MonoBehaviour {
         if (TargetConfigurable is not SystemModule) {
             var enabledButton = Instantiate(ClickGUI.EnabledButtonPrefab, listBody);
             var enabledButtonComp = enabledButton.AddComponent<EnabledButtonController>();
-            enabledButtonComp.configurable = TargetConfigurable;
+            enabledButtonComp.Configurable = TargetConfigurable;
         }
 
         foreach (var setting in TargetConfigurable.Settings) {

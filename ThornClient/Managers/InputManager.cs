@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using ThornClient.Core;
 using ThornClient.Core.DataTypes;
+using ThornClient.System;
 using UnityEngine;
 
 namespace ThornClient.Managers;
@@ -29,6 +30,11 @@ public static class InputManager {
 
     public static void Update() {
         if (BlockInput) return;
+
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            var gui = ClickGUI.Instance;
+            if (gui != null && gui.IsEnabled) ClickGUI.NavigateBack();
+        }
 
         foreach (var setting in KeybindSettings) {
             var keybind = setting.Value;

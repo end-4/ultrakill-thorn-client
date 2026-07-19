@@ -12,11 +12,11 @@ namespace ThornClient.System.ClickGUIComponents;
 
 public class KeybindSettingController : MonoBehaviour {
     private static readonly Color NormalColor = new Color(1, 1, 1);
-    private static readonly Color ListeningColor = new Color(1f, 0.4048f, 0f);
+    private static Color ListeningColor => ThornModule.Instance?.Accent.Value ?? new Color(1f, 0.4048f, 0f);
 
-    private static KeybindSettingController _listeningInstance = null;
+    private static KeybindSettingController? _listeningInstance = null;
     private Button? _activateButton;
-    private Image? _keyBorder;
+    private Colorizer? _keyBorder;
     private TextMeshProUGUI _displayText;
     public Setting<Keybind> TargetSetting;
 
@@ -27,37 +27,36 @@ public class KeybindSettingController : MonoBehaviour {
 
     private void Start() {
         _activateButton = gameObject.GetComponent<Button>();
-        _keyBorder = gameObject.FindRecursive("ValueDisplay").GetComponent<Image>();
+        _keyBorder = gameObject.FindRecursive("ValueDisplay").GetOrAddComponent<Colorizer>();
         _displayText = gameObject.FindRecursive("ValueDisplay/Text").GetComponent<TextMeshProUGUI>();
         _activateButton.onClick.AddListener(ActivateKeyListen);
         UpdateKeyDisplay();
         TargetSetting.OnValueChanged += UpdateKeyDisplay;
     }
 
-    internal void SetBorderColor(Color color) {
+    private void SetBorderColor(bool highlighted) {
         if (_keyBorder == null) return;
-        _keyBorder.color = color;
+        _keyBorder.UpdateHighlight(highlighted);
     }
 
     private void ActivateKeyListen() {
         ThornClient.Managers.InputManager.BlockInput = true;
         if (_listeningInstance != null) {
-            _listeningInstance.SetBorderColor(NormalColor);
+            _listeningInstance.SetBorderColor(false);
         }
 
         _listeningInstance = this;
-        SetBorderColor(ListeningColor);
+        SetBorderColor(true);
         _caughtModifier = KeyCode.None;
         _caughtKey = KeyCode.None;
     }
 
     private void DeactivateKeyListen() {
         ThornClient.Managers.InputManager.BlockInput = false;
-        if (IsListening()) {
-            _listeningInstance = null;
-        }
+        if (!IsListening()) return;
+        _listeningInstance = null;
 
-        SetBorderColor(NormalColor);
+        SetBorderColor(false);
 
         // Try to bind
         if (_caughtModifier != KeyCode.None && _caughtKey == KeyCode.None) {

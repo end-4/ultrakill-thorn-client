@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Logging;
+using HarmonyLib;
 using Notiffy.API;
 using ThornClient.Managers;
 
@@ -28,6 +29,8 @@ public class Plugin : BaseUnityPlugin {
         RenderManager.Initialize();
         ConfigManager.LoadAll();
         ConfigManager.SetupFileWatcher();
+        Harmony harmony = new Harmony(PluginGUID);
+        harmony.PatchAll();
         Log.LogInfo($"Thorn is loaded");
     }
 
@@ -53,9 +56,5 @@ public class Plugin : BaseUnityPlugin {
 
     private void OnRenderObject() {
         RenderManager.RenderPipeline();
-    }
-
-    private void OnDestroy() {
-        ConfigManager.SaveAll();
     }
 }
