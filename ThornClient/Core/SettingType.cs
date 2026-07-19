@@ -7,4 +7,5 @@ public enum SettingType {
     Bind,
     Text,
     Color,
+    EnemyList,
 }

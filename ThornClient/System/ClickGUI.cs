@@ -29,6 +29,7 @@ internal class ClickGUI : SystemModule {
     internal static GameObject KeybindSettingPrefab { get; private set; }
     internal static GameObject TextSettingPrefab { get; private set; }
     internal static GameObject ColorSettingPrefab { get; private set; }
+    internal static GameObject EnemyListSettingPrefab { get; private set; }
     private static GameObject? _pagePrefab;
     private static GameObject? _layoutedPagePrefab;
 
@@ -81,6 +82,7 @@ internal class ClickGUI : SystemModule {
         KeybindSettingPrefab = Bundle.LoadAsset<GameObject>("KeybindSetting");
         TextSettingPrefab = Bundle.LoadAsset<GameObject>("TextSetting");
         ColorSettingPrefab = Bundle.LoadAsset<GameObject>("ColorSetting");
+        EnemyListSettingPrefab = Bundle.LoadAsset<GameObject>("EnemyListSetting");
 
 
         // Make the canvas
@@ -263,6 +265,7 @@ internal class ClickGUI : SystemModule {
         var settingRect = (RectTransform)configurableObj.transform;
         settingRect.pivot = new Vector2(0.5f, 0.5f);
         settingRect.localPosition = new Vector3(0f, 0f, 0f);
+
         // Add controller
         var configController = configurableObj.GetOrAddComponent<ConfigurableWindowController>();
         configController.IsPopup = true;

@@ -81,6 +81,7 @@ public class Setting<T> : Setting {
             Type t when t == typeof(Color) => SettingType.Color,
             Type t when t == typeof(KeyCode) => SettingType.Bind,
             Type t when t == typeof(Keybind) => SettingType.Bind,
+            Type t when t == typeof(EnemyList) => SettingType.EnemyList,
             _ => SettingType.Text
         };
     }

@@ -27,6 +27,10 @@ public class EnemyList : IEquatable<EnemyList> {
         enemies.Remove(enemyType);
     }
 
+    public bool Includes(EnemyType enemyType) {
+        return enemies.Contains(enemyType);
+    }
+
     public bool Equals(EnemyList? other) {
         if (other == null) return false;
         if (ReferenceEquals(this, other)) return true;

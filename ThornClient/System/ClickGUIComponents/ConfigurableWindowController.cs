@@ -82,6 +82,11 @@ internal class ConfigurableWindowController : MonoBehaviour {
                     var colComp = go.AddComponent<ColorSettingController>();
                     colComp.TargetSetting = (Setting<Color>)setting;
                     break;
+                case SettingType.EnemyList:
+                    go = Instantiate(ClickGUI.EnemyListSettingPrefab, wrapper.transform);
+                    var enComp = go.AddComponent<EnemyListSettingController>();
+                    enComp.TargetSetting = (Setting<EnemyList>)setting;
+                    break;
             }
 
             if (go != null) {
