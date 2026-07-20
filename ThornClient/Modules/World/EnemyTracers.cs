@@ -53,6 +53,11 @@ public class EnemyTracers : Module {
         return enemy.transform.position + enemyHeight / 2 * Vector3.up;
     }
 
+    private bool IsEnemyMeaningful(EnemyIdentifier enemy) {
+        return enemy != null && !enemy.dead && enemy.gameObject != null &&
+               enemy.gameObject.activeInHierarchy;
+    }
+
     public override void OnRender() {
         var tracker = EnemyTracker.Instance;
         if (tracker == null) return;
@@ -80,11 +85,17 @@ public class EnemyTracers : Module {
         Vector3 tracerOrigin = cameraPos + (cameraForward * 1.5f);
 
         int targetCount = tracker.enemies.Count;
+        int remainingCount = 0;
+        for (int i = 0; i < targetCount; i++) {
+            var enemy = tracker.enemies[i];
+            remainingCount += IsEnemyMeaningful(enemy) ? 1 : 0;
+        }
 
         for (int i = 0; i < targetCount; i++) {
             var enemy = tracker.enemies[i];
 
-            if (enemy == null || enemy.dead || enemy.gameObject == null || !enemy.gameObject.activeInHierarchy) {
+            // Skip if not meaningful or not in non-threshold-triggered whitelist
+            if (!IsEnemyMeaningful(enemy) || (remainingCount >= EnemyCountThreshold.Value && !ForceTraceEnemies.Value.Includes(enemy.enemyType))) {
                 continue;
             }
 
