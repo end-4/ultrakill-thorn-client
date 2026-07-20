@@ -31,7 +31,7 @@ public static class InputManager {
     public static void Update() {
         if (BlockInput) return;
 
-        if (Input.GetKeyDown(KeyCode.Escape)) {
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Backspace) || Input.GetMouseButtonDown(3)) {
             var gui = ClickGUI.Instance;
             if (gui != null && gui.IsEnabled) ClickGUI.NavigateBack();
         }
