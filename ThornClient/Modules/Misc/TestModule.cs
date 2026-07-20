@@ -5,17 +5,23 @@ using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Managers;
 using ThornClient.Core;
+using ThornClient.Core.DataTypes;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace ThornClient.Modules.Misc;
 
 public class TestModule : Module {
+    public enum NonEmulatorYuzu {
+        Yoshino, Mako, Lena, Murasame, Roka, Koharu
+    }
     public Setting<bool> Bulul { get; }
     public Setting<int> Inoue { get; }
     public Setting<float> Flatorte { get; }
     public Setting<string> Tung { get; }
     public Setting<Color> Carbonara { get; }
+    public Setting<NonEmulatorYuzu> Cutie { get; }
+    public Setting<EnemyList> Enemiez { get; }
 
     public TestModule() : base("thorn.test", "Test module", "For UI debugging. This should be removed before release.",
         ModuleCategory.Misc) {
@@ -25,6 +31,8 @@ public class TestModule : Module {
         Flatorte = RegisterSetting("flatorte", "Flatorte-chan", "float field!!", 4f);
         Tung = RegisterSetting("tung", "Here bro have a tung tung", "text field!!", "sahur");
         Carbonara = RegisterSetting("carbonara", "Carbonara color", "Color field description", new Color(0.86f, 0.82f, 0.71f, 1f));
+        Cutie  =  RegisterSetting("favouriteCutie", "Favorite cutie", "h", NonEmulatorYuzu.Mako);
+        Enemiez =  RegisterSetting("enemiez", "Funny monsters", "tooltip text!!", new EnemyList());
     }
 
     protected override void OnEnable() {

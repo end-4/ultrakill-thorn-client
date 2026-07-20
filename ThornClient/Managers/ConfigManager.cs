@@ -25,7 +25,8 @@ public static class ConfigManager {
         Formatting = Formatting.Indented,
         Converters = {
             new ColorJsonConverter(),
-            new KeybindJsonConverter()
+            new KeybindJsonConverter(),
+            new Newtonsoft.Json.Converters.StringEnumConverter()
         }
     };
 

@@ -4,37 +4,49 @@ using ThornClient.Core;
 using ThornClient.Core.DataTypes;
 using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
 public class EnemyListSettingController : MonoBehaviour {
     public Setting<EnemyList>? TargetSetting;
+    private TextMeshProUGUI? text;
 
     private void Start() {
         if (TargetSetting == null) return;
         GetComponent<Button>().onClick.AddListener(OpenList);
-        SetupEnemies();
-        TargetSetting.OnValueChanged += UpdateColumns;
+        text = gameObject.FindRecursive("Name").GetComponent<TextMeshProUGUI>();
+        UpdateText(TargetSetting.Value);
+        TargetSetting.OnValueChanged += UpdateText;
     }
 
-    private void SetupEnemies() {
-        NotificationSystem.NotifySend("thorn", "TODO");
+    private void UpdateText(EnemyList elist) {
+        if (text != null && TargetSetting != null) text.text = $"{TargetSetting.Name} ({elist.Count()})";
     }
 
     private void OnDestroy() {
-        if (TargetSetting != null) {
-            TargetSetting.OnValueChanged -= UpdateColumns;
-        }
+        if (TargetSetting != null) TargetSetting.OnValueChanged -= UpdateText;
         var btn = GetComponent<Button>();
         if (btn != null) btn.onClick.RemoveListener(OpenList);
     }
 
     private void OpenList() {
-        NotificationSystem.NotifySend("thorn", "TODO");
+        var panel = CreateConfigPanel(TargetSetting);
+        if (panel != null) ClickGUI.NestPanel(panel);
+        ClickGUI.SurrenderTooltipText(TargetSetting?.Description ?? "");
     }
 
-    private void UpdateColumns(EnemyList enemyList) {
-        NotificationSystem.NotifySend("thorn", "TODO");
+    private GameObject? CreateConfigPanel(Setting<EnemyList>? setting) {
+        if (ClickGUI.EnemyListPrefab == null || setting == null) return null;
+
+        var obj = Instantiate(ClickGUI.EnemyListPrefab);
+        if (obj == null) return null;
+
+        var ctl = obj.GetOrAddComponent<EnemyListController>();
+        ctl.IsPopup = true;
+        ctl.TargetList = setting;
+
+        return obj;
     }
 }

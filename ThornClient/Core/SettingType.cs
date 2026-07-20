@@ -1,11 +1,13 @@
 ﻿namespace ThornClient.Core;
 
 public enum SettingType {
-    Bool,
-    Int,
-    Float,
     Bind,
-    Text,
+    Bool,
     Color,
     EnemyList,
+    Enum,
+    Float,
+    Int,
+    Text,
+    Unsupported,
 }

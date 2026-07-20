@@ -9,13 +9,13 @@ namespace ThornClient.Core.DataTypes;
 /// </summary>
 public class EnemyListJsonConverter : JsonConverter<EnemyList> {
     public override void WriteJson(JsonWriter writer, EnemyList? value, JsonSerializer serializer) {
-        if (value == null || value.enemies == null) {
+        if (value == null || value.Enemies == null) {
             writer.WriteNull();
             return;
         }
 
         writer.WriteStartArray();
-        foreach (var enemy in value.enemies) {
+        foreach (var enemy in value.Enemies) {
             writer.WriteValue(enemy.ToString());
         }
 
@@ -27,19 +27,19 @@ public class EnemyListJsonConverter : JsonConverter<EnemyList> {
         if (reader.TokenType == JsonToken.Null) return null;
 
         var enemyList = existingValue ?? new EnemyList();
-        enemyList.enemies ??= new HashSet<EnemyType>();
+        enemyList.Enemies ??= new HashSet<EnemyType>();
 
         if (reader.TokenType == JsonToken.StartArray) {
             while (reader.Read() && reader.TokenType != JsonToken.EndArray) {
                 if (reader.TokenType == JsonToken.String) {
                     string value = reader.Value?.ToString() ?? "";
                     if (Enum.TryParse(value, out EnemyType enemyType)) {
-                        enemyList.enemies.Add(enemyType);
+                        enemyList.Enemies.Add(enemyType);
                     }
                 } else if (reader.TokenType == JsonToken.Integer) {
                     int value = Convert.ToInt32(reader.Value);
                     if (Enum.IsDefined(typeof(EnemyType), value)) {
-                        enemyList.enemies.Add((EnemyType)value);
+                        enemyList.Enemies.Add((EnemyType)value);
                     }
                 }
             }

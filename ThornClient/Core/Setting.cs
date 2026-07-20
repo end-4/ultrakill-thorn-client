@@ -58,11 +58,17 @@ public class Setting<T> : Setting {
     [JsonIgnore]
     public override bool IsDefault {
         get {
+            if (Value == null && DefaultValue == null) return true;
+            if (Value == null || DefaultValue == null) return false;
+
             if (Value is Color valColor && DefaultValue is Color defaultColor) {
                 return valColor.Approximately(defaultColor);
             }
             if (Value is float valFloat && DefaultValue is float defaultFloat) {
                 return Mathf.Approximately(valFloat, defaultFloat);
+            }
+            if (typeof(T).IsEnum) {
+                return Convert.ToInt64(Value) == Convert.ToInt64(DefaultValue);
             }
 
             return EqualityComparer<T>.Default.Equals(Value, DefaultValue);
@@ -74,15 +80,16 @@ public class Setting<T> : Setting {
         DefaultValue = defaultValue;
 
         Type = typeof(T) switch {
+            Type t when t == typeof(KeyCode) => SettingType.Bind,
+            Type t when t == typeof(Keybind) => SettingType.Bind,
             Type t when t == typeof(bool) => SettingType.Bool,
+            Type t when t == typeof(Color) => SettingType.Color,
+            Type t when t == typeof(EnemyList) => SettingType.EnemyList,
+            Type t when t.IsEnum => SettingType.Enum,
             Type t when t == typeof(float) => SettingType.Float,
             Type t when t == typeof(int) => SettingType.Int,
             Type t when t == typeof(string) => SettingType.Text,
-            Type t when t == typeof(Color) => SettingType.Color,
-            Type t when t == typeof(KeyCode) => SettingType.Bind,
-            Type t when t == typeof(Keybind) => SettingType.Bind,
-            Type t when t == typeof(EnemyList) => SettingType.EnemyList,
-            _ => SettingType.Text
+            _ => SettingType.Unsupported
         };
     }
 
@@ -115,15 +122,20 @@ public class Setting<T> : Setting {
                 return;
             }
 
-            // Fallback
+            // Enums...
             if (typeof(T).IsEnum) {
-                Value = (T)Enum.ToObject(typeof(T), Convert.ToInt32(value));
-            } else {
-                Value = (T)Convert.ChangeType(value, typeof(T));
+                if (value is string str) {
+                    Value = (T)Enum.Parse(typeof(T), str, ignoreCase: true);
+                } else {
+                    Value = (T)Enum.ToObject(typeof(T), Convert.ToInt64(value));
+                }
+                return;
             }
+
+            // Fallback
+            Value = (T)Convert.ChangeType(value, typeof(T));
         } catch (Exception e) {
-            Plugin.Log.LogError(
-                $"[Setting] Failed to set {Name}'s value {value} to {typeof(T).Name}: {e}");
+            Plugin.Log.LogError($"[Setting] Failed to set {Name}'s value {value} to {typeof(T).Name}: {e}");
         }
     }
 }

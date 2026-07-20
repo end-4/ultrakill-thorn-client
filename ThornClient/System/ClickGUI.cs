@@ -30,6 +30,10 @@ internal class ClickGUI : SystemModule {
     internal static GameObject TextSettingPrefab { get; private set; }
     internal static GameObject ColorSettingPrefab { get; private set; }
     internal static GameObject EnemyListSettingPrefab { get; private set; }
+    internal static GameObject EnemyListPrefab { get; private set; }
+    internal static GameObject EnemyListItemPrefab { get; private set; }
+    internal static GameObject DropdownSettingPrefab { get; private set; }
+
     private static GameObject? _pagePrefab;
     private static GameObject? _layoutedPagePrefab;
 
@@ -54,6 +58,7 @@ internal class ClickGUI : SystemModule {
     private GameObject? _hudPage;
     private GameObject? _settingsPage;
     private GameObject? _configPopupPage;
+    private readonly Stack<GameObject> _panelStack = new();
     private GameObject? _tooltip;
     private GameObject? _tabBarButtonRow;
     private List<Tuple<string, GameObject>> _tabPages = new();
@@ -83,7 +88,9 @@ internal class ClickGUI : SystemModule {
         TextSettingPrefab = Bundle.LoadAsset<GameObject>("TextSetting");
         ColorSettingPrefab = Bundle.LoadAsset<GameObject>("ColorSetting");
         EnemyListSettingPrefab = Bundle.LoadAsset<GameObject>("EnemyListSetting");
-
+        EnemyListPrefab = Bundle.LoadAsset<GameObject>("EnemyList");
+        EnemyListItemPrefab = Bundle.LoadAsset<GameObject>("EnemyListItem");
+        DropdownSettingPrefab = Bundle.LoadAsset<GameObject>("DropdownSetting");
 
         // Make the canvas
         _canvas = Object.Instantiate(basePrefab);
@@ -237,52 +244,49 @@ internal class ClickGUI : SystemModule {
 
     private static string lastTabName = "";
 
-    public static void OpenConfig(Configurable config) {
-        if (Instance == null || Instance._canvas == null) return;
-        if (Instance._configPopupPage == null) {
-            Instance._configPopupPage = Object.Instantiate(_pagePrefab, Instance._canvas.transform);
-        }
+    /// <summary>
+    /// Nests a new panel on top of the current view, hiding what's underneath.
+    /// </summary>
+    /// <param name="panelContent">The content to display inside the new panel.</param>
+    public static void NestPanel(GameObject panelContent) {
+        if (Instance == null || Instance._canvas == null || _pagePrefab == null) return;
 
-        if (Instance._configPopupPage == null) return;
-        Instance._configPopupPage.SetActive(true);
+        // Create the page container
+        var page = Object.Instantiate(_pagePrefab, Instance._canvas.transform);
 
-        // Hide other pages
-        var tabButtonRow = Instance._tabBarButtonRow;
-        var pages = Instance._tabPages;
-        for (int i = 0; i < pages.Count; i++) {
-            pages[i].Item2.SetActive(false);
-        }
-
-        // Clear previous stuff
-        foreach (Transform g in Instance._configPopupPage.transform) {
-            Object.Destroy(g.gameObject);
-        }
-
-        // Add new panel
-        var configurableObj = Object.Instantiate(ModuleCategoryPrefab, Instance._configPopupPage.transform);
-        if (configurableObj == null) return;
-        // Center it
-        var settingRect = (RectTransform)configurableObj.transform;
+        // Parent and center the content
+        panelContent.transform.SetParent(page.transform, false);
+        var settingRect = (RectTransform)panelContent.transform;
         settingRect.pivot = new Vector2(0.5f, 0.5f);
-        settingRect.localPosition = new Vector3(0f, 0f, 0f);
+        settingRect.localPosition = Vector3.zero;
 
-        // Add controller
-        var configController = configurableObj.GetOrAddComponent<ConfigurableWindowController>();
-        configController.IsPopup = true;
-        configController.TargetConfigurable = config;
-    }
+        // Hide current top-level view
+        if (Instance._panelStack.Count > 0) {
+            Instance._panelStack.Peek().SetActive(false);
+        } else {
+            Instance._tabPages.ForEach(p => p.Item2.SetActive(false));
+        }
 
-    public static void CloseConfig() {
-        if (Instance == null) return;
-
-        if (Instance._configPopupPage != null) Instance._configPopupPage.SetActive(false);
-        SetTab(lastTabName);
+        // Show and push new panel
+        page.SetActive(true);
+        Instance._panelStack.Push(page);
     }
 
     public static void NavigateBack() {
-        if (Instance == null) return;
+        if (Instance == null || !Instance.IsEnabled) return;
 
-        if (Instance._configPopupPage != null && Instance._configPopupPage.activeSelf) CloseConfig();
-        else if (Instance.IsEnabled) Instance.Toggle();
+        if (Instance._panelStack.Count > 0) {
+            var topPanel = Instance._panelStack.Pop();
+            Object.Destroy(topPanel);
+
+            if (Instance._panelStack.Count > 0) {
+                Instance._panelStack.Peek().SetActive(true);
+            } else {
+                SetTab(lastTabName);
+                if (Instance._tabBar != null) Instance._tabBar.SetActive(true);
+            }
+        } else if (Instance.IsEnabled) {
+            Instance.Toggle();
+        }
     }
 }

@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace ThornClient.System.ClickGUIComponents;
 
@@ -72,8 +73,25 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
     public void OnPointerClick(PointerEventData eventData) {
         if (eventData.button == PointerEventData.InputButton.Right) {
             if (TargetModule == null) return;
-            ClickGUI.OpenConfig(TargetModule);
+            var panel = CreateConfigPanel(TargetModule);
+            if (panel != null) ClickGUI.NestPanel(panel);
             ClickGUI.SurrenderTooltipText(TargetModule.Description);
         }
+    }
+
+    private static GameObject? CreateConfigPanel(Configurable config) {
+        if (ClickGUI.ModuleCategoryPrefab == null) return null;
+
+        var configurableObj = Object.Instantiate(ClickGUI.ModuleCategoryPrefab);
+        if (configurableObj == null) {
+            return null;
+        }
+
+        // Add controller
+        var configController = configurableObj.GetOrAddComponent<ConfigurableWindowController>();
+        configController.IsPopup = true;
+        configController.TargetConfigurable = config;
+
+        return configurableObj;
     }
 }
