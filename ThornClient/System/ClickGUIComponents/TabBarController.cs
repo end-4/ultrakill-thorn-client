@@ -29,10 +29,20 @@ internal class TabBarController : MonoBehaviour {
 
     private void UpdateTimeDisplay() {
         var now = DateTime.Now;
-        if (_numberText != null) _numberText.text = now.ToString("hh:mm");
-        if (_amPmText != null) _amPmText.text = now.ToString("tt");
-        if (_iconImage != null) {
-            _iconImage.sprite = (now.Hour is >= 6 and < 18) ? _sunIcon : _moonIcon;
+        string newNumber = now.ToString("hh:mm");
+        string newAmPm = now.ToString("tt");
+        var newIcon = (now.Hour is >= 6 and < 18) ? _sunIcon : _moonIcon;
+
+        if (_numberText != null && _numberText.text != newNumber) {
+            _numberText.text = newNumber;
+        }
+
+        if (_amPmText != null && _amPmText.text != newAmPm) {
+            _amPmText.text = newAmPm;
+        }
+
+        if (_iconImage != null && _iconImage.sprite != newIcon) {
+            _iconImage.sprite = newIcon;
         }
     }
 }
