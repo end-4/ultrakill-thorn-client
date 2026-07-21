@@ -260,7 +260,8 @@ internal class ClickGUI : SystemModule {
         settingRect.pivot = new Vector2(0.5f, 0.5f);
         settingRect.localPosition = Vector3.zero;
 
-        // Hide current top-level view
+        // Hide tab bar and current top-level view
+        if (Instance._tabBar != null) Instance._tabBar.SetActive(false);
         if (Instance._panelStack.Count > 0) {
             Instance._panelStack.Peek().SetActive(false);
         } else {

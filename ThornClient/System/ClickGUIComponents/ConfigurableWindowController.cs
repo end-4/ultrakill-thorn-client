@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NukeLib.UI;
 using ThornClient.Core;
 using ThornClient.Core.DataTypes;
@@ -10,6 +11,50 @@ using Object = UnityEngine.Object;
 namespace ThornClient.System.ClickGUIComponents;
 
 internal class ConfigurableWindowController : MonoBehaviour {
+
+    private static readonly Dictionary<SettingType, Func<Setting, Transform, GameObject>> SettingUIFactories = new() {
+        [SettingType.Bind] = (setting, parent) => {
+            var go = Instantiate(ClickGUI.KeybindSettingPrefab, parent);
+            go.AddComponent<KeybindSettingController>().TargetSetting = (Setting<Keybind>)setting;
+            return go;
+        },
+        [SettingType.Bool] = (setting, parent) => {
+            var go = Instantiate(ClickGUI.BoolSettingPrefab, parent);
+            go.AddComponent<BoolSettingController>().TargetSetting = (Setting<bool>)setting;
+            return go;
+        },
+        [SettingType.Color] = (setting, parent) => {
+            var go = Instantiate(ClickGUI.ColorSettingPrefab, parent);
+            go.AddComponent<ColorSettingController>().TargetSetting = (Setting<Color>)setting;
+            return go;
+        },
+        [SettingType.EnemyList] = (setting, parent) => {
+            var go = Instantiate(ClickGUI.EnemyListSettingPrefab, parent);
+            go.AddComponent<EnemyListSettingController>().TargetSetting = (Setting<EnemyList>)setting;
+            return go;
+        },
+        [SettingType.Enum] = (setting, parent) => {
+            var go = Instantiate(ClickGUI.DropdownSettingPrefab, parent);
+            go.AddComponent<DropdownSettingController>().TargetSetting = setting;
+            return go;
+        },
+        [SettingType.Float] = (setting, parent) => {
+            var go = Instantiate(ClickGUI.NumberSettingPrefab, parent);
+            go.AddComponent<FloatSettingController>().TargetSetting = (Setting<float>)setting;
+            return go;
+        },
+        [SettingType.Int] = (setting, parent) => {
+            var go = Instantiate(ClickGUI.NumberSettingPrefab, parent);
+            go.AddComponent<IntSettingController>().TargetSetting = (Setting<int>)setting;
+            return go;
+        },
+        [SettingType.Text] = (setting, parent) => {
+            var go = Instantiate(ClickGUI.TextSettingPrefab, parent);
+            go.AddComponent<TextSettingController>().TargetSetting = (Setting<string>)setting;
+            return go;
+        }
+    };
+
     private bool _doneSetup = false;
     public bool IsPopup = false;
     public Configurable? TargetConfigurable;
@@ -48,57 +93,15 @@ internal class ConfigurableWindowController : MonoBehaviour {
             enabledButtonComp.Configurable = TargetConfigurable;
         }
 
-        foreach (var setting in TargetConfigurable.Settings) {
-            GameObject wrapper = Object.Instantiate(ClickGUI.SettingRowWrapperPrefab, listBody);
-            var wrapperComp = wrapper.AddComponent<SettingRowController>();
-            wrapperComp.TargetSetting = setting;
-            GameObject go = null;
-            switch (setting.Type) {
-                case SettingType.Bind:
-                    go = Instantiate(ClickGUI.KeybindSettingPrefab, wrapper.transform);
-                    var keyComp = go.AddComponent<KeybindSettingController>();
-                    keyComp.TargetSetting = (Setting<Keybind>)setting;
-                    break;
-                case SettingType.Bool:
-                    go = Instantiate(ClickGUI.BoolSettingPrefab, wrapper.transform);
-                    var boolComp = go.AddComponent<BoolSettingController>();
-                    boolComp.TargetSetting = (Setting<bool>)setting;
-                    break;
-                case SettingType.Color:
-                    go = Instantiate(ClickGUI.ColorSettingPrefab, wrapper.transform);
-                    var colComp = go.AddComponent<ColorSettingController>();
-                    colComp.TargetSetting = (Setting<Color>)setting;
-                    break;
-                case SettingType.EnemyList:
-                    go = Instantiate(ClickGUI.EnemyListSettingPrefab, wrapper.transform);
-                    var elComp = go.AddComponent<EnemyListSettingController>();
-                    elComp.TargetSetting = (Setting<EnemyList>)setting;
-                    break;
-                case SettingType.Enum:
-                    go = Instantiate(ClickGUI.DropdownSettingPrefab, wrapper.transform);
-                    var enComp = go.AddComponent<DropdownSettingController>();
-                    enComp.TargetSetting = setting;
-                    break;
-                case SettingType.Float:
-                    go = Instantiate(ClickGUI.NumberSettingPrefab, wrapper.transform);
-                    var floatComp = go.AddComponent<FloatSettingController>();
-                    floatComp.TargetSetting = (Setting<float>)setting;
-                    break;
-                case SettingType.Int:
-                    go = Instantiate(ClickGUI.NumberSettingPrefab, wrapper.transform);
-                    var intComp = go.AddComponent<IntSettingController>();
-                    intComp.TargetSetting = (Setting<int>)setting;
-                    break;
-                case SettingType.Text:
-                    go = Instantiate(ClickGUI.TextSettingPrefab, wrapper.transform);
-                    var strComp = go.AddComponent<TextSettingController>();
-                    strComp.TargetSetting = (Setting<string>)setting;
-                    break;
-            }
+        foreach (var element in TargetConfigurable.Settings) {
+            if (element is not { } setting) continue;
 
-            if (go != null) {
-                var descCon = go.AddComponent<SettingDescriptionController>();
-                descCon.TargetSetting = setting;
+            GameObject wrapper = Instantiate(ClickGUI.SettingRowWrapperPrefab, listBody);
+            wrapper.AddComponent<SettingRowController>().TargetSetting = setting;
+
+            if (SettingUIFactories.TryGetValue(setting.Type, out var createUI)) {
+                GameObject go = createUI(setting, wrapper.transform);
+                go.AddComponent<SettingDescriptionController>().TargetSetting = setting;
             }
 
             wrapper.UnfuckLayoutHack();

@@ -17,8 +17,8 @@ public class EnemyListSettingController : MonoBehaviour {
         if (TargetSetting == null) return;
         GetComponent<Button>().onClick.AddListener(OpenList);
         text = gameObject.FindRecursive("Name").GetComponent<TextMeshProUGUI>();
-        UpdateText(TargetSetting.Value);
         TargetSetting.OnValueChanged += UpdateText;
+        UpdateText(TargetSetting.Value);
     }
 
     private void UpdateText(EnemyList elist) {

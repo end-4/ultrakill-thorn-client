@@ -12,6 +12,7 @@ public abstract class Setting {
     public string GUID { get; }
     public string Name { get; }
     public string Description { get; }
+    public InterfaceHints? Hints;
     [JsonIgnore] public SettingType Type { get; protected set; }
     [JsonIgnore] public abstract bool IsDefault { get; }
 

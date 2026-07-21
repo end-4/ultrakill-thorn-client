@@ -22,6 +22,7 @@ public class TestModule : Module {
     public Setting<Color> Carbonara { get; }
     public Setting<NonEmulatorYuzu> Cutie { get; }
     public Setting<EnemyList> Enemiez { get; }
+    public Setting<float> Slippery { get; }
 
     public TestModule() : base("thorn.test", "Test module", "For UI debugging. This should be removed before release.",
         ModuleCategory.Misc) {
@@ -33,6 +34,12 @@ public class TestModule : Module {
         Carbonara = RegisterSetting("carbonara", "Carbonara color", "Color field description", new Color(0.86f, 0.82f, 0.71f, 1f));
         Cutie  =  RegisterSetting("favouriteCutie", "Favorite cutie", "h", NonEmulatorYuzu.Mako);
         Enemiez =  RegisterSetting("enemiez", "Funny monsters", "tooltip text!!", new EnemyList());
+        Slippery = RegisterSetting("slippery", "Slipperie", "pls slide", 0.7f);
+
+        Slippery.Hints = new InterfaceHints {
+            Range = Tuple.Create<float, float>(0, 1),
+            Decimals = 2
+        };
     }
 
     protected override void OnEnable() {
