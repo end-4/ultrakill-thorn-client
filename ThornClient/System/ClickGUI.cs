@@ -33,6 +33,8 @@ internal class ClickGUI : SystemModule {
     internal static GameObject EnemyListPrefab { get; private set; }
     internal static GameObject EnemyListItemPrefab { get; private set; }
     internal static GameObject DropdownSettingPrefab { get; private set; }
+    internal static GameObject ConnectedButtonGroupSettingPrefab { get; private set; }
+    internal static GameObject ConnectedChoiceButtonPrefab { get; private set; }
 
     private static GameObject? _pagePrefab;
     private static GameObject? _layoutedPagePrefab;
@@ -91,6 +93,8 @@ internal class ClickGUI : SystemModule {
         EnemyListPrefab = Bundle.LoadAsset<GameObject>("EnemyList");
         EnemyListItemPrefab = Bundle.LoadAsset<GameObject>("EnemyListItem");
         DropdownSettingPrefab = Bundle.LoadAsset<GameObject>("DropdownSetting");
+        ConnectedButtonGroupSettingPrefab = Bundle.LoadAsset<GameObject>("ConnectedButtonGroupSetting");
+        ConnectedChoiceButtonPrefab = Bundle.LoadAsset<GameObject>("ConnectedChoiceButton");
 
         // Make the canvas
         _canvas = Object.Instantiate(basePrefab);
@@ -162,7 +166,7 @@ internal class ClickGUI : SystemModule {
     }
 
     protected override void OnEnable() {
-        Plugin.Log.LogInfo($"[ClickGUI] Enable");
+        // Plugin.Log.LogInfo($"[ClickGUI] Enable");
         if (_canvas == null) return;
         _canvas.transform.SetAsLastSibling(); // Show on top of everything
         _canvas.SetActive(true);
@@ -180,7 +184,7 @@ internal class ClickGUI : SystemModule {
     }
 
     protected override void OnDisable() {
-        Plugin.Log.LogInfo($"[ClickGUI] Disable");
+        // Plugin.Log.LogInfo($"[ClickGUI] Disable");
         if (opts != null) opts.dontUnpause = false;
         if (_canvas == null) return;
         _canvas.SetActive(false);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NukeLib.UI;
 using ThornClient.Core;
 using ThornClient.Core.DataTypes;
@@ -11,7 +12,6 @@ using Object = UnityEngine.Object;
 namespace ThornClient.System.ClickGUIComponents;
 
 internal class ConfigurableWindowController : MonoBehaviour {
-
     private static readonly Dictionary<SettingType, Func<Setting, Transform, GameObject>> SettingUIFactories = new() {
         [SettingType.Bind] = (setting, parent) => {
             var go = Instantiate(ClickGUI.KeybindSettingPrefab, parent);
@@ -34,9 +34,20 @@ internal class ConfigurableWindowController : MonoBehaviour {
             return go;
         },
         [SettingType.Enum] = (setting, parent) => {
-            var go = Instantiate(ClickGUI.DropdownSettingPrefab, parent);
-            go.AddComponent<DropdownSettingController>().TargetSetting = setting;
-            return go;
+            var enumType = setting.GetValue().GetType();
+            int totalChars = Enum.GetNames(enumType).Sum(name => name.Length);
+            Plugin.Log.LogInfo(
+                $"setting {setting.Name} total chars: {totalChars} prefer connected {setting.Hints?.EnumPreferButtonGroup ?? false}");
+            if (setting.Hints?.EnumPreferButtonGroup == true ||
+                (totalChars <= 20 && setting.Hints?.EnumPreferButtonGroup != false)) {
+                var go = Instantiate(ClickGUI.ConnectedButtonGroupSettingPrefab, parent);
+                go.AddComponent<ConnectedButtonGroupSettingController>().TargetSetting = setting;
+                return go;
+            } else {
+                var go = Instantiate(ClickGUI.DropdownSettingPrefab, parent);
+                go.AddComponent<DropdownSettingController>().TargetSetting = setting;
+                return go;
+            }
         },
         [SettingType.Float] = (setting, parent) => {
             var go = Instantiate(ClickGUI.NumberSettingPrefab, parent);
@@ -84,7 +95,9 @@ internal class ConfigurableWindowController : MonoBehaviour {
         if (IsPopup) backBtn.onClick.AddListener(ClickGUI.NavigateBack);
 
         // Populate with settings
-        Transform listBody = gameObject.FindRecursive("Modules").transform; // Note that we reuse ModuleCategory prefab for this
+        Transform
+            listBody = gameObject.FindRecursive("Modules")
+                .transform; // Note that we reuse ModuleCategory prefab for this
         var desc = Instantiate(ClickGUI.ModuleDescriptionPrefab!, listBody);
         desc.FindRecursive("DescText").GetComponent<TextMeshProUGUI>().text = TargetConfigurable.Description;
         if (TargetConfigurable is not SystemModule) {
