@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ThornClient.Core.DataTypes;
 
-public class KeybindJsonConverter : JsonConverter<Keybind> {
+internal class KeybindJsonConverter : JsonConverter<Keybind> {
     public override void WriteJson(JsonWriter writer, Keybind? value, JsonSerializer serializer) {
         if (value == null || value.Key == KeyCode.None) {
             writer.WriteValue("None");

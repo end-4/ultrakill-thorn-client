@@ -7,7 +7,7 @@ namespace ThornClient.Core.DataTypes;
 /// <summary>
 /// The Json Converter for EnemyList
 /// </summary>
-public class EnemyListJsonConverter : JsonConverter<EnemyList> {
+internal class EnemyListJsonConverter : JsonConverter<EnemyList> {
     public override void WriteJson(JsonWriter writer, EnemyList? value, JsonSerializer serializer) {
         if (value == null || value.Enemies == null) {
             writer.WriteNull();
