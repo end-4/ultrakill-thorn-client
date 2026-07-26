@@ -310,5 +310,7 @@ internal class ClickGUI : SystemModule {
         } else if (Instance.IsEnabled) {
             Instance.Toggle();
         }
+
+        SurrenderTooltipText("", force: true);
     }
 }
