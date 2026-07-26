@@ -8,9 +8,12 @@ using ThornClient.Managers;
 namespace ThornClient.System.ClickGUIComponents;
 
 internal class TabBarController : MonoBehaviour {
-    private TextMeshProUGUI _numberText;
-    private TextMeshProUGUI _amPmText;
-    private Image _iconImage;
+    private TextMeshProUGUI? _numberText;
+    private TextMeshProUGUI? _amPmText;
+    private Image? _iconImage;
+    private GameObject? _battObj;
+    private Image? _battIcon;
+    private TextMeshProUGUI? _battNum;
     private Sprite _sunIcon;
     private Sprite _moonIcon;
 
@@ -20,20 +23,29 @@ internal class TabBarController : MonoBehaviour {
     }
 
     private void Start() {
-        var versionText = gameObject.FindRecursive("InfoCol/Version").GetComponent<TextMeshProUGUI>();
-        versionText.text = "v" + Plugin.PluginVersion;
+        var versionText = gameObject.FindRecursive("InfoRow/InfoCol/Version")?.GetComponent<TextMeshProUGUI>();
+        if (versionText != null) versionText.text = "v" + Plugin.PluginVersion;
 
-        _numberText = gameObject.FindRecursive("Clock/Time/Number").GetComponent<TextMeshProUGUI>();
-        _amPmText = gameObject.FindRecursive("Clock/Time/AmPm").GetComponent<TextMeshProUGUI>();
-        _iconImage = gameObject.FindRecursive("Clock/Icon").GetComponent<Image>();
+        _numberText = gameObject.FindRecursive("SystemStatus/Clock/Time/Number")?.GetComponent<TextMeshProUGUI>();
+        _amPmText = gameObject.FindRecursive("SystemStatus/Clock/Time/AmPm")?.GetComponent<TextMeshProUGUI>();
+        _iconImage = gameObject.FindRecursive("SystemStatus/Clock/Icon")?.GetComponent<Image>();
+
+        _battObj = gameObject.FindRecursive("SystemStatus/Battery");
+        if (_battObj) {
+            _battIcon = _battObj.FindRecursive("Icon")?.GetComponent<Image>();
+            _battNum = _battObj.FindRecursive("Value/Number")?.GetComponent<TextMeshProUGUI>();
+        }
     }
 
     private void Update() {
+        // Don't update if menu not open
         if (!gameObject.activeInHierarchy) return;
         UpdateTimeDisplay();
+        UpdateBattery();
     }
 
     private void UpdateTimeDisplay() {
+
         var now = DateTime.Now;
         string newNumber = now.ToString("hh:mm");
         string newAmPm = now.ToString("tt");
@@ -50,5 +62,25 @@ internal class TabBarController : MonoBehaviour {
         if (_iconImage != null && _iconImage.sprite != newIcon) {
             _iconImage.sprite = newIcon;
         }
+    }
+
+    private void UpdateBattery() {
+        var status = SystemInfo.batteryStatus;
+        if (status == BatteryStatus.Unknown) { // No battery
+            if (_battObj != null && _battObj.activeSelf) _battObj.SetActive(false);
+            return;
+        }
+        var charging = status == BatteryStatus.Charging || status == BatteryStatus.Full;
+        var perc = SystemInfo.batteryLevel * 100; // Raw value in [0, 1]
+        var newPercStr = $"{perc}";
+
+        int iconIndex = (int)Math.Round(perc / 25f);
+        string iconLevel = iconIndex == 0 ? "low" : $"{iconIndex * 25}";
+        string chargeStatTxt = charging ? "_charge" : "";
+
+        string iconName = $"battery_{iconLevel}{chargeStatTxt}";
+
+        if (_battNum != null && _battNum.text != newPercStr) _battNum.text = newPercStr;
+        if (_battIcon != null && _battIcon.sprite?.name != iconName) _battIcon.sprite = AssetManager.Get<Sprite>(ClickGUI.BundleKey, iconName);
     }
 }

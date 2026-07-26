@@ -125,6 +125,9 @@ internal class ConfigurableWindowController : MonoBehaviour {
             }
 
             wrapper.UnfuckLayoutHack();
+            if (element.Hints?.Hidden ?? false) {
+                wrapper.SetActive(false);
+            }
         }
 
         gameObject.UnfuckLayoutHack();

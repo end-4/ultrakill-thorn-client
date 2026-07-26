@@ -17,24 +17,15 @@ public abstract class HudModule : Module {
     [JsonIgnore] public Setting<float> PivotY { get; }
 
     public static Dictionary<HudSurface, Vector3> DefaultLocalPosition = new Dictionary<HudSurface, Vector3> {
-        // { HudSurface.Left, new Vector3(-520f, -248f, 45f) },
-        // { HudSurface.Right, new Vector3(1.3f, 0.3f, 1.0f) },
-        // { HudSurface.Overlay, new Vector3(0, 0, 0) },
-        { HudSurface.Left, new Vector3(0, 0, 0) },
-        { HudSurface.Right, new Vector3(0, 0, 0) },
-        { HudSurface.Overlay, new Vector3(0, 0, 0) },
+        { HudSurface.Left, new Vector3(-484f, 344f, 45f) },
+        { HudSurface.Right, new Vector3(-232f, -288, 1.0f) },
+        { HudSurface.Overlay, new Vector3(0, 0, 0) }
     };
 
     public static Dictionary<HudSurface, Vector3> DefaultScale = new Dictionary<HudSurface, Vector3> {
         { HudSurface.Left, new Vector3(4, 4, 2) },
         { HudSurface.Right, new Vector3(1, 1, 1) },
         { HudSurface.Overlay, new Vector3(1, 1, 1) },
-    };
-
-    public static Dictionary<HudSurface, float> DefaultUnitSize = new Dictionary<HudSurface, float> {
-        { HudSurface.Left, 46 },
-        { HudSurface.Right, 46 },
-        { HudSurface.Overlay, 46 },
     };
 
     protected HudModule(string guid, string name, string description, float defaultPositionX = 0,
@@ -54,6 +45,14 @@ public abstract class HudModule : Module {
 
         HudManager.ReadyForScene += InitializeIfNeeded;
         Surface.OnValueChanged += ResetPositionIfNeeded;
+        var hideHint = new InterfaceHints {
+            Hidden = true,
+        };
+
+        PositionX.Hints = hideHint;
+        PositionY.Hints = hideHint;
+        PivotX.Hints = hideHint;
+        PivotY.Hints = hideHint;
     }
 
     public GameObject? UIElement => _wrapper;
