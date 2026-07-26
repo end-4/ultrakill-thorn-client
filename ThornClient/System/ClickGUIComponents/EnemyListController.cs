@@ -34,7 +34,7 @@ internal class EnemyListController : MonoBehaviour {
 
         // Back button
         var backBtn = gameObject.FindRecursive("Header/TitleButton").GetComponent<Button>();
-        backBtn.onClick.AddListener(ClickGUI.NavigateBack);
+        backBtn.onClick.AddListener(() => Destroy(gameObject));
 
         // Populate the lists
         _falseList = gameObject.FindRecursive("Columns/FalseScrollView/Viewport/Content").transform;

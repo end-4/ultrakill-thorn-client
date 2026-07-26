@@ -34,7 +34,7 @@ public class EnemyListSettingController : MonoBehaviour {
 
     private void OpenList() {
         var panel = CreateConfigPanel(TargetSetting);
-        if (panel != null) ClickGUI.NestPanel(panel);
+        if (panel != null) ClickGUI.SpawnContent(panel);
         ClickGUI.SurrenderTooltipText(TargetSetting?.Description ?? "");
     }
 

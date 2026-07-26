@@ -22,7 +22,6 @@ internal class ClickGUI : SystemModule {
     private static readonly string BundlePath = Path.Combine(Plugin.workingDir, "assets", "thorn_clickgui.bundle");
     public static readonly string BundleKey = "clickGui";
 
-    private static GameObject? _pagePrefab;
     private static GameObject? _layoutedPagePrefab;
 
     public ClickGUI() : base("thorn.clickGui", "ClickGUI", "The main interaction panel") {
@@ -58,7 +57,6 @@ internal class ClickGUI : SystemModule {
 
         var basePrefab = AssetManager.Get<GameObject>(BundleKey, "ThornClickGUICanvas");
         var tabBarPrefab = AssetManager.Get<GameObject>(BundleKey, "TabBar");
-        _pagePrefab = AssetManager.Get<GameObject>(BundleKey, "Page");
         _layoutedPagePrefab = AssetManager.Get<GameObject>(BundleKey, "LayoutedPage");
         var tooltipPrefab = AssetManager.Get<GameObject>(BundleKey, "Tooltip");
         var tabButtonPrefab = AssetManager.Get<GameObject>(BundleKey, "TabButton");
@@ -77,9 +75,8 @@ internal class ClickGUI : SystemModule {
 
         // Make pages
         _modulePage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
-        _hudPage = Object.Instantiate(_pagePrefab, _canvas.transform);
-        _settingsPage = Object.Instantiate(_pagePrefab, _canvas.transform);
-        // _settingsPage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
+        _hudPage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
+        _settingsPage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
 
         _tabPages.Add(Tuple.Create(ModuleTabName, _modulePage));
         _tabPages.Add(Tuple.Create("HUD", _hudPage));
@@ -90,17 +87,18 @@ internal class ClickGUI : SystemModule {
         for (int i = 0; i < Enum.GetValues(typeof(ModuleCategory)).Length; i++) {
             var category = (ModuleCategory)i;
             if (category == ModuleCategory.Hud) continue;
-            var categoryObj = Object.Instantiate(moduleCategoryPrefab, _modulePage.transform);
+            var categoryObj = Object.Instantiate(moduleCategoryPrefab);
+            AddToLayoutedPage(_modulePage, categoryObj);
             var catController = categoryObj.GetOrAddComponent<ModuleCategoryController>();
             catController.Category = category;
             catController.SetupModules();
             categoryObj.UnfuckLayoutHack();
         }
-
         _modulePage.UnfuckLayoutHack();
 
         // Populate page: HUD
-        var hudCatObj = Object.Instantiate(moduleCategoryPrefab, _hudPage.transform);
+        var hudCatObj = Object.Instantiate(moduleCategoryPrefab);
+        AddToLayoutedPage(_hudPage, hudCatObj);
         var hudCatCtl = hudCatObj.GetOrAddComponent<ModuleCategoryController>();
         hudCatCtl.Category = ModuleCategory.Hud;
         hudCatCtl.SetupModules();
@@ -112,13 +110,14 @@ internal class ClickGUI : SystemModule {
         _hudPage.UnfuckLayoutHack();
 
         // Populate page: Settings
-        var settingsObj = Object.Instantiate(moduleCategoryPrefab, _settingsPage.transform);
+        var settingsObj = Object.Instantiate(moduleCategoryPrefab);
+        AddToLayoutedPage(_settingsPage, settingsObj);
         var settingRect = (RectTransform)settingsObj.transform;
         settingRect.pivot = new Vector2(0.5f, 0.5f);
         settingRect.localPosition = new Vector3(0f, 0f, 0f);
         var configController = settingsObj.GetOrAddComponent<ConfigurableWindowController>();
         configController.TargetConfigurable = ThornModule.Instance;
-        settingsObj.UnfuckLayoutHack();
+        // settingsObj.UnfuckLayoutHack();
         _settingsPage.UnfuckLayoutHack();
 
         // Add buttons to tab bar
@@ -142,6 +141,13 @@ internal class ClickGUI : SystemModule {
         SetTab(ModuleTabName);
         _canvas.SetActive(false);
         return true;
+    }
+
+    private static GameObject AddToLayoutedPage(GameObject page, GameObject item) {
+        var layout = page.FindRecursive("Layout")?.transform;
+        if (layout == null || item == null) return item!;
+        item.transform.SetParent(layout, false);
+        return item;
     }
 
     protected override void OnEnable() {
@@ -240,23 +246,23 @@ internal class ClickGUI : SystemModule {
     private static string lastTabName = "";
 
     /// <summary>
-    /// Nests a new panel on top of the current view, hiding what's underneath.
+    /// Puts the given content onto a new nested panel on top of the current view, hiding what's underneath.
     /// </summary>
     /// <param name="panelContent">The content to display inside the new panel.</param>
     public static void NestPanel(GameObject panelContent) {
-        if (Instance == null || Instance._canvas == null || _pagePrefab == null) return;
+        if (Instance == null || Instance._canvas == null || _layoutedPagePrefab == null) return;
 
         // Create the page container
-        var page = Object.Instantiate(_pagePrefab, Instance._canvas.transform);
+        var page = Object.Instantiate(_layoutedPagePrefab, Instance._canvas.transform);
 
         // Parent and center the content
-        panelContent.transform.SetParent(page.transform, false);
+        AddToLayoutedPage(page, panelContent);
         var settingRect = (RectTransform)panelContent.transform;
         settingRect.pivot = new Vector2(0.5f, 0.5f);
         settingRect.localPosition = Vector3.zero;
 
         // Hide tab bar and current top-level view
-        if (Instance._tabBar != null) Instance._tabBar.SetActive(false);
+        if (Instance._tabBarButtonRow != null) Instance._tabBarButtonRow.SetActive(false);
         if (Instance._panelStack.Count > 0) {
             Instance._panelStack.Peek().SetActive(false);
         } else {
@@ -270,6 +276,24 @@ internal class ClickGUI : SystemModule {
         SurrenderTooltipText("", force: true);
     }
 
+    /// <summary>
+    /// Spawns content on the currently active panel
+    /// </summary>
+    /// <param name="content"></param>
+    public static void SpawnContent(GameObject content) {
+        if (Instance == null || content == null) return;
+
+        GameObject? activePanel = null;
+        if (Instance._panelStack.Count > 0) {
+            activePanel = Instance._panelStack.Peek();
+        } else {
+            activePanel = Instance._tabPages.FirstOrDefault(p => p.Item1 == lastTabName)?.Item2;
+        }
+
+        if (activePanel == null) return;
+        AddToLayoutedPage(activePanel, content);
+    }
+
     public static void NavigateBack() {
         if (Instance == null || !Instance.IsEnabled) return;
 
@@ -281,7 +305,7 @@ internal class ClickGUI : SystemModule {
                 Instance._panelStack.Peek().SetActive(true);
             } else {
                 SetTab(lastTabName);
-                if (Instance._tabBar != null) Instance._tabBar.SetActive(true);
+                if (Instance._tabBarButtonRow != null) Instance._tabBarButtonRow.SetActive(true);
             }
         } else if (Instance.IsEnabled) {
             Instance.Toggle();
