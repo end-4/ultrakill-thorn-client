@@ -14,13 +14,14 @@ namespace ThornClient.System.ClickGUIComponents;
 public abstract class NumberSettingController<T> : MonoBehaviour {
     public Setting<T>? TargetSetting;
     private TMP_InputField? _inputField;
-    private Slider _slider;
+    private Slider? _slider;
     private string _lastString = string.Empty;
     private int _decimals = 1;
 
     private void Start() {
-        _inputField = gameObject.FindRecursive("MainField/Input").GetComponent<TMP_InputField>();
+        _inputField = gameObject.FindRecursive("MainField/Input")?.GetComponent<TMP_InputField>();
         if (_inputField == null) return;
+        _inputField.GetOrAddComponent<InputFocusGrab>();
         _inputField.onSelect.AddListener(SavePrevValue);
         _inputField.onEndEdit.AddListener(SaveNewValue);
         if (TargetSetting != null) {
@@ -30,13 +31,13 @@ public abstract class NumberSettingController<T> : MonoBehaviour {
                 if (TargetSetting.Hints.Decimals != null) _decimals = TargetSetting.Hints.Decimals.Value;
                 var range = TargetSetting.Hints.Range;
                 var sobj = gameObject.FindRecursive("Slider");
-                sobj.SetActive(true);
-                _slider = sobj.GetComponent<Slider>();
-                _slider.minValue = Math.Min(range.Item1, range.Item2);
-                _slider.maxValue = Math.Max(range.Item1, range.Item2);
-                _slider.onValueChanged.AddListener(x => {
-                    SaveNewValue(Math.Round(x, _decimals).ToString());
-                });
+                if (sobj != null) {
+                    sobj.SetActive(true);
+                    _slider = sobj.GetComponent<Slider>();
+                    _slider.minValue = Math.Min(range.Item1, range.Item2);
+                    _slider.maxValue = Math.Max(range.Item1, range.Item2);
+                    _slider.onValueChanged.AddListener(x => { SaveNewValue(Math.Round(x, _decimals).ToString()); });
+                }
             }
         }
     }

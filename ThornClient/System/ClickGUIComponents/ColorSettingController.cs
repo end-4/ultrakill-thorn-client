@@ -24,22 +24,25 @@ public class ColorSettingController : MonoBehaviour {
     private void Start() {
         if (TargetSetting == null) return;
         _colorPreview = gameObject.FindRecursive("PickerRow/PreviewColumn/ColorBorder/ColorPreview")
-            .GetComponent<Image>();
-        _hexInput = gameObject.FindRecursive("PickerRow/PreviewColumn/HexInput").GetComponent<TMP_InputField>();
+            ?.GetComponent<Image>();
+        _hexInput = gameObject.FindRecursive("PickerRow/PreviewColumn/HexInput")?.GetComponent<TMP_InputField>();
         _sliders = [
-            gameObject.FindRecursive("PickerRow/ValueColumn/Red/Slider").GetComponent<Slider>(),
-            gameObject.FindRecursive("PickerRow/ValueColumn/Green/Slider").GetComponent<Slider>(),
-            gameObject.FindRecursive("PickerRow/ValueColumn/Blue/Slider").GetComponent<Slider>(),
-            gameObject.FindRecursive("PickerRow/ValueColumn/Alpha/Slider").GetComponent<Slider>(),
+            gameObject.FindRecursive("PickerRow/ValueColumn/Red/Slider")?.GetComponent<Slider>(),
+            gameObject.FindRecursive("PickerRow/ValueColumn/Green/Slider")?.GetComponent<Slider>(),
+            gameObject.FindRecursive("PickerRow/ValueColumn/Blue/Slider")?.GetComponent<Slider>(),
+            gameObject.FindRecursive("PickerRow/ValueColumn/Alpha/Slider")?.GetComponent<Slider>(),
         ];
         _valueInputs = [
-            gameObject.FindRecursive("PickerRow/ValueColumn/Red/Input").GetComponent<TMP_InputField>(),
-            gameObject.FindRecursive("PickerRow/ValueColumn/Green/Input").GetComponent<TMP_InputField>(),
-            gameObject.FindRecursive("PickerRow/ValueColumn/Blue/Input").GetComponent<TMP_InputField>(),
-            gameObject.FindRecursive("PickerRow/ValueColumn/Alpha/Input").GetComponent<TMP_InputField>(),
+            gameObject.FindRecursive("PickerRow/ValueColumn/Red/Input")?.GetComponent<TMP_InputField>(),
+            gameObject.FindRecursive("PickerRow/ValueColumn/Green/Input")?.GetComponent<TMP_InputField>(),
+            gameObject.FindRecursive("PickerRow/ValueColumn/Blue/Input")?.GetComponent<TMP_InputField>(),
+            gameObject.FindRecursive("PickerRow/ValueColumn/Alpha/Input")?.GetComponent<TMP_InputField>(),
         ];
         Plugin.Log.LogInfo($"Adding listeners");
-        _hexInput.onEndEdit.AddListener(TrySaveNewHex);
+        if (_hexInput != null) {
+            _hexInput.onEndEdit.AddListener(TrySaveNewHex);
+            _hexInput.GetOrAddComponent<InputFocusGrab>();
+        }
         for (int i = 0; i < _sliders.Length; i++) {
             var slider = _sliders[i];
             if (slider != null) {
@@ -52,6 +55,7 @@ public class ColorSettingController : MonoBehaviour {
 
         for (int i = 0; i < _valueInputs.Length; i++) {
             var input = _valueInputs[i];
+            input.GetOrAddComponent<InputFocusGrab>();
             if (input != null) {
                 var i1 = i;
                 input.onValueChanged.AddListener((string s) => {
@@ -76,6 +80,7 @@ public class ColorSettingController : MonoBehaviour {
             TargetSetting.Value = new Color(TargetSetting.Value.r, TargetSetting.Value.g, TargetSetting.Value.b,
                 TargetSetting.Value.a);
         }
+
         UpdateDisplay(TargetSetting.Value);
     }
 

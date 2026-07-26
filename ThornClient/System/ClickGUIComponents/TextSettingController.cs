@@ -10,23 +10,25 @@ namespace ThornClient.System.ClickGUIComponents;
 /// Controller for text/string setting fields.
 /// </summary>
 public class TextSettingController : MonoBehaviour {
-    public Setting<string> TargetSetting;
+    public Setting<string>? TargetSetting;
     private TMP_InputField? _inputField;
     private string _lastString = string.Empty;
 
     private void Start() {
-        _inputField = gameObject.FindRecursive("Input").GetComponent<TMP_InputField>();
+        _inputField = gameObject.FindRecursive("Input")?.GetComponent<TMP_InputField>();
         if (_inputField == null) return;
 
+        _inputField.GetOrAddComponent<InputFocusGrab>();
         _inputField.onSelect.AddListener(SavePrevValue);
         _inputField.onEndEdit.AddListener(SaveNewValue);
-        TargetSetting.OnValueChanged += UpdateFieldValue;
-
-        UpdateFieldValue(TargetSetting.Value);
+        if (TargetSetting != null) {
+            TargetSetting.OnValueChanged += UpdateFieldValue;
+            UpdateFieldValue(TargetSetting.Value);
+        }
     }
 
     private void OnDestroy() {
-        TargetSetting.OnValueChanged -= UpdateFieldValue;
+        if (TargetSetting != null) TargetSetting.OnValueChanged -= UpdateFieldValue;
         if (_inputField == null) return;
         _inputField.onSelect.RemoveListener(SavePrevValue);
         _inputField.onEndEdit.RemoveListener(SaveNewValue);
@@ -43,7 +45,7 @@ public class TextSettingController : MonoBehaviour {
 
     private void SaveNewValue(string str) {
         try {
-            TargetSetting.Value = str;
+            if (TargetSetting != null) TargetSetting.Value = str;
         } catch (Exception e) {
             Plugin.Log.LogWarning($"Failed to set text setting: {e}");
             if (_inputField != null) {
