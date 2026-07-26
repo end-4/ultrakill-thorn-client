@@ -76,14 +76,10 @@ public class ConnectedButtonGroupSettingController : MonoBehaviour {
             bool left = i == 0;
             bool right = i == total - 1;
 
-            string assetName =
-                $"{(left || right ? "Round_" : "")}{(selected ? "Fill" : "Border")}Large{(left ? "Left" : right ? "Right" : "")}";
             Color targetColor = selected ? ThornModule.AccentColor : Color.white;
             Color targetTextColor = selected ? Color.black : Color.white;
 
-            if (imgComp.sprite != null && imgComp.sprite.name != assetName) {
-                imgComp.sprite = AssetManager.Get<Sprite>(ClickGUI.BundleKey, assetName);
-            }
+            imgComp.sprite = GetSprite(left, right, selected);
 
             if (imgComp.color != targetColor) imgComp.color = targetColor;
             if (textComp.color != targetTextColor) textComp.color = targetTextColor;
@@ -92,5 +88,11 @@ public class ConnectedButtonGroupSettingController : MonoBehaviour {
 
     private void OnDestroy() {
         if (TargetSetting != null) TargetSetting.OnChanged -= UpdateDisplay;
+    }
+
+    public static Sprite GetSprite(bool atLeft, bool atRight, bool active) {
+        string assetName =
+            $"{(atLeft || atRight ? "Round_" : "")}{(active ? "Fill" : "Border")}Large{(atLeft ? "Left" : atRight ? "Right" : "")}";
+        return AssetManager.Get<Sprite>(ClickGUI.BundleKey, assetName);
     }
 }

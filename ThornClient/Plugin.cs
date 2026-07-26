@@ -12,10 +12,9 @@ namespace ThornClient;
 [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
 [BepInDependency("com.github.end-4.nukeLib")]
 public class Plugin : BaseUnityPlugin {
-    // Logger
     internal static ManualLogSource Log;
+    public static Plugin Instance { get; private set; }
 
-    // Plugin config
     public static string workingPath = Assembly.GetExecutingAssembly().Location;
     public static string workingDir = Path.GetDirectoryName(workingPath);
     public const string PluginGUID = "com.github.end-4.thornClient";
@@ -25,6 +24,8 @@ public class Plugin : BaseUnityPlugin {
 
     private void Awake() {
         Log = Logger;
+        if (Instance != null) return;
+        Instance = this;
         AssetManager.Initialize();
         HudManager.Initialize();
         ModuleManager.Initialize();
