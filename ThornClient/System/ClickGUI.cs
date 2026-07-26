@@ -29,6 +29,11 @@ internal class ClickGUI : SystemModule {
         AssetManager.LoadBundle(BundleKey, BundlePath);
         // Note Keybind is registered in ThornModule
         SceneManager.sceneLoaded += (_, __) => _isInitialized = InitializeIfNeeded();
+        SceneManager.sceneLoaded += (_, __) => {
+            // Hide menu every toggle
+            // Also ensures the initial show state is always hidden, so the user wouldn't have to press the bind twice
+            if (IsEnabled) Toggle();
+        };
     }
 
     private bool _isInitialized = false;
