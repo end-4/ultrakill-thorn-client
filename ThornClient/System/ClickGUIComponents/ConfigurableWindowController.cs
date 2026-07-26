@@ -83,7 +83,7 @@ internal class ConfigurableWindowController : MonoBehaviour {
         var categoryIcon = gameObject.FindRecursive("Header/TitleButton/TitleIcon").GetComponent<Image>();
         var categoryText = gameObject.FindRecursive("Header/TitleName").GetComponent<TextMeshProUGUI>();
         if (TargetConfigurable is Module module) {
-            categoryIcon.sprite = AssetManager.Get<Sprite>(ClickGUI.BundleKey, module.IconName);
+            categoryIcon.sprite = module.Icon;
         }
 
         categoryText.text = TargetConfigurable.Name;

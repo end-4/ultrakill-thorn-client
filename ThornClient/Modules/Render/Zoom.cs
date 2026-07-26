@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using ThornClient.Core;
-using ThornClient.Core;
+using ThornClient.Managers;
+using ThornClient.System;
 
 namespace ThornClient.Modules.Render;
 
 public class Zoom : Module {
     public Setting<float> ZoomFov { get; }
 
-    public override string IconName => "loupe";
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "loupe");
 
     public Zoom() : base("thorn.zoom", "Zoom",
         "Look more closely. Note: zooming only happens when the game is running, so use a keybind to toggle it",

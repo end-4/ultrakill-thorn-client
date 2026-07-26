@@ -4,6 +4,8 @@ using ThornClient.Core;
 using ThornClient.Core;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using ThornClient.Managers;
+using ThornClient.System;
 
 namespace ThornClient.Modules.Render;
 
@@ -11,7 +13,8 @@ public class UIScaler : Module {
     private float _savedDefaultScale;
     public Setting<float> Scale { get; }
 
-    public override string IconName => "screen_scale";
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "screen_scale");
+
     public UIScaler() : base("thorn.uiScaler", "UI Scaler", "Changes the scale of the user interface", ModuleCategory.Render) {
         Scale = RegisterSetting("scale", "Scale", "Smaller = smaller UI elements", 1.0f);
     }

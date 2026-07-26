@@ -1,14 +1,16 @@
-﻿using UnityEngine;
+﻿using ThornClient.Managers;
+using ThornClient.System;
+using UnityEngine;
 using ThornClient.Core;
 
 namespace ThornClient.Modules.Player;
 
-public class EnemyTracers : Module {
+public class Speed : Module {
     private static readonly float BaseWalkSpeed = 750;
     public Setting<float> SpeedMultiplier { get; }
-    public override string IconName => "speed";
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "speed");
 
-    public EnemyTracers() : base("thorn.speed", "Speed", "Adjusts your speed",
+    public Speed() : base("thorn.speed", "Speed", "Adjusts your speed",
         ModuleCategory.Player) {
         SpeedMultiplier = RegisterSetting("speedMultiplier", "Speed multiplier", "How much to scale the speed", 2f);
     }

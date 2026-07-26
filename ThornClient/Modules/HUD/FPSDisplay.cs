@@ -1,11 +1,13 @@
 ﻿using System;
+using ThornClient.Managers;
+using ThornClient.System;
 using UnityEngine;
 using ThornClient.HUD;
 
 namespace ThornClient.Modules.HUD;
 
 public class FPSDisplay : TextHudModule {
-    public override string IconName => "fps";
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "fps");
 
     public FPSDisplay() : base("thorn.fpsDisplay", "FPS", "Shows framerate") {
     }

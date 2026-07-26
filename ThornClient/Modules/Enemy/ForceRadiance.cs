@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Managers;
-using ThornClient.Core;
+using ThornClient.System;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
@@ -12,7 +12,7 @@ namespace ThornClient.Modules.Enemy;
 public class ForceRadiance : Module {
     public Setting<float> RadianceTier { get; }
 
-    public override string IconName => "rainbow";
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "rainbow");
 
     public ForceRadiance() : base("thorn.forceRadiance", "Force Radiance", "Makes all enemies radiant, buffing them", ModuleCategory.Enemy) {
         RadianceTier = RegisterSetting("radianceTier", "Radiance tier", "How much to buff enemies", 1f);

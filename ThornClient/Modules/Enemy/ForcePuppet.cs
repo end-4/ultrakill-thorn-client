@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Managers;
-using ThornClient.Core;
+using ThornClient.System;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace ThornClient.Modules.Enemy;
 
 public class ForcePuppet : Module {
-    public override string IconName => "puppet";
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "puppet");
     public ForcePuppet() : base("thorn.forcePuppet", "Force Puppet", "Makes enemies puppeted (become blood bois)\nWarning: This breaks Cybergrind", ModuleCategory.Enemy) {
     }
 

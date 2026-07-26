@@ -7,7 +7,8 @@ namespace ThornClient.Core;
 public abstract class Module : Configurable {
     [JsonIgnore] public ModuleCategory Category { get; }
     public virtual string? CheatReason => null;
-    public virtual string IconName { get; protected set; } = "cube";
+
+    public virtual Sprite Icon => AssetManager.Get<Sprite>(ThornClient.System.ClickGUI.BundleKey, "cube");
 
     protected Module(
         string guid,

@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ThornClient.Core;
-using ThornClient.Managers;
-using ThornClient.Core;
 using UnityEngine.SceneManagement;
+using ThornClient.Managers;
+using ThornClient.System;
 
 namespace ThornClient.Modules.Render;
 
 public class FullBright : Module {
     public Setting<float> Brightness { get; }
 
-    public override string IconName => "light_bulb";
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "light_bulb");
     public FullBright() : base("thorn.fullBright", "FullBright", "Adjust brightness for accessibility", ModuleCategory.Render) {
         Brightness = RegisterSetting("brightness", "Brightness", "How bright the world should be", 0.2f);
     }

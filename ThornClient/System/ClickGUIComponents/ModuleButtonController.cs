@@ -29,7 +29,7 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
         // Set icon
         var buttonIcon = gameObject.FindRecursive("Icon").GetComponent<Image>();
         try {
-            buttonIcon.sprite = AssetManager.Get<Sprite>(ClickGUI.BundleKey, TargetModule.IconName);
+            buttonIcon.sprite = TargetModule.Icon;
         } catch (Exception e) {
             Plugin.Log.LogError($"Failed to load icon for module '{TargetModule.Name}': {e}");
         }

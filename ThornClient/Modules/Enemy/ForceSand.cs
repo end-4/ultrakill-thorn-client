@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Managers;
-using ThornClient.Core;
+using ThornClient.System;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace ThornClient.Modules.Enemy;
 
 public class ForceSand : Module {
-    public override string IconName => "sand";
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "sand");
     public ForceSand() : base("thorn.forceSand", "Force Sand", "Makes enemies sanded, removing bleeding. You'll have to rely on parries for healing.", ModuleCategory.Enemy) {
     }
 

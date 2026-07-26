@@ -1,4 +1,6 @@
 ﻿using System;
+using ThornClient.Managers;
+using ThornClient.System;
 using UnityEngine;
 using System.Collections.Generic;
 using ThornClient.Core;
@@ -12,7 +14,7 @@ public class EnemyTracers : Module {
     public Setting<int> EnemyCountThreshold;
     public Setting<EnemyList> ForceTraceEnemies;
 
-    public override string IconName => "point_dot";
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "point_dot");
 
     public EnemyTracers() : base("thorn.enemyTracers", "Enemy Tracers", "Draws lines from you to enemies",
         ModuleCategory.World) {

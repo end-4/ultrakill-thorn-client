@@ -5,11 +5,12 @@ using ThornClient.Core;
 using UnityEngine;
 using ThornClient.HUD;
 using ThornClient.Managers;
+using ThornClient.System;
 
 namespace ThornClient.Modules.HUD;
 
 public class ActiveModules : TextHudModule {
-    public override string IconName => "list";
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "list");
     private SortedList<string, Module> modules = [];
 
     public ActiveModules() : base("thorn.activeModules", "Active Modules", "A list of active modules") {

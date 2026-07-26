@@ -1,6 +1,7 @@
 ﻿using Notiffy.API;
 using ThornClient.Core;
 using ThornClient.Core.DataTypes;
+using ThornClient.Managers;
 using UnityEngine;
 
 namespace ThornClient.System;
@@ -13,7 +14,7 @@ internal class ThornModule : SystemModule {
     public Setting<Color> Accent { get; }
     public Setting<bool> Testia { get; }
     public override bool IsEnabled => true;
-    public override string IconName => "settings";
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "settings");
 
     public ThornModule() : base("thorn.thorn", "Thorn", "General settings") {
         if (Instance != null) return;
