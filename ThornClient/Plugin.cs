@@ -19,12 +19,14 @@ public class Plugin : BaseUnityPlugin {
     public static string workingPath = Assembly.GetExecutingAssembly().Location;
     public static string workingDir = Path.GetDirectoryName(workingPath);
     public const string PluginGUID = "com.github.end-4.thornClient";
-    public const string PluginName = "ThornClient";
+    public const string PluginName = "Thorn";
     public const string PluginVersion = "0.1.0";
     public static string PluginIconPath = Path.Combine(workingDir, "icon.png");
 
     private void Awake() {
         Log = Logger;
+        AssetManager.Initialize();
+        HudManager.Initialize();
         ModuleManager.Initialize();
         RenderManager.Initialize();
         ConfigManager.LoadAll();
@@ -37,7 +39,7 @@ public class Plugin : BaseUnityPlugin {
     private void Update() {
         ConfigManager.UpdateMainThreadQueue();
         ThornClient.Managers.InputManager.Update();
-        foreach (var module in ModuleManager.Modules) {
+        foreach (var module in ModuleManager.Items) {
             if (module.IsEnabled) {
                 try {
                     module.OnUpdate();

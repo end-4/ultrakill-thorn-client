@@ -6,4 +6,5 @@ public enum ModuleCategory {
     Render, // viewmodel transform, tracers
     World, // waypoints, ice floor, lava floor, atlantis
     Misc,
+    Hud,
 }

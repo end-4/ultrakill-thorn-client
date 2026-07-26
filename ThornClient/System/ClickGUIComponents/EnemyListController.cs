@@ -6,6 +6,7 @@ using ThornClient.Core.DataTypes;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ThornClient.Managers;
 
 namespace ThornClient.System.ClickGUIComponents;
 
@@ -63,11 +64,11 @@ internal class EnemyListController : MonoBehaviour {
             bool isIncluded = TargetList.Value.Includes(enemyType);
             var parentList = isIncluded ? _trueList : _falseList;
 
-            var item = Instantiate(ClickGUI.EnemyListItemPrefab, parentList);
+            var item = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "EnemyListItem"), parentList);
             var icoCon = item.FindRecursive("Icon").AddComponent<EnemyIconController>();
             icoCon.enemyType = enemyType;
             item.FindRecursive("Name").GetComponent<TextMeshProUGUI>().text = enemyType.ToString();
-			item.FindRecursive("ToggleButton/Icon").GetComponent<Image>().sprite = ClickGUI.Bundle.LoadAsset<Sprite>(isIncluded ? "minus" : "plus");
+			item.FindRecursive("ToggleButton/Icon").GetComponent<Image>().sprite = AssetManager.Get<Sprite>(ClickGUI.BundleKey, isIncluded ? "minus" : "plus");
             var button = item.FindRecursive("ToggleButton").GetComponent<Button>();
             button.onClick.AddListener(() => OnItemClick(enemyType));
             item.UnfuckLayoutHack();

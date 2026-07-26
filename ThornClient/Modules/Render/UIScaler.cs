@@ -17,7 +17,6 @@ public class UIScaler : Module {
     }
 
     protected override void OnEnable() {
-        Plugin.Log.LogInfo("Enabled ui scaler");
         UpdateScale(Scale.Value);
         SceneManager.sceneLoaded += UpdateScale;
         Scale.OnValueChanged += UpdateScale;

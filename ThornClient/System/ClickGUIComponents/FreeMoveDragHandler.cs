@@ -12,7 +12,7 @@ public class FreeMoveDragHandler : MonoBehaviour, IDragHandler {
     /// The transform of the GameObject that should be moved when dragging the holder of this component
     /// </summary>
     public RectTransform? target;
-    private Canvas? _canvas;
+    protected Canvas? _canvas;
 
     private void Awake() {
         // If no target is explicitly set, default to moving this object
@@ -24,7 +24,7 @@ public class FreeMoveDragHandler : MonoBehaviour, IDragHandler {
         }
     }
 
-    public void OnDrag(PointerEventData eventData) {
+    public virtual void OnDrag(PointerEventData eventData) {
         if (target == null) return;
         float scaleFactor = _canvas != null ? _canvas.scaleFactor : 1f;
         Vector2 canvasDelta = eventData.delta / scaleFactor;

@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Object = UnityEngine.Object;
+
+namespace ThornClient.Managers;
+
+/// <summary>
+/// The managers that loads all assets of requested bundles at once, then expose them via a single getter
+/// </summary>
+public static class AssetManager {
+    // Key format: "bundleKey/typeName/assetName"
+    private static readonly Dictionary<string, Object> Objects = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, AssetBundle> LoadedBundles = new();
+
+    static AssetManager() {
+    }
+
+    public static void Initialize() {
+    }
+
+    public static void LoadBundle(string bundleKey, string bundlePath) {
+        if (LoadedBundles.ContainsKey(bundleKey)) return;
+
+        var bundle = AssetBundle.LoadFromFile(bundlePath);
+        if (bundle == null) {
+            Plugin.Log.LogError($"[AssetManager] Failed to load bundle at {bundlePath}");
+            return;
+        }
+
+        LoadedBundles[bundleKey] = bundle;
+
+        var allAssets = bundle.LoadAllAssets<Object>();
+        foreach (var asset in allAssets) {
+            // Include asset.GetType().Name in the key so Sprites and Texture2Ds never collide!
+            string key = BuildKey(bundleKey, asset.GetType(), asset.name);
+
+            if (!Objects.TryAdd(key, asset)) {
+                Plugin.Log.LogWarning(
+                    $"[AssetManager] Duplicate asset key detected: '{asset.name}' of type '{asset.GetType().Name}' in bundle '{bundleKey}'");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Get a preloaded asset of type T
+    /// </summary>
+    public static T Get<T>(string bundleKey, string assetName) where T : Object {
+        // Try exact type lookup first (e.g. "clickGui/Sprite/sun")
+        string exactKey = BuildKey(bundleKey, typeof(T), assetName);
+        if (Objects.TryGetValue(exactKey, out var asset)) {
+            return (T)asset;
+        }
+
+        throw new KeyNotFoundException(
+            $"[AssetManager] Asset '{assetName}' of type '{typeof(T).Name}' not found in bundle '{bundleKey}'.");
+    }
+
+    private static string BuildKey(string bundleKey, Type type, string assetName) {
+        return $"{bundleKey}/{type.Name}/{assetName}";
+    }
+}

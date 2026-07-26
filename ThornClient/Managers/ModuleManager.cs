@@ -9,14 +9,20 @@ using Module = ThornClient.Core.Module;
 namespace ThornClient.Managers;
 
 public static class ModuleManager {
-    public static List<Module> Modules { get; private set; } = [];
+    public static List<Module> Items { get; private set; } = [];
+
+    public static Action<Module, bool>? SomeModuleToggled;
+
+    internal static void HeyIToggled(Module module, bool enabled) {
+        SomeModuleToggled?.Invoke(module, enabled);
+    }
 
     /// <summary>
-    /// Scans the entire project assembly via reflection, instantiates every class
-    /// that inherits from Module, and registers it automatically.
+    /// Scans the entire assembly via reflection, instantiates every class
+    /// that inherits from Module, and registers it
     /// </summary>
     public static void Initialize() {
-        Plugin.Log.LogInfo($"ModuleManager starting...");
+        Plugin.Log.LogInfo($"[Module Manager] Starting...");
 
         var moduleType = typeof(Module);
 
@@ -26,37 +32,36 @@ public static class ModuleManager {
 
         foreach (var type in discoveredTypes) {
             try {
-                // Instantiate the module via its default constructor
+                // Instantiate the module
                 if (Activator.CreateInstance(type) is Module moduleInstance) {
-                    Modules.Add(moduleInstance);
-                    Plugin.Log.LogInfo($"Added module: {moduleInstance.Name} [{moduleInstance.Category}]");
+                    Items.Add(moduleInstance);
                 }
             } catch (Exception ex) {
-                Plugin.Log.LogInfo($"Failed to instantiate module type '{type.Name}': {ex.Message}");
+                Plugin.Log.LogInfo($"Failed to instantiate module '{type.Name}': {ex.Message}");
             }
         }
 
-        Plugin.Log.LogInfo($"ModuleManager initialized. Found {Modules.Count} modules.");
+        Plugin.Log.LogInfo($"[Module Manager] Loaded {Items.Count} modules");
     }
 
     /// <summary>
     /// Returns all modules in a category
     /// </summary>
     public static List<Module> GetByCategory(ModuleCategory category) {
-        return Modules.Where(m => m.Category == category).ToList();
+        return Items.Where(m => m.Category == category).ToList();
     }
 
     /// <summary>
     /// Gets a specific module instance by its class name.
     /// </summary>
     public static T Get<T>() where T : Module {
-        return Modules.OfType<T>().FirstOrDefault();
+        return Items.OfType<T>().FirstOrDefault();
     }
 
     /// <summary>
     /// Alternative loose lookup to fetch a module by its display name string.
     /// </summary>
     public static Module GetByName(string name) {
-        return Modules.FirstOrDefault(m => m.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        return Items.FirstOrDefault(m => m.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
     }
 }

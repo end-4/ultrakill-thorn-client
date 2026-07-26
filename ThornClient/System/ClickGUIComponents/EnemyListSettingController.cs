@@ -2,6 +2,7 @@
 using NukeLib.UI;
 using ThornClient.Core;
 using ThornClient.Core.DataTypes;
+using ThornClient.Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -38,9 +39,9 @@ public class EnemyListSettingController : MonoBehaviour {
     }
 
     private GameObject? CreateConfigPanel(Setting<EnemyList>? setting) {
-        if (ClickGUI.EnemyListPrefab == null || setting == null) return null;
+        if (AssetManager.Get<GameObject>(ClickGUI.BundleKey, "EnemyList") == null || setting == null) return null;
 
-        var obj = Instantiate(ClickGUI.EnemyListPrefab);
+        var obj = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "EnemyList"));
         if (obj == null) return null;
 
         var ctl = obj.GetOrAddComponent<EnemyListController>();

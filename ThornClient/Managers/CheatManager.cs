@@ -26,7 +26,7 @@ public static class CheatManager {
     }
 
     public static List<Module> GetActiveCheatyModules() {
-        return ModuleManager.Modules
+        return ModuleManager.Items
             .Where(module => (module.CheatReason != null && module.CheatReason.Length > 0))
             .ToList();
     }

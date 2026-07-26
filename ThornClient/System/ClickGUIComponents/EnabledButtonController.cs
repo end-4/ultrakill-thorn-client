@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
+using ThornClient.Managers;
 
 namespace ThornClient.System.ClickGUIComponents;
 
@@ -40,8 +41,8 @@ public class EnabledButtonController : MonoBehaviour {
         }
 
         if (_buttonImageComp != null) {
-            _buttonImageComp.sprite = ClickGUI.Bundle
-                .LoadAsset<Sprite>(isEnabled ? "Round_FillLarge" : "Round_BorderLarge");
+            _buttonImageComp.sprite = 
+            AssetManager.Get<Sprite>(ClickGUI.BundleKey, isEnabled ? "Round_FillLarge" : "Round_BorderLarge");
         }
 
         if (_colorizer != null) {

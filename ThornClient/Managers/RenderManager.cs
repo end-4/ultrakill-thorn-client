@@ -19,15 +19,12 @@ public static class RenderManager {
     public static void RenderPipeline() {
         if (Camera.current != Camera.main || _lineMaterial == null) return;
 
-        // Apply shader state pass
         _lineMaterial.SetPass(0);
-
-        // Configure graphics pipeline matrix for 2D screen space coordinates
         GL.PushMatrix();
         GL.LoadPixelMatrix();
 
         // Feed render passes from active modules
-        foreach (var module in ModuleManager.Modules) {
+        foreach (var module in ModuleManager.Items) {
             if (module.IsEnabled) {
                 try {
                     module.OnRender();

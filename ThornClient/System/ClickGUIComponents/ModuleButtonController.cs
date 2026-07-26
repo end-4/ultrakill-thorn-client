@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using NukeLib.UI;
 using ThornClient.Core;
 using ThornClient.Managers;
@@ -9,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Module = ThornClient.Core.Module;
 
 namespace ThornClient.System.ClickGUIComponents;
 
@@ -30,7 +29,7 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
         // Set icon
         var buttonIcon = gameObject.FindRecursive("Icon").GetComponent<Image>();
         try {
-            buttonIcon.sprite = ClickGUI.Bundle.LoadAsset<Sprite>(TargetModule.IconName);
+            buttonIcon.sprite = AssetManager.Get<Sprite>(ClickGUI.BundleKey, TargetModule.IconName);
         } catch (Exception e) {
             Plugin.Log.LogError($"Failed to load icon for module '{TargetModule.Name}': {e}");
         }
@@ -44,8 +43,10 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
         button.onClick.AddListener(() => { TargetModule.Toggle(); });
 
         // Setup hover
+        var providerName = TargetModule.GetType().Assembly.GetName().Name;
         var tooltipComp = gameObject.AddComponent<ClickGUITooltipHandler>();
-        tooltipComp.text = TargetModule.Description;
+        // tooltipComp.text = $"{TargetModule.Description}<size=8>\n</size><size=10><color=#{ColorUtility.ToHtmlStringRGB(ThornModule.AccentColor)}>{providerName}</color></size>";
+        tooltipComp.text = $"{TargetModule.Description}\n\n[{providerName}]";
 
         // Setup visuals
         _iconColorizer = buttonIcon.GetOrAddComponent<Colorizer>();
@@ -80,9 +81,9 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
     }
 
     private static GameObject? CreateConfigPanel(Configurable config) {
-        if (ClickGUI.ModuleCategoryPrefab == null) return null;
+        if (AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleCategory") == null) return null;
 
-        var configurableObj = Object.Instantiate(ClickGUI.ModuleCategoryPrefab);
+        var configurableObj = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleCategory"));
         if (configurableObj == null) {
             return null;
         }

@@ -3,6 +3,7 @@ using NukeLib.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ThornClient.Managers;
 
 namespace ThornClient.System.ClickGUIComponents;
 
@@ -10,8 +11,13 @@ internal class TabBarController : MonoBehaviour {
     private TextMeshProUGUI _numberText;
     private TextMeshProUGUI _amPmText;
     private Image _iconImage;
-    private Sprite _sunIcon = ClickGUI.Bundle.LoadAsset<Sprite>("sun");
-    private Sprite _moonIcon = ClickGUI.Bundle.LoadAsset<Sprite>("moon");
+    private Sprite _sunIcon;
+    private Sprite _moonIcon;
+
+    private void Awake() {
+        _sunIcon = AssetManager.Get<Sprite>(ClickGUI.BundleKey, "sun");
+        _moonIcon = AssetManager.Get<Sprite>(ClickGUI.BundleKey, "moon");
+    }
 
     private void Start() {
         var versionText = gameObject.FindRecursive("InfoCol/Version").GetComponent<TextMeshProUGUI>();

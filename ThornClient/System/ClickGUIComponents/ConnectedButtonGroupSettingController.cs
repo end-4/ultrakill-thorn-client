@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using ThornClient.Managers;
 
 namespace ThornClient.System.ClickGUIComponents;
 
@@ -35,13 +36,13 @@ public class ConnectedButtonGroupSettingController : MonoBehaviour {
         TargetSetting.OnChanged += UpdateDisplay;
 
         _btnRow = gameObject.FindRecursive("ButtonRow");
-        Plugin.Log.LogInfo($"curr {gameObject.name}, btn row {_btnRow}");
+        // Plugin.Log.LogInfo($"curr {gameObject.name}, btn row {_btnRow}");
         if (_btnRow != null) {
             _enumNames = Enum.GetNames(_enumType);
             _cachedButtons.Clear();
 
             for (int i = 0; i < _enumNames.Length; i++) {
-                var btn = Object.Instantiate(ClickGUI.ConnectedChoiceButtonPrefab, _btnRow.transform);
+                var btn = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ConnectedChoiceButton"), _btnRow.transform);
 
                 // Note: Fixed text lookup consistency across Start and UpdateDisplay
                 var textComp = btn.FindRecursive("Text").GetComponent<TMP_Text>();
@@ -81,7 +82,7 @@ public class ConnectedButtonGroupSettingController : MonoBehaviour {
             Color targetTextColor = selected ? Color.black : Color.white;
 
             if (imgComp.sprite != null && imgComp.sprite.name != assetName) {
-                imgComp.sprite = ClickGUI.Bundle.LoadAsset<Sprite>(assetName);
+                imgComp.sprite = AssetManager.Get<Sprite>(ClickGUI.BundleKey, assetName);
             }
 
             if (imgComp.color != targetColor) imgComp.color = targetColor;

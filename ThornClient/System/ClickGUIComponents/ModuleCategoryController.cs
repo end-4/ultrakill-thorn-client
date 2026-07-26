@@ -19,6 +19,7 @@ internal class ModuleCategoryController : MonoBehaviour {
         { ModuleCategory.Render, "eye" },
         { ModuleCategory.World, "compass" },
         { ModuleCategory.Misc, "shapes" },
+        { ModuleCategory.Hud, "hud" },
     };
 
     private void Start() {
@@ -35,18 +36,18 @@ internal class ModuleCategoryController : MonoBehaviour {
         gameObject.FindRecursive("Header/TitleButton").GetComponent<Button>().interactable = false;
         var categoryIcon = gameObject.FindRecursive("Header/TitleButton/TitleIcon").GetComponent<Image>();
         var categoryText = gameObject.FindRecursive("Header/TitleName").GetComponent<TextMeshProUGUI>();
-        categoryIcon.sprite = ClickGUI.Bundle.LoadAsset<Sprite>(_iconNameMap[Category]);
+        categoryIcon.sprite = AssetManager.Get<Sprite>(ClickGUI.BundleKey, _iconNameMap[Category]);
         categoryText.text = Category.ToString().ToUpper();
         gameObject.FindRecursive("Header").AddComponent<TitlebarDragHandler>();
 
         // Populate with modules
-        if (ClickGUI.ModuleButtonPrefab == null) {
+        if (AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleButton") == null) {
             Plugin.Log.LogError("ModuleButtonPrefab is null, cannot populate modules");
             return;
         }
         var moduleList = ModuleManager.GetByCategory(Category).Where(m => (!(m is SystemModule)));
         foreach (var module in moduleList) {
-            var moduleButtonObj = Object.Instantiate(ClickGUI.ModuleButtonPrefab, moduleCol.transform);
+            var moduleButtonObj = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleButton"), moduleCol.transform);
             moduleButtonObj.SetActive(true);
             var buttonController = moduleButtonObj.GetOrAddComponent<ModuleButtonController>();
             buttonController.TargetModule = module;

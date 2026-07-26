@@ -16,7 +16,7 @@ public static class ConfigManager {
     private static FileSystemWatcher? _watcher;
     private static DateTime _lastRead = DateTime.MinValue;
 
-    private static readonly HashSet<Configurable> ActiveModuleSyncs = [];
+    private static readonly HashSet<Configurable> ActiveSyncs = [];
     private static readonly object SyncLock = new();
     private static bool _isBatchSyncing = false;
     private static readonly ConcurrentQueue<Configurable> MainThreadQueue = new();
@@ -30,13 +30,17 @@ public static class ConfigManager {
         }
     };
 
-    private class ModuleConfigDataTransferObject {
+    private class ConfigDataTransferObject {
         public bool IsEnabled { get; set; }
         public Dictionary<string, JToken> Settings { get; set; } = [];
     }
 
+    private static List<Configurable> GetAllConfigurables() {
+        return [..ModuleManager.Items];
+    }
+
     /// <summary>
-    /// Generates a safe file path using the module's (friendly) name string
+    /// Generates a safe file path using the configurable's GUID
     /// </summary>
     public static string GetConfigPath(Configurable configurable) {
         return Path.Combine(ConfigFolder, $"{configurable.GUID}.json");
@@ -48,14 +52,14 @@ public static class ConfigManager {
     public static void SaveConfig(Configurable configurable) {
         // Plugin.Log.LogInfo($"Saving {configurable.Name} to {GetConfigPath(configurable)}");
         lock (SyncLock) {
-            if (_isBatchSyncing || ActiveModuleSyncs.Contains(configurable)) return;
-            ActiveModuleSyncs.Add(configurable);
+            if (_isBatchSyncing || ActiveSyncs.Contains(configurable)) return;
+            ActiveSyncs.Add(configurable);
         }
 
         try {
             if (!Directory.Exists(ConfigFolder)) Directory.CreateDirectory(ConfigFolder);
 
-            var dto = new ModuleConfigDataTransferObject {
+            var dto = new ConfigDataTransferObject {
                 IsEnabled = configurable.IsEnabled
             };
 
@@ -77,7 +81,7 @@ public static class ConfigManager {
             Plugin.Log.LogError($"[ConfigManager] Failed to save {configurable.Name}: {e}");
         } finally {
             lock (SyncLock) {
-                ActiveModuleSyncs.Remove(configurable);
+                ActiveSyncs.Remove(configurable);
             }
         }
     }
@@ -87,14 +91,14 @@ public static class ConfigManager {
     /// </summary>
     public static void LoadConfig(Configurable configurable) {
         lock (SyncLock) {
-            if (ActiveModuleSyncs.Contains(configurable)) return;
-            ActiveModuleSyncs.Add(configurable);
+            if (ActiveSyncs.Contains(configurable)) return;
+            ActiveSyncs.Add(configurable);
         }
 
         string filePath = GetConfigPath(configurable);
         if (!File.Exists(filePath)) {
             lock (SyncLock) {
-                ActiveModuleSyncs.Remove(configurable);
+                ActiveSyncs.Remove(configurable);
             }
 
             return;
@@ -102,7 +106,7 @@ public static class ConfigManager {
 
         try {
             string jsonString = File.ReadAllText(filePath);
-            var dto = JsonConvert.DeserializeObject<ModuleConfigDataTransferObject>(jsonString,
+            var dto = JsonConvert.DeserializeObject<ConfigDataTransferObject>(jsonString,
                 settings: SerializerSettings);
             if (dto == null) return;
 
@@ -135,7 +139,7 @@ public static class ConfigManager {
             Plugin.Log.LogError($"[ConfigManager] Failed to load {configurable.Name}: {e}");
         } finally {
             lock (SyncLock) {
-                ActiveModuleSyncs.Remove(configurable);
+                ActiveSyncs.Remove(configurable);
             }
         }
     }
@@ -150,10 +154,10 @@ public static class ConfigManager {
         }
 
         try {
-            foreach (var module in ModuleManager.Modules) {
-                SaveConfig(module);
+            foreach (var configurable in GetAllConfigurables()) {
+                SaveConfig(configurable);
             }
-            // Plugin.Log.LogInfo("[ConfigManager] Saved all module settings");
+            // Plugin.Log.LogInfo("[ConfigManager] Saved all configurable settings");
         } finally {
             lock (SyncLock) {
                 _isBatchSyncing = false;
@@ -171,10 +175,10 @@ public static class ConfigManager {
         }
 
         try {
-            foreach (var module in ModuleManager.Modules) {
-                LoadConfig(module);
+            foreach (var configurable in GetAllConfigurables()) {
+                LoadConfig(configurable);
             }
-            // Plugin.Log.LogInfo("[ConfigManager] Loaded all module settings");
+            // Plugin.Log.LogInfo("[ConfigManager] Loaded all configurable settings");
         } finally {
             lock (SyncLock) {
                 _isBatchSyncing = false;
@@ -208,22 +212,22 @@ public static class ConfigManager {
         _lastRead = lastWriteTime;
 
         string processedFileName = Path.GetFileNameWithoutExtension(e.Name);
-        Configurable? targetModule = null;
+        Configurable? targetConfigurable = null;
 
         // While module has this file name?
-        foreach (var module in ModuleManager.Modules) {
-            string expectedFileName = Path.GetFileNameWithoutExtension(GetConfigPath(module));
+        foreach (var configurable in GetAllConfigurables()) {
+            string expectedFileName = Path.GetFileNameWithoutExtension(GetConfigPath(configurable));
 
             // Case insensitive match because Windows Explorer is sloppy
             if (string.Equals(expectedFileName, processedFileName, StringComparison.OrdinalIgnoreCase)) {
-                targetModule = module;
+                targetConfigurable = configurable;
                 break;
             }
         }
 
-        if (targetModule != null) {
+        if (targetConfigurable != null) {
             // Push to queue to safely process on the main engine update tick loop
-            MainThreadQueue.Enqueue(targetModule);
+            MainThreadQueue.Enqueue(targetConfigurable);
         }
     }
 

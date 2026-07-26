@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using UnityEngine;
+using ThornClient.Managers;
 
 namespace ThornClient.Core;
 
@@ -17,9 +18,11 @@ public abstract class Module : Configurable {
         KeyCode defaultModifier = KeyCode.None,
         bool defaultToggleOnRelease = false,
         bool hasToggling = true)
-        : base(guid, name, description, defaultKey, defaultModifier, defaultToggleOnRelease, hasToggling)
-    {
+        : base(guid, name, description, defaultKey, defaultModifier, defaultToggleOnRelease, hasToggling) {
         Category = moduleCategory;
+
+        // Subscribe to the base class event to be notified of toggle changes.
+        OnToggleStateChanged += (enabled) => ModuleManager.HeyIToggled(this, enabled);
     }
 
     /// <summary>
@@ -32,6 +35,6 @@ public abstract class Module : Configurable {
     /// Invoked every frame during the late screen rendering pass.
     /// Place raw low-level vector drawings (GL code) inside this method block.
     /// </summary>
-    public virtual void OnRender() { }
+    public virtual void OnRender() {
+    }
 }
-

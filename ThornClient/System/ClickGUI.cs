@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using NukeLib.Text;
 using NukeLib.UI;
+using ThornClient.Managers;
 using TMPro;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
@@ -18,38 +19,15 @@ namespace ThornClient.System;
 
 internal class ClickGUI : SystemModule {
     internal static ClickGUI? Instance;
-    internal static readonly string BundlePath = Path.Combine(Plugin.workingDir, "assets", "thorn_clickgui.bundle");
-    internal static GameObject? ModuleCategoryPrefab { get; private set; }
-    internal static GameObject ModuleButtonPrefab { get; private set; }
-    internal static GameObject ModuleDescriptionPrefab { get; private set; }
-    internal static GameObject EnabledButtonPrefab { get; private set; }
-    internal static GameObject SettingRowWrapperPrefab { get; private set; }
-    internal static GameObject BoolSettingPrefab { get; private set; }
-    internal static GameObject NumberSettingPrefab { get; private set; }
-    internal static GameObject KeybindSettingPrefab { get; private set; }
-    internal static GameObject TextSettingPrefab { get; private set; }
-    internal static GameObject ColorSettingPrefab { get; private set; }
-    internal static GameObject EnemyListSettingPrefab { get; private set; }
-    internal static GameObject EnemyListPrefab { get; private set; }
-    internal static GameObject EnemyListItemPrefab { get; private set; }
-    internal static GameObject DropdownSettingPrefab { get; private set; }
-    internal static GameObject ConnectedButtonGroupSettingPrefab { get; private set; }
-    internal static GameObject ConnectedChoiceButtonPrefab { get; private set; }
+    private static readonly string BundlePath = Path.Combine(Plugin.workingDir, "assets", "thorn_clickgui.bundle");
+    public static readonly string BundleKey = "clickGui";
 
     private static GameObject? _pagePrefab;
     private static GameObject? _layoutedPagePrefab;
 
-    private static AssetBundle? _assetBundle = null;
-
-    internal static AssetBundle Bundle {
-        get {
-            if (_assetBundle == null) _assetBundle = AssetBundle.LoadFromFile(BundlePath);
-            return _assetBundle;
-        }
-    }
-
     public ClickGUI() : base("thorn.clickGui", "ClickGUI", "The main interaction panel") {
-        // Keybind is registered in ThornModule
+        AssetManager.LoadBundle(BundleKey, BundlePath);
+        // Note Keybind is registered in ThornModule
         SceneManager.sceneLoaded += (_, __) => _isInitialized = InitializeIfNeeded();
     }
 
@@ -73,28 +51,13 @@ internal class ClickGUI : SystemModule {
         Instance = this;
         // Plugin.Log.LogInfo("Loading ClickGUI");
 
-        var basePrefab = Bundle.LoadAsset<GameObject>("ThornClickGUICanvas");
-        var tabBarPrefab = Bundle.LoadAsset<GameObject>("TabBar");
-        _pagePrefab = Bundle.LoadAsset<GameObject>("Page");
-        _layoutedPagePrefab = Bundle.LoadAsset<GameObject>("LayoutedPage");
-        var tooltipPrefab = Bundle.LoadAsset<GameObject>("Tooltip");
-        var tabButtonPrefab = Bundle.LoadAsset<GameObject>("TabButton");
-        ModuleCategoryPrefab = Bundle.LoadAsset<GameObject>("ModuleCategory");
-        ModuleButtonPrefab = Bundle.LoadAsset<GameObject>("ModuleButton");
-        ModuleDescriptionPrefab = Bundle.LoadAsset<GameObject>("ModuleDescription");
-        EnabledButtonPrefab = Bundle.LoadAsset<GameObject>("EnabledButton");
-        SettingRowWrapperPrefab = Bundle.LoadAsset<GameObject>("SettingRowWrapper");
-        BoolSettingPrefab = Bundle.LoadAsset<GameObject>("BoolSetting");
-        NumberSettingPrefab = Bundle.LoadAsset<GameObject>("NumberSetting");
-        KeybindSettingPrefab = Bundle.LoadAsset<GameObject>("KeybindSetting");
-        TextSettingPrefab = Bundle.LoadAsset<GameObject>("TextSetting");
-        ColorSettingPrefab = Bundle.LoadAsset<GameObject>("ColorSetting");
-        EnemyListSettingPrefab = Bundle.LoadAsset<GameObject>("EnemyListSetting");
-        EnemyListPrefab = Bundle.LoadAsset<GameObject>("EnemyList");
-        EnemyListItemPrefab = Bundle.LoadAsset<GameObject>("EnemyListItem");
-        DropdownSettingPrefab = Bundle.LoadAsset<GameObject>("DropdownSetting");
-        ConnectedButtonGroupSettingPrefab = Bundle.LoadAsset<GameObject>("ConnectedButtonGroupSetting");
-        ConnectedChoiceButtonPrefab = Bundle.LoadAsset<GameObject>("ConnectedChoiceButton");
+        var basePrefab = AssetManager.Get<GameObject>(BundleKey, "ThornClickGUICanvas");
+        var tabBarPrefab = AssetManager.Get<GameObject>(BundleKey, "TabBar");
+        _pagePrefab = AssetManager.Get<GameObject>(BundleKey, "Page");
+        _layoutedPagePrefab = AssetManager.Get<GameObject>(BundleKey, "LayoutedPage");
+        var tooltipPrefab = AssetManager.Get<GameObject>(BundleKey, "Tooltip");
+        var tabButtonPrefab = AssetManager.Get<GameObject>(BundleKey, "TabButton");
+        var moduleCategoryPrefab = AssetManager.Get<GameObject>(BundleKey, "ModuleCategory");
 
         // Make the canvas
         _canvas = Object.Instantiate(basePrefab);
@@ -109,20 +72,20 @@ internal class ClickGUI : SystemModule {
 
         // Make pages
         _modulePage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
-        // _hudPage = Object.Instantiate(_pagePrefab, _canvas.transform);
-        // _hudPage.SetActive(false);
-        // _settingsPage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
+        _hudPage = Object.Instantiate(_pagePrefab, _canvas.transform);
         _settingsPage = Object.Instantiate(_pagePrefab, _canvas.transform);
+        // _settingsPage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
 
         _tabPages.Add(Tuple.Create(ModuleTabName, _modulePage));
-        // _tabPages.Add(Tuple.Create("HUD", _hudPage));
+        _tabPages.Add(Tuple.Create("HUD", _hudPage));
         _tabPages.Add(Tuple.Create("Settings", _settingsPage));
         lastTabName = "Modules";
 
         // Populate page: Module
         for (int i = 0; i < Enum.GetValues(typeof(ModuleCategory)).Length; i++) {
             var category = (ModuleCategory)i;
-            var categoryObj = Object.Instantiate(ModuleCategoryPrefab, _modulePage.transform);
+            if (category == ModuleCategory.Hud) continue;
+            var categoryObj = Object.Instantiate(moduleCategoryPrefab, _modulePage.transform);
             var catController = categoryObj.GetOrAddComponent<ModuleCategoryController>();
             catController.Category = category;
             catController.SetupModules();
@@ -131,8 +94,20 @@ internal class ClickGUI : SystemModule {
 
         _modulePage.UnfuckLayoutHack();
 
+        // Populate page: HUD
+        var hudCatObj = Object.Instantiate(moduleCategoryPrefab, _hudPage.transform);
+        var hudCatCtl = hudCatObj.GetOrAddComponent<ModuleCategoryController>();
+        hudCatCtl.Category = ModuleCategory.Hud;
+        hudCatCtl.SetupModules();
+        hudCatObj.UnfuckLayoutHack();
+        var hudCatRect = (RectTransform)hudCatObj.transform;
+        hudCatObj.UnfuckLayoutHack();
+        hudCatRect.pivot = new Vector2(0.5f, 0.5f);
+        hudCatRect.localPosition = new Vector3(0f, 0f, 0f);
+        _hudPage.UnfuckLayoutHack();
+
         // Populate page: Settings
-        var settingsObj = Object.Instantiate(ModuleCategoryPrefab, _settingsPage.transform);
+        var settingsObj = Object.Instantiate(moduleCategoryPrefab, _settingsPage.transform);
         var settingRect = (RectTransform)settingsObj.transform;
         settingRect.pivot = new Vector2(0.5f, 0.5f);
         settingRect.localPosition = new Vector3(0f, 0f, 0f);
@@ -140,7 +115,6 @@ internal class ClickGUI : SystemModule {
         configController.TargetConfigurable = ThornModule.Instance;
         settingsObj.UnfuckLayoutHack();
         _settingsPage.UnfuckLayoutHack();
-        _settingsPage.SetActive(false);
 
         // Add buttons to tab bar
         _tabBarButtonRow = _tabBar.FindRecursive("Tabs");
@@ -159,7 +133,7 @@ internal class ClickGUI : SystemModule {
 
         // Hide canvas
         var cgroupComp = _canvas.GetComponent<CanvasGroup>();
-        if(cgroupComp != null) cgroupComp.alpha = 1;
+        if (cgroupComp != null) cgroupComp.alpha = 1;
         SetTab(ModuleTabName);
         _canvas.SetActive(false);
         return true;
@@ -205,20 +179,30 @@ internal class ClickGUI : SystemModule {
         _tooltip.transform.SetAsLastSibling();
     }
 
+    public static string GetTooltipText() {
+        if (Instance == null || Instance._tooltip == null) return "";
+        var textObj = Instance._tooltip.FindRecursive("Text");
+        if (textObj == null) return "";
+        return textObj.GetComponent<TextMeshProUGUI>().text;
+    }
     public static void SetTooltipText(string text) {
         var wrappedText = text.WrapText(30);
         if (Instance == null || Instance._tooltip == null) return;
-        Instance._tooltip.FindRecursive("Text").GetComponent<TextMeshProUGUI>().text = wrappedText;
+        var textObj = Instance._tooltip.FindRecursive("Text");
+        if (textObj == null) return;
+        textObj.GetComponent<TextMeshProUGUI>().text = wrappedText;
         Instance._tooltip.SetActive(true);
         Instance._tooltip.UnfuckLayoutHack();
         Instance.UpdateTooltipPos();
     }
 
-    public static void SurrenderTooltipText(string text) {
+    public static void SurrenderTooltipText(string text, bool force = false) {
         var wrappedText = text.WrapText(30);
         if (Instance == null || Instance._tooltip == null) return;
-        var comp = Instance._tooltip.FindRecursive("Text").GetComponent<TextMeshProUGUI>();
-        if (comp.text == wrappedText) {
+        var textObj = Instance._tooltip.FindRecursive("Text");
+        if (textObj == null) return;
+        var comp = textObj.GetComponent<TextMeshProUGUI>();
+        if (comp.text == wrappedText || force) {
             Instance._tooltip.SetActive(false);
             comp.text = "";
         }
@@ -241,8 +225,10 @@ internal class ClickGUI : SystemModule {
 
         if (tabButtonRow != null) return;
         for (int i = 0; i < tabButtonRow.transform.childCount; i++) {
-            tabButtonRow.transform.GetChild(i).GetComponent<Image>().sprite = Bundle
-                .LoadAsset<Sprite>(i == currIndex ? "Round_FillLarge" : "Round_BorderLarge");
+            tabButtonRow.transform.GetChild(i).GetComponent<Image>().sprite =
+                AssetManager.Get<Sprite>(BundleKey,
+                    i == currIndex ? "Round_FillLarge" : "Round_BorderLarge"
+                );
         }
     }
 
@@ -275,6 +261,8 @@ internal class ClickGUI : SystemModule {
         // Show and push new panel
         page.SetActive(true);
         Instance._panelStack.Push(page);
+
+        SurrenderTooltipText("", force: true);
     }
 
     public static void NavigateBack() {
