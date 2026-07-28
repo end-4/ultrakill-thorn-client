@@ -14,6 +14,7 @@ namespace ThornClient.System.ClickGUIComponents;
 public abstract class NumberSettingController<T> : MonoBehaviour {
     public Setting<T>? TargetSetting;
     private TMP_InputField? _inputField;
+    private ValueScrubController _scrubController;
     private Slider? _slider;
     private string _lastString = string.Empty;
     private int _decimals = 1;
@@ -40,6 +41,10 @@ public abstract class NumberSettingController<T> : MonoBehaviour {
                 }
             }
         }
+
+        _scrubController = gameObject.GetOrAddComponent<ValueScrubController>();
+        _scrubController.OnScrubStart += SavePrevValue;
+        _scrubController.OnValueScrub += UpdateScrub;
     }
 
     private void OnDestroy() {
@@ -47,6 +52,20 @@ public abstract class NumberSettingController<T> : MonoBehaviour {
         if (_inputField == null) return;
         _inputField.onSelect.RemoveListener(SavePrevValue);
         _inputField.onEndEdit.RemoveListener(SaveNewValue);
+        _scrubController.OnScrubStart -= SavePrevValue;
+        _scrubController.OnValueScrub -= UpdateScrub;
+    }
+
+    private T _beforeScrub;
+
+    private void SavePrevValue() {
+        _beforeScrub = TargetSetting.Value;
+    }
+
+    protected abstract void UpdateScrub(T baseValue, float valueDiff);
+
+    private void UpdateScrub(float valueDiff) {
+        UpdateScrub(_beforeScrub, valueDiff);
     }
 
     private void UpdateFieldValue(T value) {
