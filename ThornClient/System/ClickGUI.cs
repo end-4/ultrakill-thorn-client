@@ -19,6 +19,7 @@ namespace ThornClient.System;
 
 internal class ClickGUI : SystemModule {
     internal static ClickGUI? Instance;
+    private const string PauseGameStateKey = "Thorn_ClickGUI";
     private static readonly string BundlePath = Path.Combine(Plugin.workingDir, "assets", "thorn_clickgui.bundle");
     public static readonly string BundleKey = "clickGui";
 
@@ -168,21 +169,16 @@ internal class ClickGUI : SystemModule {
 
         _canvas.UnfuckLayoutHack();
 
-        if (ThornModule.Instance?.MenuPausesGame.Value ?? true) Pauser.Pause(true);
-        if (opts != null) opts.dontUnpause = true;
+        if (ThornModule.Instance?.MenuPausesGame.Value ?? true) Pauser.Pause(true, PauseGameStateKey);
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
         SetTab(_lastTabName);
     }
 
     protected override void OnDisable() {
         // Plugin.Log.LogInfo($"[ClickGUI] Disable");
-        if (opts != null) opts.dontUnpause = false;
         if (_canvas == null) return;
         _canvas.SetActive(false);
-        Pauser.Pause(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        Pauser.Pause(false, PauseGameStateKey);
         if (_tooltip != null) _tooltip.SetActive(false);
     }
 
