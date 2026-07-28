@@ -9,6 +9,7 @@ public class Zoom : Module {
     public Setting<float> ZoomFov { get; }
 
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "loupe");
+    public override string[] Tags => ["magnifier", "close", "see"];
 
     public Zoom() : base("thorn.zoom", "Zoom",
         "Look more closely. Note: zooming only happens when the game is running, so use a keybind to toggle it",

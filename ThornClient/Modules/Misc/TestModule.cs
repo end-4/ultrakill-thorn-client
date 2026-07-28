@@ -37,6 +37,8 @@ public class TestModule : Module {
     public Setting<EnemyList> Enemiez { get; }
     public Setting<float> Slippery { get; }
 
+    public override string[] Tags => ["system", "debug", "developer"];
+
     public TestModule() : base("thorn.test", "Test module", "For UI debugging. This should be removed before release.",
         ModuleCategory.Misc) {
         Bulul = RegisterSetting("bulul", "Bulul",

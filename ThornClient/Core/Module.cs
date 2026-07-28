@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using UnityEngine;
 using ThornClient.Managers;
 
@@ -7,8 +8,8 @@ namespace ThornClient.Core;
 public abstract class Module : Configurable {
     [JsonIgnore] public ModuleCategory Category { get; }
     public virtual string? CheatReason => null;
-
     public virtual Sprite Icon => AssetManager.Get<Sprite>(ThornClient.System.ClickGUI.BundleKey, "cube");
+    public virtual string[]? Tags { get; }
 
     protected Module(
         string guid,
@@ -21,8 +22,6 @@ public abstract class Module : Configurable {
         bool hasToggling = true)
         : base(guid, name, description, defaultKey, defaultModifier, defaultToggleOnRelease, hasToggling) {
         Category = moduleCategory;
-
-        // Subscribe to the base class event to be notified of toggle changes.
         OnToggleStateChanged += (enabled) => ModuleManager.HeyIToggled(this, enabled);
     }
 

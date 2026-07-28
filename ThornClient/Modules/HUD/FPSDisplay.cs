@@ -8,6 +8,7 @@ namespace ThornClient.Modules.HUD;
 
 public class FPSDisplay : TextHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "fps");
+    public override string[] Tags => ["performance", "frame"];
 
     public FPSDisplay() : base("thorn.fpsDisplay", "FPS", "Shows framerate") {
     }

@@ -12,7 +12,7 @@ internal class ThornModule : SystemModule {
 
     public Setting<Keybind> OpenClickGUI { get; }
     public Setting<Color> Accent { get; }
-    public Setting<bool> Testia { get; }
+    public Setting<bool> MenuPausesGame { get; }
     public override bool IsEnabled => true;
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "settings");
 
@@ -26,6 +26,7 @@ internal class ThornModule : SystemModule {
             if (ClickGUI.Instance == null) return;
             ClickGUI.Instance.Toggle();
         };
+        MenuPausesGame = RegisterSetting("menuPausesGame", "Menu pauses game", "Makes the game paused when you open the ClickGUI", true);
 
         Accent = RegisterSetting("accentColor", "Accent Color", "Color used for highlighting certain elements, preferably a bright one",
             new Color(0.65f, 0.95f, 0.89f));

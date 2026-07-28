@@ -11,6 +11,7 @@ namespace ThornClient.Modules.Enemy;
 
 public class ForcePuppet : Module {
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "puppet");
+    public override string[] Tags => ["blood", "zombie"];
     public ForcePuppet() : base("thorn.forcePuppet", "Force Puppet", "Makes enemies puppeted (become blood bois)\nWarning: This breaks Cybergrind", ModuleCategory.Enemy) {
     }
 

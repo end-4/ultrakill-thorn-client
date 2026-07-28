@@ -45,6 +45,7 @@ internal class ClickGUI : SystemModule {
     private readonly Stack<GameObject> _panelStack = new();
     private GameObject? _tooltip;
     private GameObject? _tabBarButtonRow;
+    private SearchWindowController? _searchController;
     private List<Tuple<string, GameObject>> _tabPages = new();
     private const string ModuleTabName = "Modules";
 
@@ -61,6 +62,7 @@ internal class ClickGUI : SystemModule {
         var tooltipPrefab = AssetManager.Get<GameObject>(BundleKey, "Tooltip");
         var tabButtonPrefab = AssetManager.Get<GameObject>(BundleKey, "TabButton");
         var moduleCategoryPrefab = AssetManager.Get<GameObject>(BundleKey, "ModuleCategory");
+        var searchPrefab = AssetManager.Get<GameObject>(BundleKey, "SearchWindow");
 
         // Make the canvas
         _canvas = Object.Instantiate(basePrefab);
@@ -81,7 +83,7 @@ internal class ClickGUI : SystemModule {
         _tabPages.Add(Tuple.Create(ModuleTabName, _modulePage));
         _tabPages.Add(Tuple.Create("HUD", _hudPage));
         _tabPages.Add(Tuple.Create("Settings", _settingsPage));
-        lastTabName = "Modules";
+        _lastTabName = "Modules";
 
         // Populate page: Module
         for (int i = 0; i < Enum.GetValues(typeof(ModuleCategory)).Length; i++) {
@@ -94,6 +96,10 @@ internal class ClickGUI : SystemModule {
             catController.SetupModules();
             categoryObj.UnfuckLayoutHack();
         }
+        var searchWindowObj = Object.Instantiate(searchPrefab);
+        AddToLayoutedPage(_modulePage, searchWindowObj);
+        _searchController = searchWindowObj.AddComponent<SearchWindowController>();
+
         _modulePage.UnfuckLayoutHack();
 
         // Populate page: HUD
@@ -162,10 +168,11 @@ internal class ClickGUI : SystemModule {
 
         _canvas.UnfuckLayoutHack();
 
-        Pauser.Pause(true);
+        if (ThornModule.Instance?.MenuPausesGame.Value ?? true) Pauser.Pause(true);
         if (opts != null) opts.dontUnpause = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        SetTab(_lastTabName);
     }
 
     protected override void OnDisable() {
@@ -196,6 +203,7 @@ internal class ClickGUI : SystemModule {
         if (textObj == null) return "";
         return textObj.GetComponent<TextMeshProUGUI>().text;
     }
+
     public static void SetTooltipText(string text) {
         var wrappedText = text.WrapText(30);
         if (Instance == null || Instance._tooltip == null) return;
@@ -226,24 +234,40 @@ internal class ClickGUI : SystemModule {
         int currIndex = 0;
         for (int i = 0; i < pages.Count; i++) {
             var (key, val) = pages[i];
-            val.SetActive(tabName == key);
+            bool active = (tabName == key);
+            val.SetActive(active);
             val.UnfuckLayoutHack();
             if (val != null && tabName == key) {
-                lastTabName = tabName;
+                _lastTabName = tabName;
                 currIndex = i;
             }
         }
 
-        if (tabButtonRow != null) return;
-        for (int i = 0; i < tabButtonRow.transform.childCount; i++) {
-            tabButtonRow.transform.GetChild(i).GetComponent<Image>().sprite =
-                AssetManager.Get<Sprite>(BundleKey,
-                    i == currIndex ? "Round_FillLarge" : "Round_BorderLarge"
-                );
+        if (tabButtonRow != null) {
+            for (int i = 0; i < tabButtonRow.transform.childCount; i++) {
+                bool active = (i == currIndex);
+                bool atLeft = (i == 0);
+                bool atRight = (i + 1 == pages.Count);
+                var newSprite = ConnectedButtonGroupSettingController.GetSprite(atLeft, atRight, active);
+                Color targetColor = active ? ThornModule.AccentColor : Color.white;
+                Color targetTextColor = active ? Color.black : Color.white;
+
+                var btnObj = tabButtonRow.transform.GetChild(i);
+                var img = btnObj?.GetComponent<Image>();
+                var txt = btnObj?.gameObject.FindRecursive("Text");
+                if (btnObj == null || img == null || txt == null) continue;
+                img.sprite = newSprite;
+                img.color = targetColor;
+                txt.GetComponent<TextMeshProUGUI>().color = targetTextColor;
+            }
+        }
+
+        if (tabName == ModuleTabName) {
+            if (Instance._searchController != null) Instance._searchController.FocusSearch();
         }
     }
 
-    private static string lastTabName = "";
+    private static string _lastTabName = "";
 
     /// <summary>
     /// Puts the given content onto a new nested panel on top of the current view, hiding what's underneath.
@@ -287,7 +311,7 @@ internal class ClickGUI : SystemModule {
         if (Instance._panelStack.Count > 0) {
             activePanel = Instance._panelStack.Peek();
         } else {
-            activePanel = Instance._tabPages.FirstOrDefault(p => p.Item1 == lastTabName)?.Item2;
+            activePanel = Instance._tabPages.FirstOrDefault(p => p.Item1 == _lastTabName)?.Item2;
         }
 
         if (activePanel == null) return;
@@ -304,7 +328,7 @@ internal class ClickGUI : SystemModule {
             if (Instance._panelStack.Count > 0) {
                 Instance._panelStack.Peek().SetActive(true);
             } else {
-                SetTab(lastTabName);
+                SetTab(_lastTabName);
                 if (Instance._tabBarButtonRow != null) Instance._tabBarButtonRow.SetActive(true);
             }
         } else if (Instance.IsEnabled) {

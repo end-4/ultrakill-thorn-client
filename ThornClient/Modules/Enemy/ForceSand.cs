@@ -11,6 +11,7 @@ namespace ThornClient.Modules.Enemy;
 
 public class ForceSand : Module {
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "sand");
+    public override string[] Tags => ["buff"];
     public ForceSand() : base("thorn.forceSand", "Force Sand", "Makes enemies sanded, removing bleeding. You'll have to rely on parries for healing.", ModuleCategory.Enemy) {
     }
 

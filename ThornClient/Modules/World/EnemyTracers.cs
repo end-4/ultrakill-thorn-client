@@ -15,6 +15,7 @@ public class EnemyTracers : Module {
     public Setting<EnemyList> ForceTraceEnemies;
 
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "point_dot");
+    public override string[] Tags => ["lines", "position", "indicator", "path"];
 
     public EnemyTracers() : base("thorn.enemyTracers", "Enemy Tracers", "Draws lines from you to enemies",
         ModuleCategory.World) {

@@ -10,8 +10,9 @@ using ThornClient.System;
 namespace ThornClient.Modules.HUD;
 
 public class ActiveModules : TextHudModule {
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "list");
     private SortedList<string, Module> modules = [];
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "list");
+    public override string[] Tags => ["module", "control", "system"];
 
     public ActiveModules() : base("thorn.activeModules", "Active Modules", "A list of active modules") {
         UpdateWholeList();

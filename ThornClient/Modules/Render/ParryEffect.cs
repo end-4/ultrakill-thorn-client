@@ -11,6 +11,7 @@ public class ParryEffect : Module {
     public Setting<float> Fov { get; }
 
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "feedbacker");
+    public override string[] Tags => ["punch", "fov"];
 
     public ParryEffect() : base("thorn.parryEffect", "Parry Effect",
         "Adds a slight zoom to make parries feel more impactful",

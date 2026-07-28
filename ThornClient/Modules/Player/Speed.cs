@@ -9,6 +9,7 @@ public class Speed : Module {
     private static readonly float BaseWalkSpeed = 750;
     public Setting<float> SpeedMultiplier { get; }
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "speed");
+    public override string[] Tags => ["cheat", "fast", "slow", "movement", "sonic"];
 
     public Speed() : base("thorn.speed", "Speed", "Adjusts your speed",
         ModuleCategory.Player) {

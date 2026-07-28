@@ -38,11 +38,12 @@ public class ColorSettingController : MonoBehaviour {
             gameObject.FindRecursive("PickerRow/ValueColumn/Blue/Input")?.GetComponent<TMP_InputField>(),
             gameObject.FindRecursive("PickerRow/ValueColumn/Alpha/Input")?.GetComponent<TMP_InputField>(),
         ];
-        Plugin.Log.LogInfo($"Adding listeners");
+
         if (_hexInput != null) {
             _hexInput.onEndEdit.AddListener(TrySaveNewHex);
             _hexInput.GetOrAddComponent<InputFocusGrab>();
         }
+
         for (int i = 0; i < _sliders.Length; i++) {
             var slider = _sliders[i];
             if (slider != null) {

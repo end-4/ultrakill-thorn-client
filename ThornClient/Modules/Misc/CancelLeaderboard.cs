@@ -7,6 +7,7 @@ namespace ThornClient.Modules.Misc;
 
 public class CancelLeaderboard : Module {
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "no_trophy");
+    public override string[] Tags => ["cheat", "surrender", "fair play", "score", "rank"];
     public CancelLeaderboard() : base("thorn.cancelLeaderboard", "Cancel Leaderboard", "Voluntarily exclude scores from the leaderboard. Useful when you're using cheaty mods that don't do this themselves", ModuleCategory.Misc) {
     }
 

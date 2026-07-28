@@ -12,6 +12,8 @@ public class FullBright : Module {
     public Setting<float> Brightness { get; }
 
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "light_bulb");
+    public override string[] Tags => ["light", "vision", "sight", "clear", "see", "illuminate"];
+
     public FullBright() : base("thorn.fullBright", "FullBright", "Adjust brightness for accessibility", ModuleCategory.Render) {
         Brightness = RegisterSetting("brightness", "Brightness", "How bright the world should be", 0.2f);
     }

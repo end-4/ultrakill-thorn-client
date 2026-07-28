@@ -14,6 +14,7 @@ public class UIScaler : Module {
     public Setting<float> Scale { get; }
 
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "screen_scale");
+    public override string[] Tags => ["interface", "scale"];
 
     public UIScaler() : base("thorn.uiScaler", "UI Scaler", "Changes the scale of the user interface", ModuleCategory.Render) {
         Scale = RegisterSetting("scale", "Scale", "Smaller = smaller UI elements", 1.0f);
