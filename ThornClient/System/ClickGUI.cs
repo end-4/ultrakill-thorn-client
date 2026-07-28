@@ -171,6 +171,7 @@ internal class ClickGUI : SystemModule {
 
         if (ThornModule.Instance?.MenuPausesGame.Value ?? true) Pauser.Pause(true, PauseGameStateKey);
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         SetTab(_lastTabName);
     }
 
@@ -178,6 +179,7 @@ internal class ClickGUI : SystemModule {
         // Plugin.Log.LogInfo($"[ClickGUI] Disable");
         if (_canvas == null) return;
         _canvas.SetActive(false);
+        Pauser.Pause(true, PauseGameStateKey); // Ensure consistent cursor appearance state
         Pauser.Pause(false, PauseGameStateKey);
         if (_tooltip != null) _tooltip.SetActive(false);
     }

@@ -2,8 +2,8 @@
 
 public enum ModuleCategory {
     Enemy, // mitosis
-    Player, // minecraft fly, speed, size
-    Render, // viewmodel transform, tracers
+    Player, // minecraft fly, size, variant binds
+    Render, // viewmodel transform
     World, // waypoints, ice floor, lava floor, atlantis
     Misc,
     Hud,
