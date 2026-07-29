@@ -49,6 +49,7 @@ internal class ClickGUI : SystemModule {
     private SearchWindowController? _searchController;
     private List<Tuple<string, GameObject>> _tabPages = new();
     private const string ModuleTabName = "Modules";
+    private static readonly Vector2 PageHiddenOffset = Vector2.down * 15;
 
     private static OptionsManager? opts => OptionsManager.Instance;
 
@@ -97,6 +98,7 @@ internal class ClickGUI : SystemModule {
             catController.SetupModules();
             categoryObj.UnfuckLayoutHack();
         }
+
         var searchWindowObj = Object.Instantiate(searchPrefab);
         AddToLayoutedPage(_modulePage, searchWindowObj);
         _searchController = searchWindowObj.AddComponent<SearchWindowController>();
@@ -134,6 +136,8 @@ internal class ClickGUI : SystemModule {
             var tabButton = Object.Instantiate(tabButtonPrefab, _tabBarButtonRow.transform);
             tabButton.FindRecursive("Text").GetComponent<TextMeshProUGUI>().text = key;
             tabButton.GetComponent<Button>().onClick.AddListener(() => { SetTab(key); });
+
+            tup.Item2.SetActiveAnimated(false, PageHiddenOffset); // Add animation component
         }
 
         _tabBarButtonRow.UnfuckLayoutHack();
@@ -172,7 +176,10 @@ internal class ClickGUI : SystemModule {
         if (ThornModule.Instance?.MenuPausesGame.Value ?? true) Pauser.Pause(true, PauseGameStateKey);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SetTab(_lastTabName);
+        // SetTab(_lastTabName);
+        if (_lastTabName == ModuleTabName) {
+            if (_searchController != null) _searchController.FocusSearch();
+        }
     }
 
     protected override void OnDisable() {
@@ -182,6 +189,10 @@ internal class ClickGUI : SystemModule {
         Pauser.Pause(true, PauseGameStateKey); // Ensure consistent cursor appearance state
         Pauser.Pause(false, PauseGameStateKey);
         if (_tooltip != null) _tooltip.SetActive(false);
+        // while (_panelStack.Count > 0) {
+        //     var topPanel = Instance._panelStack.Pop();
+        //     Object.Destroy(topPanel);
+        // }
     }
 
     public override void OnUpdate() {
@@ -233,6 +244,8 @@ internal class ClickGUI : SystemModule {
         for (int i = 0; i < pages.Count; i++) {
             var (key, val) = pages[i];
             bool active = (tabName == key);
+            // Plugin.Log.LogInfo($"Set {tabName} active: {active}");
+            // val.SetActiveAnimated(active, PageHiddenOffset);
             val.SetActive(active);
             val.UnfuckLayoutHack();
             if (val != null && tabName == key) {
