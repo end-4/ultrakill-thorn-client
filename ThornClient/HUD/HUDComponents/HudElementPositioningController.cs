@@ -42,18 +42,18 @@ public class HudElementPositioningController : FreeMoveDragHandler, IEndDragHand
 
     private Dictionary<string, PivotChoice> _pivotChoices = [];
 
-    // TODO separate real overlay and clickgui remote drag
-
     private void Start() {
         _dragOverlay = gameObject.FindRecursive("Overlay");
+        var colorizer = _dragOverlay?.FindRecursive("Image").GetOrAddComponent<Colorizer>();
+        colorizer?.UpdateHighlight(true);
         _pivotChoices = [];
         foreach (var pivotName in _pivotPositions) {
             var pivotPath = $"Pivot/{pivotName}";
-            var button = gameObject.FindRecursive(pivotPath);
+            var button = gameObject.FindRecursive(pivotPath, warnings: false);
             if (button == null) continue;
             var buttonComp = button.GetComponent<Button>();
-            if (buttonComp == null) continue;
-            var iconComp = button.FindRecursive("Image").GetComponent<Image>();
+            var iconComp = button.FindRecursive("Image")?.GetComponent<Image>();
+            if (buttonComp == null || iconComp == null) continue;
             _pivotChoices.Add(pivotName, new PivotChoice {
                 Path = pivotPath,
                 ButtonComp = buttonComp,

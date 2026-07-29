@@ -11,11 +11,16 @@ namespace ThornClient.HUD;
 /// dynamically sized based on content (you need min size/preferred size on your content element for that)
 /// </summary>
 public abstract class FramedHudModule : HudModule {
+    public Setting<bool> ShowBackground;
     public FramedHudModule(string guid, string name, string description) : base(guid, name, description) {
+        ShowBackground = RegisterSetting("showBackground", "Show Background", "Whether to show a frame behind the content", true);
+        ShowBackground.OnValueChanged += (value) => {
+            if (_opacitySyncer != null) _opacitySyncer.ForceTransparent = !value;
+        };
     }
 
     protected GameObject? Background;
-
+    protected HudBackgroundOpacitySyncer? _opacitySyncer;
 
     /// <summary>
     /// The method to create a content object.
@@ -36,7 +41,7 @@ public abstract class FramedHudModule : HudModule {
         }
 
         Background = obj;
-        Background.AddComponent<HudBackgroundOpacitySyncer>();
+        _opacitySyncer = Background.GetOrAddComponent<HudBackgroundOpacitySyncer>();
 
         return obj;
     }
