@@ -27,6 +27,7 @@ internal class SearchWindowController : MonoBehaviour {
         _results = gameObject.FindRecursive("Modules/Results");
         PopulateIfNeeded();
         if (_input != null) _input.onValueChanged.AddListener(Query);
+        gameObject.FindRecursive("Header")?.GetOrAddComponent<TitlebarDragHandler>();
         Query("");
     }
 
