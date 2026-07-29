@@ -13,7 +13,9 @@ public class Colorizer : MonoBehaviour {
 
     public Color HighlightColor {
         get => _overrideColor ?? ThornModule.Instance!.Accent.Value;
-        set => _overrideColor = value;
+        set {
+            if (imageComp == null) _overrideColor = value;
+        }
     }
 
     public Color NormalColor {
@@ -26,6 +28,10 @@ public class Colorizer : MonoBehaviour {
         imageComp = GetComponent<Image>();
         if (_overrideColor == null) ThornModule.Instance!.Accent.OnChanged += UpdateHighlight;
         UpdateHighlight();
+    }
+
+    private void OnDestroy() {
+        if (_overrideColor == null) ThornModule.Instance!.Accent.OnChanged -= UpdateHighlight;
     }
 
     private bool _lastHighlight = false;
