@@ -26,6 +26,12 @@ public class ValueScrubController : MonoBehaviour, IDragHandler, IBeginDragHandl
     /// </summary>
     public event Action OnScrubStart;
 
+    public void OnDisable() {
+        _hovering = false;
+        _dragging = false;
+        UpdateCursor();
+    }
+
     public void OnDrag(PointerEventData eventData) {
         // TODO add a snackbar/toast to Notiffy then use it for vertical sensitivity adjustment
         _cumulatedDelta += eventData.delta * scaleFactor;
