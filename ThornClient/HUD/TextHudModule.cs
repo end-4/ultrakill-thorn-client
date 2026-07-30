@@ -23,31 +23,53 @@ public abstract class TextHudModule : FramedHudModule {
         }
     }
 
+    public virtual Sprite? DisplayIcon {
+        get;
+        set {
+            if (field == value) return;
+            field = value;
+
+            UpdateIcon(value);
+        }
+    } = null;
+
     public TextHudModule(string guid, string name, string description) : base(guid, name, description) {
     }
 
     private GameObject? _textObj;
     private TextMeshProUGUI? _textComp;
+    private Image? _icon;
 
     private void UpdateText(string value) {
         if (_textComp == null) return;
         if (value != _textComp.text) _textComp.text = value;
+        UnfuckAll();
+    }
 
+    private void UpdateIcon(Sprite? icon) {
+        if (_icon == null) return;
+        if (icon == null) {
+            _icon.gameObject.SetActive(false);
+        } else {
+            _icon.gameObject.SetActive(true);
+            _icon.sprite = icon;
+        }
+        UnfuckAll();
+    }
+
+    private void UnfuckAll() {
         if (_textObj != null) _textObj.UnfuckLayoutHack();
         if (_content != null) _content.UnfuckLayoutHack();
         if (_wrapper != null) _wrapper.UnfuckLayoutHack();
     }
 
-    /// <summary>
-    /// The method to create a content object.
-    /// Make sure it contains a layout element, so the background can size itself appropriately
-    /// </summary>
-    /// <returns>The GameObject of the content item</returns>
     protected override GameObject CreateContentObject() {
         GameObject obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "TextLayout"));
         _textObj = obj.FindRecursive("Text");
+        _icon = obj.FindRecursive("Icon")?.GetComponent<Image>();
         if (_textObj != null) _textComp = _textObj.GetComponent<TextMeshProUGUI>();
         UpdateText(Text);
+        UpdateIcon(DisplayIcon);
         return obj;
     }
 }
