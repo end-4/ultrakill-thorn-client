@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace ThornClient.System.ClickGUIComponents;
 
 public class SettingDescriptionController : MonoBehaviour {
-    public Setting TargetSetting;
+    public IConfigurableElement TargetSetting;
 
     private void Start() {
         var targetObj = gameObject.FindRecursive("Name", warnings: false);

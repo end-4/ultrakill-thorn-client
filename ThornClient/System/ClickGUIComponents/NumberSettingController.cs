@@ -14,7 +14,7 @@ namespace ThornClient.System.ClickGUIComponents;
 public abstract class NumberSettingController<T> : MonoBehaviour {
     public Setting<T>? TargetSetting;
     private TMP_InputField? _inputField;
-    private ValueScrubController _scrubController;
+    private ValueScrubController? _scrubController;
     private Slider? _slider;
     private string _lastString = string.Empty;
     private int _decimals = 1;
@@ -39,12 +39,12 @@ public abstract class NumberSettingController<T> : MonoBehaviour {
                     _slider.maxValue = Math.Max(range.Item1, range.Item2);
                     _slider.onValueChanged.AddListener(x => { SaveNewValue(Math.Round(x, _decimals).ToString()); });
                 }
+
+                _scrubController = gameObject.GetOrAddComponent<ValueScrubController>();
+                _scrubController.OnScrubStart += SavePrevValue;
+                _scrubController.OnValueScrub += UpdateScrub;
             }
         }
-
-        _scrubController = gameObject.GetOrAddComponent<ValueScrubController>();
-        _scrubController.OnScrubStart += SavePrevValue;
-        _scrubController.OnValueScrub += UpdateScrub;
     }
 
     private void OnDestroy() {
@@ -52,13 +52,16 @@ public abstract class NumberSettingController<T> : MonoBehaviour {
         if (_inputField == null) return;
         _inputField.onSelect.RemoveListener(SavePrevValue);
         _inputField.onEndEdit.RemoveListener(SaveNewValue);
-        _scrubController.OnScrubStart -= SavePrevValue;
-        _scrubController.OnValueScrub -= UpdateScrub;
+        if (_scrubController != null) {
+            _scrubController.OnScrubStart -= SavePrevValue;
+            _scrubController.OnValueScrub -= UpdateScrub;
+        }
     }
 
     private T _beforeScrub;
 
     private void SavePrevValue() {
+        if (TargetSetting == null) return;
         _beforeScrub = TargetSetting.Value;
     }
 

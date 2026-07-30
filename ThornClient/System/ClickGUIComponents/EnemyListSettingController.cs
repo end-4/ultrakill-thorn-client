@@ -39,9 +39,10 @@ public class EnemyListSettingController : MonoBehaviour {
     }
 
     private GameObject? CreateConfigPanel(Setting<EnemyList>? setting) {
-        if (AssetManager.Get<GameObject>(ClickGUI.BundleKey, "EnemyList") == null || setting == null) return null;
+        GameObject? go = AssetManager.Get<GameObject>(ClickGUI.BundleKey, "EnemyList");
+        if (go == null || setting == null) return null;
 
-        var obj = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "EnemyList"));
+        var obj = Instantiate(go);
         if (obj == null) return null;
 
         var ctl = obj.GetOrAddComponent<EnemyListController>();

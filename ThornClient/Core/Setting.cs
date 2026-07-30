@@ -8,11 +8,11 @@ using ThornClient.Core.DataTypes;
 
 namespace ThornClient.Core;
 
-public abstract class Setting {
+public abstract class Setting : IConfigurableElement {
     public string GUID { get; }
     public string Name { get; }
     public string Description { get; }
-    public InterfaceHints? Hints;
+    public InterfaceHints? Hints { get; set; }
     [JsonIgnore] public SettingType Type { get; protected set; }
     [JsonIgnore] public abstract bool IsDefault { get; }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using ThornClient.Core.DataTypes;
+using ThornClient.Core.UI;
 using ThornClient.Managers;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public abstract class Configurable {
     [JsonIgnore] public string GUID;
     [JsonIgnore] public string Name { get; }
     [JsonIgnore] public string Description { get; }
-    [JsonIgnore] public List<Setting> Settings { get; } = [];
+    [JsonIgnore] public List<IConfigurableElement> Elements { get; } = [];
 
     [JsonIgnore] public Setting<Keybind> ToggleKeybind { get; }
     [JsonIgnore] public Setting<bool> ToggleOnRelease { get; }
@@ -63,13 +64,10 @@ public abstract class Configurable {
         UpdateToggleCallbacks();
     }
 
-    /// <summary>
-    /// Swaps the Keybind's behavior loops depending on ToggleOnRelease
-    /// </summary>
     private void UpdateToggleCallbacks() {
         if (ToggleKeybind == null) return;
 
-        // Clear existing listeners to avoid duplicates
+        // Clear existing to avoid dupes
         ToggleKeybind.OnPress -= HandlePress;
         ToggleKeybind.OnRelease -= HandleRelease;
 
@@ -84,7 +82,21 @@ public abstract class Configurable {
     private void HandlePress() => IsEnabled = !IsEnabled;
     private void HandleRelease() => IsEnabled = !IsEnabled;
 
-    protected Setting<T> RegisterSetting<T>(string guid, string name, string description, T defaultValue) {
+    protected void RegisterElement(IConfigurableElement element, SettingGroup? parent = null) {
+        if (parent == null) {
+            Elements.Add(element);
+        } else {
+            parent.Elements.Add(element);
+        }
+    }
+
+    protected SettingGroup CreateGroup(string guid, string name, string description, SettingGroup? parent = null) {
+        var group = new SettingGroup(guid, name, description);
+        RegisterElement(group, parent);
+        return group;
+    }
+
+    protected Setting<T> RegisterSetting<T>(string guid, string name, string description, T defaultValue, SettingGroup? parent = null) {
         var setting = new Setting<T>(guid, name, description, defaultValue);
 
         setting.InternalOnValueChanged += () => { ConfigManager.SaveConfig(this); };
@@ -93,8 +105,14 @@ public abstract class Configurable {
             Managers.InputManager.RegisterKeybindSetting(keybindSetting);
         }
 
-        Settings.Add(setting);
+        RegisterElement(setting, parent);
         return setting;
+    }
+
+    protected ConfigButtonRow RegisterButtonRow(string guid, string name, string description, string[] texts, SettingGroup? parent = null) {
+        var button = new ConfigButtonRow(guid, name, description, texts);
+        RegisterElement(button, parent);
+        return button;
     }
 
     public void Toggle() {

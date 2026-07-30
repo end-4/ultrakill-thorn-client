@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
+using System.Linq;
 using BepInEx;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,6 +30,11 @@ public static class ConfigManager {
         }
     };
 
+    public static void RegisterJsonConverter(JsonConverter converter) {
+        if (SerializerSettings.Converters.Any(c => c.GetType() == converter.GetType())) return;
+        SerializerSettings.Converters.Add(converter);
+    }
+
     private class ConfigDataTransferObject {
         public bool IsEnabled { get; set; }
         public Dictionary<string, JToken> Settings { get; set; } = [];
@@ -37,6 +42,21 @@ public static class ConfigManager {
 
     private static List<Configurable> GetAllConfigurables() {
         return [..ModuleManager.Items];
+    }
+
+    /// <summary>
+    /// Collects settings from the elements list that might contain subgroups
+    /// </summary>
+    /// <param name="elements">The elements list, possibly nested</param>
+    /// <param name="foundSettings">The list to collect settings to</param>
+    private static void CollectSettings(IEnumerable<IConfigurableElement> elements, List<Setting> foundSettings) {
+        foreach (var element in elements) {
+            if (element is Setting setting) {
+                foundSettings.Add(setting);
+            } else if (element is SettingGroup group) {
+                CollectSettings(group.Elements, foundSettings);
+            }
+        }
     }
 
     /// <summary>
@@ -50,7 +70,6 @@ public static class ConfigManager {
     /// Saves a Configurable's settings to disk
     /// </summary>
     public static void SaveConfig(Configurable configurable) {
-        // Plugin.Log.LogInfo($"Saving {configurable.Name} to {GetConfigPath(configurable)}");
         lock (SyncLock) {
             if (_isBatchSyncing || ActiveSyncs.Contains(configurable)) return;
             ActiveSyncs.Add(configurable);
@@ -63,9 +82,11 @@ public static class ConfigManager {
                 IsEnabled = configurable.IsEnabled
             };
 
-            foreach (var setting in configurable.Settings) {
+            var allSettings = new List<Setting>();
+            CollectSettings(configurable.Elements, allSettings);
+
+            foreach (var setting in allSettings) {
                 var rawValue = setting.GetValue();
-                // Plugin.Log.LogInfo($"Setting {setting.Name} -> {rawValue}");
                 if (rawValue != null) {
                     dto.Settings[setting.GUID] = JToken.FromObject(rawValue, JsonSerializer.Create(SerializerSettings));
                 } else {
@@ -100,7 +121,6 @@ public static class ConfigManager {
             lock (SyncLock) {
                 ActiveSyncs.Remove(configurable);
             }
-
             return;
         }
 
@@ -114,16 +134,14 @@ public static class ConfigManager {
                 configurable.Toggle();
             }
 
-            // Plugin.Log.LogInfo($"--- Checking {configurable.GUID}, json: {dto}");
+            var allSettings = new List<Setting>();
+            CollectSettings(configurable.Elements, allSettings);
 
-            foreach (var setting in configurable.Settings) {
-                // Plugin.Log.LogInfo($"  - Setting {setting}");
+            foreach (var setting in allSettings) {
                 if (dto.Settings.TryGetValue(setting.GUID, out var token) && token != null) {
                     try {
-                        // Get the inner type of the Setting (e.g., UnityEngine.Color or Keybind)
                         Type targetType = setting.GetType().GetGenericArguments()[0];
 
-                        // Deserialize directly to the correct type using your serializer settings
                         object? deserializedValue =
                             token.ToObject(targetType, JsonSerializer.Create(SerializerSettings));
 
@@ -236,7 +254,7 @@ public static class ConfigManager {
     /// </summary>
     public static void UpdateMainThreadQueue() {
         while (MainThreadQueue.TryDequeue(out var module)) {
-            // Plugin.Log.LogInfo($"[ConfigManager] Processing hot-reload thread action for: {module.Name}");
+            // Plugin.Log.LogInfo($"[ConfigManager] Processing hot-reload for: {module.Name}");
             LoadConfig(module);
         }
     }

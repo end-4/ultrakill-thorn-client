@@ -36,6 +36,8 @@ public class TestModule : Module {
     public Setting<Baka> FavouriteBaka { get; }
     public Setting<EnemyList> Enemiez { get; }
     public Setting<float> Slippery { get; }
+    public SettingGroup NestedGroup { get; }
+    public SettingGroup DoubleNestedGroup { get; }
 
     public override string[] Tags => ["system", "debug", "developer"];
 
@@ -49,14 +51,23 @@ public class TestModule : Module {
         Carbonara = RegisterSetting("carbonara", "Carbonara color", "Color field description",
             new Color(0.86f, 0.82f, 0.71f, 1f));
         Cutie = RegisterSetting("favouriteCutie", "Favorite cutie", "h", NonEmulatorYuzu.Mako);
-        FavouriteBaka = RegisterSetting("favouriteBaka", "Favourite baka", "popipo popipo", Baka.Miku);
-        Enemiez = RegisterSetting("enemiez", "Funny monsters", "tooltip text!!", new EnemyList());
-        Slippery = RegisterSetting("slippery", "Slipperie", "pls slide", 0.7f);
+
+        NestedGroup = CreateGroup("nestedGroup", "Nested group", "Just a test");
+        FavouriteBaka = RegisterSetting("favouriteBaka", "Favourite baka", "popipo popipo", Baka.Miku, NestedGroup);
+        DoubleNestedGroup = CreateGroup("nestederGroup", "Nestier group", "Nesty testy", NestedGroup);
+        Enemiez = RegisterSetting("enemiez", "Funny monsters", "tooltip text!!", new EnemyList(), NestedGroup);
+        Slippery = RegisterSetting("slippery", "Slipperie", "pls slide", 0.7f, DoubleNestedGroup);
 
         Slippery.Hints = new InterfaceHints {
             Range = Tuple.Create<float, float>(0, 1),
             Decimals = 2,
-        };;
+        };
+
+        var kurwa = RegisterButtonRow("btnRow", "Button Row Name", "Eyyyyy",
+            ["Helium", "Nitrogen", "Tantalum", "Iodine"]);
+        kurwa.OnClick += (int x) => {
+            NotificationSystem.NotifySend("Thorn::Debug", $"Clicked button numba {x}");
+        };
     }
 
     protected override void OnEnable() {

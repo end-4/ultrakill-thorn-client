@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NukeLib.UI;
 using ThornClient.Core;
 using ThornClient.Core.UI;
@@ -10,10 +10,10 @@ using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-internal class ConfigurableWindowController : MonoBehaviour {
+// Quite the same as ConfigurableWindowController, maybe give each configurable a SettingGroup for deduplication?
+public class SettingGroupWindowController : MonoBehaviour {
     private bool _doneSetup = false;
-    public bool IsPopup = false;
-    public Configurable? TargetConfigurable;
+    public SettingGroup TargetGroup;
 
     private void Start() {
         SetupStuff();
@@ -23,43 +23,23 @@ internal class ConfigurableWindowController : MonoBehaviour {
         if (_doneSetup) return;
         _doneSetup = true;
 
-        if (TargetConfigurable == null) return;
+        if (TargetGroup == null) return;
 
         // Header: icon, text, dragging behavior
-        var categoryIcon = gameObject.FindRecursive("Header/TitleButton/TitleIcon").GetComponent<Image>();
-        var categoryText = gameObject.FindRecursive("Header/TitleName").GetComponent<TextMeshProUGUI>();
-        if (TargetConfigurable is Module module) {
-            categoryIcon.sprite = module.Icon;
-        }
+        gameObject.FindRecursive("Header/TitleButton/TitleIcon")!.SetActive(false); // No need icon for subsection
+        var categoryText = gameObject.FindRecursive("Header/TitleName")!.GetComponent<TextMeshProUGUI>();
 
-        categoryText.text = TargetConfigurable.Name;
+        categoryText.text = TargetGroup.Name;
         gameObject.FindRecursive("Header")?.AddComponent<TitlebarDragHandler>();
         var backBtn = gameObject.FindRecursive("Header/TitleButton")?.GetComponent<Button>();
-        gameObject.FindRecursive("Header/TitleButton").GetComponent<Button>().interactable = IsPopup;
-        gameObject.FindRecursive("Header/TitleButton/BackIcon")?.SetActive(IsPopup);
-        if (IsPopup) backBtn.onClick.AddListener(ClickGUI.NavigateBack);
 
-        // Body
-        Transform listBody = gameObject.FindRecursive("Modules").transform; // Note we reuse ModuleCategory prefab for this
+        gameObject.FindRecursive("Header/TitleButton")!.GetComponent<Button>().interactable = true;
+        gameObject.FindRecursive("Header/TitleButton/BackIcon")?.SetActive(true);
+        backBtn!.onClick.AddListener(() => Destroy(gameObject));
 
-        var desc = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleDescription"), listBody);
-        desc.FindRecursive("DescText").GetComponent<TextMeshProUGUI>().text = TargetConfigurable.Description;
-
-        if (TargetConfigurable is not SystemModule) {
-            var enabledButton = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "EnabledButton"), listBody);
-            var enabledButtonComp = enabledButton.AddComponent<EnabledButtonController>();
-            enabledButtonComp.Configurable = TargetConfigurable;
-        }
-
-        if (TargetConfigurable is HudModule hudModule) {
-            var dragArea = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "RemoteDrag"), listBody);
-            var dragComp = dragArea.AddComponent<HudElementPositioningController>();
-            dragComp.TargetModule = hudModule;
-            if (hudModule.UIElement != null) dragComp.target = hudModule.UIElement.transform as RectTransform;
-        }
-
-        Populate(listBody, TargetConfigurable.Elements);
-
+        // Body. Note we're reusing ModuleCategory prefab for this
+        Transform listBody = gameObject.FindRecursive("Modules")!.transform;
+        Populate(listBody, TargetGroup.Elements);
         gameObject.UnfuckLayoutHack();
     }
 
@@ -76,6 +56,7 @@ internal class ConfigurableWindowController : MonoBehaviour {
                     go.AddComponent<SettingDescriptionController>().TargetSetting = setting;
                 }
             } else if (element is SettingGroup || element is ConfigButtonRow) {
+                // TODO
                 wrapper = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "SettingRowWrapper"), parent);
                 if (ConfigurableElementUICreators.MenuUICreators.TryGetValue(element.GetType(), out var createUI)) {
                     var go = createUI(element, wrapper.transform);
