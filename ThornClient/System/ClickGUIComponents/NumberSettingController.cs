@@ -39,7 +39,7 @@ public abstract class NumberSettingController<T> : MonoBehaviour {
                     _slider.maxValue = Math.Max(range.Item1, range.Item2);
                     _slider.onValueChanged.AddListener(x => { SaveNewValue(Math.Round(x, _decimals).ToString()); });
                 }
-
+            } else {
                 _scrubController = gameObject.GetOrAddComponent<ValueScrubController>();
                 _scrubController.OnScrubStart += SavePrevValue;
                 _scrubController.OnValueScrub += UpdateScrub;
