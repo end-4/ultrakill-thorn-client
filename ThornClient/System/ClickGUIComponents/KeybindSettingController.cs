@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Notiffy.API;
+using NukeLib.Game.Controls;
 using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Core;
@@ -12,6 +13,7 @@ using UnityEngine.UI;
 namespace ThornClient.System.ClickGUIComponents;
 
 public class KeybindSettingController : MonoBehaviour {
+    private const string PauseKey = "Thorn_ClickGUI_KeybindListener";
     private static readonly Color NormalColor = new Color(1, 1, 1);
     private static Color ListeningColor => ThornModule.Instance?.Accent.Value ?? new Color(1f, 0.4048f, 0f);
 
@@ -42,6 +44,7 @@ public class KeybindSettingController : MonoBehaviour {
 
     private void ActivateKeyListen() {
         ThornClient.Managers.InputManager.BlockInput = true;
+        Pauser.Pause(true, PauseKey);
         if (_listeningInstance != null) {
             _listeningInstance.SetBorderColor(false);
         }
@@ -54,6 +57,7 @@ public class KeybindSettingController : MonoBehaviour {
 
     private void DeactivateKeyListen() {
         ThornClient.Managers.InputManager.BlockInput = false;
+        GameStateManager.Instance.PopState(PauseKey);
         if (!IsListening()) return;
         _listeningInstance = null;
 
@@ -64,6 +68,7 @@ public class KeybindSettingController : MonoBehaviour {
             _caughtKey = _caughtModifier;
             _caughtModifier = KeyCode.None;
         }
+
         TargetSetting.Value = new Keybind(key: _caughtKey, modifier: _caughtModifier);
     }
 
@@ -79,6 +84,7 @@ public class KeybindSettingController : MonoBehaviour {
         if (modKey != KeyCode.None) {
             newText += modKey.ToString();
         }
+
         if (key != KeyCode.None) {
             if (newText.Length > 0) newText += "+";
             newText += key.ToString();
@@ -89,6 +95,7 @@ public class KeybindSettingController : MonoBehaviour {
         if (_displayText.text != newText) {
             _displayText.text = newText;
         }
+
         gameObject.UnfuckLayoutHack();
     }
 
@@ -103,27 +110,32 @@ public class KeybindSettingController : MonoBehaviour {
         if (!IsListening()) return;
 
         Event current = Event.current;
-        switch (current.keyCode)
-        {
-            case KeyCode.None:
-                return;
-            case KeyCode.Escape:
-                DeactivateKeyListen();
-                return;
-            default:
-                if (current.type == EventType.KeyDown) {
-                    if (current.keyCode.IsModifier()) {
-                        _caughtModifier = current.keyCode;
-                    } else {
-                        _caughtKey = current.keyCode;
-                    }
-                    UpdateKeyDisplay();
-                } else if (current.type == EventType.KeyUp) {
-                    DeactivateKeyListen();
-                }
 
-                return;
+        // Special/nothing
+        if (current.isKey && current.keyCode == KeyCode.None) return;
+        if (current.keyCode == KeyCode.Escape) {
+            DeactivateKeyListen();
+            return;
         }
+
+        // Normal
+        if (current.type is EventType.KeyDown or EventType.MouseDown or EventType.ScrollWheel) {
+            KeyCode currKey = current.keyCode;
+            if (current.isMouse) currKey = KeyCode.Mouse0 + current.button;
+            if (currKey.IsModifier()) {
+                _caughtModifier = currKey;
+            } else {
+                _caughtKey = currKey;
+            }
+
+            UpdateKeyDisplay();
+        }
+
+        if (current.type is EventType.KeyUp or EventType.MouseUp or EventType.ScrollWheel) {
+            DeactivateKeyListen();
+        }
+
+        return;
 
         // NotificationSystem.NotifySend("Keybind debug", $"Type {current.type.ToString()}, code {current.keyCode.ToString()}, modifiers {current.modifiers}");
     }
