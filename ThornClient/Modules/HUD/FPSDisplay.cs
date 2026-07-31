@@ -1,5 +1,6 @@
 ﻿using System;
 using ThornClient.Core;
+using ThornClient.Core.ConfigurableElements;
 using ThornClient.Managers;
 using ThornClient.System;
 using UnityEngine;

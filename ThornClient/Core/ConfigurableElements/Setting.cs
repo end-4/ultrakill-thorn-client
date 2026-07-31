@@ -6,7 +6,7 @@ using UnityEngine;
 using NukeLib.Utils;
 using ThornClient.Core.DataTypes;
 
-namespace ThornClient.Core;
+namespace ThornClient.Core.ConfigurableElements;
 
 public abstract class Setting : IConfigurableElement {
     public string GUID { get; }

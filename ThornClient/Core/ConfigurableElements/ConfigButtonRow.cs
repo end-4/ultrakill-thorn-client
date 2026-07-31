@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ThornClient.Core.UI;
+namespace ThornClient.Core.ConfigurableElements;
 
 public class ConfigButtonRow : IConfigurableElement {
     public string GUID { get; }

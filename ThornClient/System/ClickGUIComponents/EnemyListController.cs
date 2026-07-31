@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using NukeLib.UI;
 using ThornClient.Core;
+using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
 using TMPro;
 using UnityEngine;

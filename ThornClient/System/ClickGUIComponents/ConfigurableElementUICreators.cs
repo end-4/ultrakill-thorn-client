@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using ThornClient.Core;
+using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
-using ThornClient.Core.UI;
+
 using ThornClient.Managers;
 using UnityEngine;
 using Object = UnityEngine.Object;

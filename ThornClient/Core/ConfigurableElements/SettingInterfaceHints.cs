@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ThornClient.Core;
+namespace ThornClient.Core.ConfigurableElements;
 
 public record InterfaceHints {
     public Tuple<float, float>? Range;

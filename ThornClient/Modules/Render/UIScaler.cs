@@ -2,6 +2,7 @@
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core;
+using ThornClient.Core.ConfigurableElements;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using ThornClient.Managers;

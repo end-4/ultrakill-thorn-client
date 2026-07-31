@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ThornClient.Core;
+namespace ThornClient.Core.ConfigurableElements;
 
 public class SettingGroup : IConfigurableElement {
     public string GUID { get; }

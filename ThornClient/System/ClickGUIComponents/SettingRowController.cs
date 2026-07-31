@@ -1,6 +1,7 @@
 ﻿using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Core;
+using ThornClient.Core.ConfigurableElements;
 using ThornClient.Managers;
 using UnityEngine;
 using UnityEngine.UI;

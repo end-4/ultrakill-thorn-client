@@ -5,6 +5,7 @@ using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Managers;
 using ThornClient.Core;
+using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;

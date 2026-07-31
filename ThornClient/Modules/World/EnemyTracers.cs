@@ -4,6 +4,7 @@ using ThornClient.System;
 using UnityEngine;
 using System.Collections.Generic;
 using ThornClient.Core;
+using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
 
 namespace ThornClient.Modules.World;

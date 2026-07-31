@@ -2,6 +2,7 @@
 using ThornClient.System;
 using UnityEngine;
 using ThornClient.Core;
+using ThornClient.Core.ConfigurableElements;
 
 namespace ThornClient.Modules.Player;
 

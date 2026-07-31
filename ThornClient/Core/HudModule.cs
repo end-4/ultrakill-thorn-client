@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using ThornClient.Core.ConfigurableElements;
 using ThornClient.HUD.HUDComponents;
 using ThornClient.Managers;
 using UnityEngine;

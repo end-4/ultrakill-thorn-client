@@ -3,6 +3,7 @@ using System.Linq;
 using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Core;
+using ThornClient.Core.ConfigurableElements;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
