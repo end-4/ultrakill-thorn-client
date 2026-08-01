@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 namespace ThornClient.Modules.HUD;
 
 public class InputGeneral : FramedHudModule {
-    public override string[] Tags => ["keyboard", "movement", "general"];
+    public override string[] Tags => ["keyboard", "movement", "punch", "controller"];
 
     public InputGeneral() : base("thorn.inputGeneral", "Input - General",
         "Shows movement-related, fist, and variant cycle inputs") {
@@ -23,10 +23,9 @@ public class InputGeneral : FramedHudModule {
     private class InputGeneralController : MonoBehaviour {
         private void HookButtonVanilla(string path, InputActionState targetInput) {
             var btn = this.gameObject.FindRecursive(path);
-            if (btn != null) {
-                var comp = btn.GetOrAddComponent<VanillaKeyInputSyncer>();
-                comp.TargetInput = targetInput;
-            }
+            if (btn == null) return;
+            var comp = btn.GetOrAddComponent<VanillaKeyInputSyncer>();
+            comp.TargetInput = targetInput;
         }
 
         private void UpdateKeyPressed(KeyInputController? keyInputController, bool pressed) {
@@ -43,7 +42,7 @@ public class InputGeneral : FramedHudModule {
         private KeyInputController? _fistSwap;
 
         private void Start() {
-            var inputSource = MonoSingleton<InputManager>.Instance?.InputSource;
+            var inputSource = InputManager.Instance?.InputSource;
             if (inputSource == null) return;
 
             // Movement
@@ -56,7 +55,7 @@ public class InputGeneral : FramedHudModule {
             HookButtonVanilla("Col/General/MainCol/TopRow/VariantSwitch/Prev", inputSource.PreviousVariation);
             HookButtonVanilla("Col/General/MainCol/TopRow/VariantSwitch/Next", inputSource.NextVariation);
 
-            // Punch
+            // Punch. Controlled in Update()
             _feedbacker = gameObject.FindRecursive("Col/General/FistCol/PunchRow/KeyFeedbacker")?.AddComponent<KeyInputController>();
             _knuckleblaster = gameObject.FindRecursive("Col/General/FistCol/PunchRow/KeyKnuckleblaster")?.AddComponent<KeyInputController>();
             _fistSwap = gameObject.FindRecursive("Col/General/FistCol/SwapRow/KeySwap")?.AddComponent<KeyInputController>();
@@ -66,9 +65,6 @@ public class InputGeneral : FramedHudModule {
             _d = gameObject.FindRecursive("Col/General/MainCol/BottomRow/KeyDown")?.AddComponent<KeyInputController>();
             _l = gameObject.FindRecursive("Col/General/MainCol/BottomRow/KeyLeft")?.AddComponent<KeyInputController>();
             _r = gameObject.FindRecursive("Col/General/MainCol/BottomRow/KeyRight")?.AddComponent<KeyInputController>();
-        }
-
-        private void OnDisable() {
         }
 
         private void Update() {

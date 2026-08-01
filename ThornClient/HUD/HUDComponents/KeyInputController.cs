@@ -9,6 +9,12 @@ namespace ThornClient.HUD.HUDComponents;
 /// Component to control the appearance of a key. Just set the Pressed property as needed.
 /// </summary>
 public class KeyInputController : MonoBehaviour {
+
+    public Sprite baseSprite = AssetManager.Get<Sprite>(HudManager.BundleKey, "Round_BorderLarge");
+    public Sprite baseSpritePressed = AssetManager.Get<Sprite>(HudManager.BundleKey, "Round_FillLarge");
+    public Color iconColor = Color.white;
+    public Color iconColorPressed = Color.black;
+
     private Image? _border;
     private Image? _icon;
 
@@ -24,21 +30,20 @@ public class KeyInputController : MonoBehaviour {
         }
     } = false;
 
-    private void Start() {
+    protected virtual void Start() {
         _border = gameObject.GetComponent<Image>();
-        _icon = gameObject.FindRecursive("Image")?.GetComponent<Image>();
+        _icon = gameObject.FindRecursive("Image", warnings: false)?.GetComponent<Image>();
         UpdateState(IsPressed);
     }
 
     private void UpdateState(bool pressed) {
         if (_border != null) {
-            var targetSprite =
-                AssetManager.Get<Sprite>(HudManager.BundleKey, pressed ? "Round_FillLarge" : "Round_BorderLarge");
+            var targetSprite = pressed ? baseSpritePressed : baseSprite;
             if (_border.sprite != targetSprite) _border.sprite = targetSprite;
         }
 
         if (_icon != null) {
-            var targetColor = pressed ? Color.black : Color.white;
+            var targetColor = pressed ? iconColorPressed : iconColor;
             if (_icon.color != targetColor) _icon.color = targetColor;
         }
     }

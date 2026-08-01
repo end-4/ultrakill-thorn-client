@@ -1,4 +1,5 @@
 ﻿using System;
+using NukeLib.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,9 +36,7 @@ public class HudVariantColorSyncer : MonoBehaviour {
 
     public void UpdateColor() {
         if (_target == null) return;
-        var colSet = ColorBlindSettings.Instance;
-        if (colSet == null) return;
-        var color = colSet.variationColors[Variation] * ColorMultiplier;
+        var color = ColorUtils.GetWeaponVariantColor(Variation) * ColorMultiplier;
         _target.color = new Color(color.r, color.g, color.b);
     }
 }
