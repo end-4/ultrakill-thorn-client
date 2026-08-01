@@ -42,8 +42,12 @@ public abstract class TextHudModule : FramedHudModule {
 
     private void UpdateText(string value) {
         if (_textComp == null) return;
-        if (value != _textComp.text) _textComp.text = value;
-        UnfuckAll();
+        // bool newWidth = value.Length != _textComp.text.Length;
+        if (value != _textComp.text) {
+            _textComp.text = value;
+            UnfuckAll();
+        }
+        // if (newWidth) UnfuckAll();
     }
 
     private void UpdateIcon(Sprite? icon) {
@@ -54,7 +58,6 @@ public abstract class TextHudModule : FramedHudModule {
             _icon.gameObject.SetActive(true);
             _icon.sprite = icon;
         }
-        UnfuckAll();
     }
 
     private void UnfuckAll() {

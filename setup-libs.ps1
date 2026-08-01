@@ -31,6 +31,7 @@ $ukDlls = @(
     "Assembly-CSharp.dll"
     "Newtonsoft.Json.dll"
     "Unity.Addressables.dll"
+    "Unity.InputSystem.dll"
     "Unity.ResourceManager.dll"
     "Unity.TextMeshPro.dll"
     "UnityEngine.dll"

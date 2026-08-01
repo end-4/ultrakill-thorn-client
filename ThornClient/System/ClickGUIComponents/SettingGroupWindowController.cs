@@ -56,7 +56,6 @@ public class SettingGroupWindowController : MonoBehaviour {
                     go.AddComponent<SettingDescriptionController>().TargetSetting = setting;
                 }
             } else if (element is SettingGroup || element is ConfigButtonRow) {
-                // TODO
                 wrapper = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "SettingRowWrapper"), parent);
                 if (ConfigurableElementUICreators.MenuUICreators.TryGetValue(element.GetType(), out var createUI)) {
                     var go = createUI(element, wrapper.transform);
