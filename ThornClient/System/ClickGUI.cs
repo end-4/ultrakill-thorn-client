@@ -46,9 +46,11 @@ internal class ClickGUI : SystemModule {
     private readonly Stack<GameObject> _panelStack = new();
     private GameObject? _tooltip;
     private GameObject? _tabBarButtonRow;
-    private SearchWindowController? _searchController;
+    private ModuleSearchWindowController? _moduleSearchController;
+    private ModuleSearchWindowController? _hudModuleSearchController;
     private List<Tuple<string, GameObject>> _tabPages = new();
     private const string ModuleTabName = "Modules";
+    private const string HudTabName = "HUD";
     private static readonly Vector2 PageHiddenOffset = Vector2.down * 15;
 
     private static OptionsManager? opts => OptionsManager.Instance;
@@ -83,7 +85,7 @@ internal class ClickGUI : SystemModule {
         _settingsPage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
 
         _tabPages.Add(Tuple.Create(ModuleTabName, _modulePage));
-        _tabPages.Add(Tuple.Create("HUD", _hudPage));
+        _tabPages.Add(Tuple.Create(HudTabName, _hudPage));
         _tabPages.Add(Tuple.Create("Settings", _settingsPage));
         _lastTabName = "Modules";
 
@@ -101,7 +103,8 @@ internal class ClickGUI : SystemModule {
 
         var searchWindowObj = Object.Instantiate(searchPrefab);
         AddToLayoutedPage(_modulePage, searchWindowObj);
-        _searchController = searchWindowObj.AddComponent<SearchWindowController>();
+        _moduleSearchController = searchWindowObj.AddComponent<ModuleSearchWindowController>();
+        _moduleSearchController.ModuleFilter = module => (module is not SystemModule && module is not HudModule);
 
         _modulePage.UnfuckLayoutHack();
 
@@ -116,6 +119,12 @@ internal class ClickGUI : SystemModule {
         hudCatObj.UnfuckLayoutHack();
         hudCatRect.pivot = new Vector2(0.5f, 0.5f);
         hudCatRect.localPosition = new Vector3(0f, 0f, 0f);
+
+        var hudSearchWindowObj = Object.Instantiate(searchPrefab);
+        AddToLayoutedPage(_hudPage, hudSearchWindowObj);
+        _hudModuleSearchController = hudSearchWindowObj.AddComponent<ModuleSearchWindowController>();
+        _hudModuleSearchController.ModuleFilter = module => (module is HudModule);
+
         _hudPage.UnfuckLayoutHack();
 
         // Populate page: Settings
@@ -176,10 +185,8 @@ internal class ClickGUI : SystemModule {
         if (ThornModule.Instance?.MenuPausesGame.Value ?? true) Pauser.Pause(true, PauseGameStateKey);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        // SetTab(_lastTabName);
-        if (_lastTabName == ModuleTabName) {
-            if (_searchController != null) _searchController.FocusSearch();
-        }
+
+        SetTab(_lastTabName);
     }
 
     protected override void OnDisable() {
@@ -273,8 +280,10 @@ internal class ClickGUI : SystemModule {
             }
         }
 
-        if (tabName == ModuleTabName) {
-            if (Instance._searchController != null) Instance._searchController.FocusSearch();
+        if (_lastTabName == ModuleTabName) {
+            if (Instance._moduleSearchController != null) Instance._moduleSearchController.FocusSearch();
+        } else if (_lastTabName == HudTabName) {
+            if (Instance._hudModuleSearchController != null) Instance._hudModuleSearchController.FocusSearch();
         }
     }
 

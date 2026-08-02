@@ -11,7 +11,7 @@ using UnityEngine.EventSystems;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-internal class SearchWindowController : MonoBehaviour {
+internal class ModuleSearchWindowController : MonoBehaviour {
     public int maxResults = 10;
     private bool _populated = false;
     private TMP_InputField? _input;
@@ -20,6 +20,18 @@ internal class SearchWindowController : MonoBehaviour {
 
     private Dictionary<string, GameObject> _allModules = new();
     private Searchable[]? _searchables;
+
+    /// <summary>
+    /// Filter predicate. Returns true if the module should be included in search results.
+    /// Defaults to true (includes everything)
+    /// </summary>
+    public Predicate<Module> ModuleFilter {
+        get;
+        set {
+            field = value;
+            Repopulate();
+        }
+    } = _ => true;
 
     private void OnEnable() {
         var inputObj = gameObject.FindRecursive("Modules/Input");
@@ -35,6 +47,23 @@ internal class SearchWindowController : MonoBehaviour {
         if (_input != null) _input.onValueChanged.RemoveListener(Query);
     }
 
+    /// <summary>
+    /// Call this if you change <see cref="ModuleFilter"/> dynamically while the UI is already active.
+    /// </summary>
+    private void Repopulate() {
+        _populated = false;
+
+        // Clear existing generated buttons
+        foreach (var button in _allModules.Values) {
+            if (button != null) Destroy(button);
+        }
+        _allModules.Clear();
+        _searchables = null;
+
+        PopulateIfNeeded();
+        Query(_input != null ? _input.text : "");
+    }
+
     public void FocusSearch() {
         if (_input != null) {
             EventSystem.current.SetSelectedGameObject(_input.gameObject, null);
@@ -46,8 +75,10 @@ internal class SearchWindowController : MonoBehaviour {
         if (_populated) return;
         _populated = true;
 
-        foreach (var module in ModuleManager.Items) {
-            if (module is SystemModule or HudModule) continue;
+        // Filter items based on the dynamic ModuleFilter predicate
+        var filteredModules = ModuleManager.Items.Where(m => ModuleFilter(m)).ToList();
+
+        foreach (var module in filteredModules) {
             var button = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleButton"),
                 _results?.transform);
             button.UnfuckLayoutHack();
@@ -62,22 +93,19 @@ internal class SearchWindowController : MonoBehaviour {
             }
         }
 
-        _searchables = ModuleManager.Items
-            .Where(item => !(item is SystemModule or HudModule))
+        _searchables = filteredModules
             .Select(module => new Searchable {
-            Primary = module.Name,
-            Secondaries = new Dictionary<string, string> {
-                { "description", module.Description },
-                { "tags", string.Join(" ", module.Tags ?? []) },
-            }
-        }).ToArray();
+                Primary = module.Name,
+                Secondaries = new Dictionary<string, string> {
+                    { "description", module.Description },
+                    { "tags", string.Join(" ", module.Tags ?? []) },
+                }
+            }).ToArray();
     }
-
 
     private void Query(string query) {
         if (_searchables == null) return;
         Searchable[] results = query.Length > 0 ? Search.Invoke(query, _searchables) : [];
-        // Plugin.Log.LogInfo($"Query: {query} -> ({results.Length} results)");
 
         foreach (var button in _allModules.Values) {
             button.UnfuckLayoutHack();
@@ -87,9 +115,10 @@ internal class SearchWindowController : MonoBehaviour {
         for (int i = 0; i < results.Length; i++) {
             if (i >= maxResults) break;
             var result = results[i];
-            var item = _allModules[result.Primary];
-            item.SetActive(true);
-            item.transform.SetAsLastSibling();
+            if (_allModules.TryGetValue(result.Primary, out var item)) {
+                item.SetActive(true);
+                item.transform.SetAsLastSibling();
+            }
         }
 
         if (_results != null) _results.UnfuckLayoutHack();
