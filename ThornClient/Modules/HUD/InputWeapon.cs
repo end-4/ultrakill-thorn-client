@@ -8,6 +8,7 @@ using UnityEngine;
 using ThornClient.HUD;
 using ThornClient.HUD.HUDComponents;
 using ThornClient.Modules.Player;
+using ThornClient.System;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -15,6 +16,7 @@ using Object = UnityEngine.Object;
 namespace ThornClient.Modules.HUD;
 
 public class InputWeapon : FramedHudModule {
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "weapon_wheel");
     public override string[] Tags => ["keyboard", "mouse", "weapon", "controller"];
 
     public InputWeapon() : base("thorn.inputWeapon", "Input - Weapons",

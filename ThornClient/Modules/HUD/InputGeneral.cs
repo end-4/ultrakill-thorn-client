@@ -3,11 +3,13 @@ using ThornClient.Managers;
 using UnityEngine;
 using ThornClient.HUD;
 using ThornClient.HUD.HUDComponents;
+using ThornClient.System;
 using Object = UnityEngine.Object;
 
 namespace ThornClient.Modules.HUD;
 
 public class InputGeneral : FramedHudModule {
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "wasd");
     public override string[] Tags => ["keyboard", "movement", "punch", "controller"];
 
     public InputGeneral() : base("thorn.inputGeneral", "Input - General",

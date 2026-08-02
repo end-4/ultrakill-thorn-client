@@ -3,11 +3,13 @@ using ThornClient.Managers;
 using UnityEngine;
 using ThornClient.HUD;
 using ThornClient.HUD.HUDComponents;
+using ThornClient.System;
 using Object = UnityEngine.Object;
 
 namespace ThornClient.Modules.HUD;
 
 public class InputMouse : FramedHudModule {
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "mouse");
     public override string[] Tags => ["keyboard", "mouse", "fire", "input overlay", "controller"];
 
     public InputMouse() : base("thorn.inputMouse", "Input - Mouse",
