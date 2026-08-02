@@ -75,5 +75,10 @@ public static class ConfigurableElementUICreators {
             go.AddComponent<WindowedGroupSettingController>().TargetGroup = (SettingGroup)configurableElement;
             return go;
         },
+        [typeof(ConfigHeader)] = (configurableElement, parent) => {
+            var go = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "HeaderSetting"), parent);
+            go.AddComponent<HeaderSettingController>().TargetElement = (ConfigHeader)configurableElement;
+            return go;
+        },
     };
 }

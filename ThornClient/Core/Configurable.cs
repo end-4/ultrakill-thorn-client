@@ -115,6 +115,18 @@ public abstract class Configurable {
         return button;
     }
 
+    protected ConfigHeader RegisterHeader(string guid, string name, string description = "", HeaderType headerType = HeaderType.H1, SettingGroup? parent = null) {
+        var header = new ConfigHeader(guid, name, description) {
+            FontSize = headerType switch {
+                HeaderType.H1 => 16,
+                HeaderType.H2 => 13,
+                _ => 16
+            }
+        };
+        RegisterElement(header, parent);
+        return header;
+    }
+
     public void Toggle() {
         IsEnabled = !IsEnabled;
     }

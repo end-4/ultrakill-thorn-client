@@ -53,9 +53,12 @@ public class TestModule : Module {
             new Color(0.86f, 0.82f, 0.71f, 1f));
         Cutie = RegisterSetting("favouriteCutie", "Favorite cutie", "h", NonEmulatorYuzu.Mako);
 
+        RegisterHeader("beyondBasics", "Beyond basics");
+        RegisterHeader("subcat", "Subcategory", headerType: HeaderType.H2);
         NestedGroup = CreateGroup("nestedGroup", "Nested group", "Just a test");
         FavouriteBaka = RegisterSetting("favouriteBaka", "Favourite baka", "popipo popipo", Baka.Miku, NestedGroup);
         DoubleNestedGroup = CreateGroup("nestederGroup", "Nestier group", "Nesty testy", NestedGroup);
+        RegisterHeader("subcat2", "Subcategory two", headerType: HeaderType.H2);
         Enemiez = RegisterSetting("enemiez", "Funny monsters", "tooltip text!!", new EnemyList(), NestedGroup);
         Slippery = RegisterSetting("slippery", "Slipperie", "pls slide", 0.7f, DoubleNestedGroup);
 

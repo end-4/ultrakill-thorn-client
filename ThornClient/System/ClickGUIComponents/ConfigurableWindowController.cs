@@ -26,9 +26,9 @@ internal class ConfigurableWindowController : MonoBehaviour {
         if (TargetConfigurable == null) return;
 
         // Header: icon, text, dragging behavior
-        var categoryIcon = gameObject.FindRecursive("Header/TitleButton/TitleIcon").GetComponent<Image>();
-        var categoryText = gameObject.FindRecursive("Header/TitleName").GetComponent<TextMeshProUGUI>();
-        if (TargetConfigurable is Module module) {
+        var categoryIcon = gameObject.FindRecursive("Header/TitleButton/TitleIcon")?.GetComponent<Image>();
+        var categoryText = gameObject.FindRecursive("Header/TitleName")?.GetComponent<TextMeshProUGUI>();
+        if (TargetConfigurable is Module module && categoryIcon != null) {
             categoryIcon.sprite = module.Icon;
         }
 
@@ -75,11 +75,11 @@ internal class ConfigurableWindowController : MonoBehaviour {
                     GameObject go = createUI(setting, wrapper.transform);
                     go.AddComponent<SettingDescriptionController>().TargetSetting = setting;
                 }
-            } else if (element is SettingGroup || element is ConfigButtonRow) {
+            } else if (element is SettingGroup or ConfigButtonRow or ConfigHeader) {
                 wrapper = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "SettingRowWrapper"), parent);
                 if (ConfigurableElementUICreators.MenuUICreators.TryGetValue(element.GetType(), out var createUI)) {
                     var go = createUI(element, wrapper.transform);
-                    go.AddComponent<SettingDescriptionController>().TargetSetting = element;
+                    if (element is not ConfigHeader) go.AddComponent<SettingDescriptionController>().TargetSetting = element;
                 }
             }
 
