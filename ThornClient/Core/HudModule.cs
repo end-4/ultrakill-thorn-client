@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using NukeLib.UI;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.HUD.HUDComponents;
 using ThornClient.Managers;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace ThornClient.Core;
 
@@ -116,6 +118,11 @@ public abstract class HudModule : Module {
         // Plugin.Log.LogInfo($"{GetType().Name} reparenting to {newSurface}");
         _wrapperRect.SetParent(surfaceGo.transform, false);
         _wrapperRect.localScale = DefaultScale[newSurface];
+
+        // Allow showing over fist
+        _wrapperRect.gameObject.SetLayerRecursive(LayerMask.NameToLayer("AlwaysOnTop"));
+        var hudMaterial = Addressables.LoadAssetAsync<Material>("Assets/Materials/HUDMaterial.mat").WaitForCompletion();
+        _wrapperRect.gameObject.SetMaterialRecursive(hudMaterial);
     }
 
     /// <summary>

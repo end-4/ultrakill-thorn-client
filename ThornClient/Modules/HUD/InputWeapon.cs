@@ -91,7 +91,7 @@ public class InputWeapon : FramedHudModule {
                     3 => inputSource.Actions.Weapon.Railcannon,
                     4 => inputSource.Actions.Weapon.RocketLauncher,
                     5 => inputSource.Actions.Weapon.SpawnerArm,
-                    _ => _vanillaInputAction
+                    _ => null
                 };
             }
             return _vanillaInputAction != null && _vanillaInputAction.IsPressed();
