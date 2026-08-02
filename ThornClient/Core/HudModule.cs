@@ -122,7 +122,10 @@ public abstract class HudModule : Module {
         // Allow showing over fist
         _wrapperRect.gameObject.SetLayerRecursive(LayerMask.NameToLayer("AlwaysOnTop"));
         var hudMaterial = Addressables.LoadAssetAsync<Material>("Assets/Materials/HUDMaterial.mat").WaitForCompletion();
-        _wrapperRect.gameObject.SetMaterialRecursive(hudMaterial);
+        _wrapperRect.gameObject.SetImageMaterialRecursive(hudMaterial);
+        var hudTextMaterial = Addressables.LoadAssetAsync<Material>("Assets/Fonts/VCR_OSD_MONO Overlay.mat").WaitForCompletion();
+        _wrapperRect.gameObject.SetTextMaterialRecursive(hudTextMaterial);
+
     }
 
     /// <summary>
