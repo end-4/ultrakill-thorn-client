@@ -287,6 +287,22 @@ internal class ClickGUI : SystemModule {
         }
     }
 
+    /// <summary>
+    /// Cycles through the tabs by an offset (e.g. +1 for next, -1 for previous).
+    /// </summary>
+    /// <param name="diff">The number of steps</param>
+    public static void CycleTab(int diff) {
+        if (Instance == null || Instance._tabPages.Count == 0 || !Instance.IsEnabled) return;
+
+        int currentIndex = Instance._tabPages.FindIndex(p => p.Item1 == _lastTabName);
+        if (currentIndex == -1) currentIndex = 0;
+
+        int totalCount = Instance._tabPages.Count;
+        int newIndex = ((currentIndex + diff) % totalCount + totalCount) % totalCount;
+
+        SetTab(Instance._tabPages[newIndex].Item1);
+    }
+
     private static string _lastTabName = "";
 
     /// <summary>
