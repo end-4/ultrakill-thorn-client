@@ -20,12 +20,12 @@ public class EnemyTracers : Module {
 
     public EnemyTracers() : base("thorn.enemyTracers", "Enemy Tracers", "Draws lines from you to enemies",
         ModuleCategory.World) {
-        TracerColor = RegisterSetting("tracerColor", "Tracer Color", "Color used for the trace lines",
+        TracerColor = CreateSetting("tracerColor", "Tracer Color", "Color used for the trace lines",
             new Color(0.65f, 0.95f, 0.89f, 0.5f));
-        LineThickness = RegisterSetting("lineThickness", "Line Thickness", "The pixel width of the tracer lines", 2f);
-        EnemyCountThreshold = RegisterSetting("enemyCountThreshold", "Enemy Count Threshold",
+        LineThickness = CreateSetting("lineThickness", "Line Thickness", "The pixel width of the tracer lines", 2f);
+        EnemyCountThreshold = CreateSetting("enemyCountThreshold", "Enemy Count Threshold",
             "Display tracers when there are this many enemies left", 5);
-        ForceTraceEnemies = RegisterSetting("forceTraceEnemies", "Force Trace Enemies",
+        ForceTraceEnemies = CreateSetting("forceTraceEnemies", "Force Trace Enemies",
             "Always trace these enemy types regardless of the total count/threshold. Useful for e.g. Mindflayers",
             new EnemyList());
     }

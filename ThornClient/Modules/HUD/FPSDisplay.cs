@@ -16,8 +16,8 @@ public class FPSDisplay : TextHudModule {
     public override string[] Tags => ["performance", "frame"];
 
     public FPSDisplay() : base("thorn.fpsDisplay", "FPS", "Shows framerate") {
-        ShowIcon = RegisterSetting("showIcon", "Show icon", "Shows an icon next to the text", true);
-        ShowFpsText = RegisterSetting("showFpsText", "Show \"FPS\" text", "Makes the indicator say \"FPS:60\" instead of \"60\"", true);
+        ShowIcon = CreateSetting("showIcon", "Show icon", "Shows an icon next to the text", true);
+        ShowFpsText = CreateSetting("showFpsText", "Show \"FPS\" text", "Makes the indicator say \"FPS:60\" instead of \"60\"", true);
 
         UpdateDisplayIcon();
         ShowIcon.OnChanged += UpdateDisplayIcon;

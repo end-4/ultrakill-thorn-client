@@ -94,10 +94,10 @@ public abstract class Configurable {
 
         if (hasToggling) {
             var defaultBind = new Keybind(defaultKey, modifier: defaultModifier);
-            ToggleKeybind = RegisterSetting("toggleKeybind", "Toggle Keybind",
+            ToggleKeybind = CreateSetting("toggleKeybind", "Toggle Keybind",
                 "The key combo used to turn this feature on and off", defaultBind);
 
-            ToggleOnRelease = RegisterSetting(
+            ToggleOnRelease = CreateSetting(
                 "toggleOnRelease",
                 "Toggle On Release",
                 "Acts as a temporary hold-to-(de)activate when enabled",
@@ -165,7 +165,7 @@ public abstract class Configurable {
     /// <param name="defaultValue">The default value</param>
     /// <param name="parent">The parent group to register the setting under. If null, the setting will be registered at the root level.</param>
     /// <returns></returns>
-    protected Setting<T> RegisterSetting<T>(string guid, string name, string description, T defaultValue,
+    protected Setting<T> CreateSetting<T>(string guid, string name, string description, T defaultValue,
         SettingGroup? parent = null) {
         var setting = new Setting<T>(guid, name, description, defaultValue);
 
@@ -189,7 +189,7 @@ public abstract class Configurable {
     /// <param name="texts">The texts on the buttons</param>
     /// <param name="parent">The parent group to register the setting under. If null, the setting will be registered at the root level.</param>
     /// <returns></returns>
-    protected ConfigButtonRow RegisterButtonRow(string guid, string name, string description, string[] texts, SettingGroup? parent = null) {
+    protected ConfigButtonRow CreateButtonRow(string guid, string name, string description, string[] texts, SettingGroup? parent = null) {
         var button = new ConfigButtonRow(guid, name, description, texts);
         RegisterElement(button, parent);
         return button;
@@ -204,7 +204,7 @@ public abstract class Configurable {
     /// <param name="headerType">The type, as in size, like H1 or H2</param>
     /// <param name="parent">The parent group to register the setting under. If null, the setting will be registered at the root level.</param>
     /// <returns></returns>
-    protected ConfigHeader RegisterHeader(string guid, string name, string description = "", HeaderType headerType = HeaderType.H1, SettingGroup? parent = null) {
+    protected ConfigHeader CreateHeader(string guid, string name, string description = "", HeaderType headerType = HeaderType.H1, SettingGroup? parent = null) {
         var header = new ConfigHeader(guid, name, description) {
             FontSize = headerType switch {
                 HeaderType.H1 => 16,

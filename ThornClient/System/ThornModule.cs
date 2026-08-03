@@ -22,7 +22,7 @@ internal class ThornModule : SystemModule {
     public ThornModule() : base("thorn.thorn", "Thorn", "General settings") {
         if (Instance != null) return;
         Instance = this;
-        OpenClickGUI = RegisterSetting("openClickGui", "Open GUI keybind", "Keybind to open Thorn's ClickGUI interface",
+        OpenClickGUI = CreateSetting("openClickGui", "Open GUI keybind", "Keybind to open Thorn's ClickGUI interface",
             new Keybind(KeyCode.RightShift));
         OpenClickGUI.OnPress += () => {
             // Plugin.Log.LogInfo("Opening ClickGUI");
@@ -31,17 +31,17 @@ internal class ThornModule : SystemModule {
         };
 
         var otherBinds = CreateGroup("otherBinds", "Other keybinds", "Less important keybinds are here");
-        SwitchTabLeft = RegisterSetting("switchTabLeft", "Switch to tab on the left", "Switch to tab on the left",
+        SwitchTabLeft = CreateSetting("switchTabLeft", "Switch to tab on the left", "Switch to tab on the left",
             new Keybind(KeyCode.PageUp, modifier: KeyCode.LeftControl), otherBinds);
         SwitchTabLeft.OnPress += () => ClickGUI.CycleTab(-1);
-        SwitchTabRight = RegisterSetting("switchTabRight", "Switch to tab on the right", "Switch to tab on the right",
+        SwitchTabRight = CreateSetting("switchTabRight", "Switch to tab on the right", "Switch to tab on the right",
             new Keybind(KeyCode.PageDown, modifier: KeyCode.LeftControl), otherBinds);
         SwitchTabRight.OnPress += () => ClickGUI.CycleTab(+1);
 
-        MenuPausesGame = RegisterSetting("menuPausesGame", "Menu pauses game",
+        MenuPausesGame = CreateSetting("menuPausesGame", "Menu pauses game",
             "Makes the game paused when you open the ClickGUI", true);
 
-        Accent = RegisterSetting("accentColor", "Accent Color",
+        Accent = CreateSetting("accentColor", "Accent Color",
             "Color used for highlighting certain elements, preferably a bright one",
             new Color(0.65f, 0.95f, 0.89f));
     }

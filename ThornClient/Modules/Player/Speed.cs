@@ -14,7 +14,7 @@ public class Speed : Module {
 
     public Speed() : base("thorn.speed", "Speed", "Adjusts your speed",
         ModuleCategory.Player) {
-        SpeedMultiplier = RegisterSetting("speedMultiplier", "Speed multiplier", "How much to scale the speed", 2f);
+        SpeedMultiplier = CreateSetting("speedMultiplier", "Speed multiplier", "How much to scale the speed", 2f);
     }
 
     public override string? CheatReason => IsEnabled ? "Adds crazy movement" : "";

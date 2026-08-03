@@ -14,7 +14,7 @@ namespace ThornClient.HUD;
 public abstract class FramedHudModule : HudModule {
     public Setting<bool> ShowBackground;
     public FramedHudModule(string guid, string name, string description) : base(guid, name, description) {
-        ShowBackground = RegisterSetting("showBackground", "Show Background", "Whether to show a frame behind the content", true);
+        ShowBackground = CreateSetting("showBackground", "Show Background", "Whether to show a frame behind the content", true);
         ShowBackground.OnValueChanged += (value) => {
             if (_opacitySyncer != null) _opacitySyncer.ForceTransparent = !value;
         };

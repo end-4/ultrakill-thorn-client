@@ -17,7 +17,7 @@ public class ParryEffect : Module {
     public ParryEffect() : base("thorn.parryEffect", "Parry Effect",
         "Adds a slight zoom to make parries feel more impactful",
         ModuleCategory.Render, KeyCode.None, KeyCode.None) {
-        Fov = RegisterSetting("fov", "FOV Adjustment", "The Field of view shift when parrying", -10f);
+        Fov = CreateSetting("fov", "FOV Adjustment", "The Field of view shift when parrying", -10f);
     }
 
     protected override void OnEnable() {

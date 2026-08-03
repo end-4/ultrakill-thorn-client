@@ -65,16 +65,16 @@ public abstract class HudModule : Module {
     protected HudModule(string guid, string name, string description, float defaultPositionX = 0,
         float defaultPositionY = 0, float defaultPivotX = 0, float defaultPivotY = 1)
         : base(guid, name, description, ModuleCategory.Hud, hasToggling: true) {
-        PositionX = RegisterSetting("positionX", "Position X", "Horizontal position relative to the origin",
+        PositionX = CreateSetting("positionX", "Position X", "Horizontal position relative to the origin",
             defaultPositionX);
-        PositionY = RegisterSetting("positionY", "Position Y", "Vertical position relative to the origin",
+        PositionY = CreateSetting("positionY", "Position Y", "Vertical position relative to the origin",
             defaultPositionY);
-        Surface = RegisterSetting("surface", "Surface",
+        Surface = CreateSetting("surface", "Surface",
             "The surface this component is on. Left is gun panel, Right is style panel, Overlay is normal HUD",
             HudSurface.Overlay);
-        PivotX = RegisterSetting("pivotX", "Pivot X", "X (0-1) of origin point that the element expands around",
+        PivotX = CreateSetting("pivotX", "Pivot X", "X (0-1) of origin point that the element expands around",
             defaultPivotX);
-        PivotY = RegisterSetting("pivotY", "Pivot Y", "Y (0-1) of origin point that the element expands around",
+        PivotY = CreateSetting("pivotY", "Pivot Y", "Y (0-1) of origin point that the element expands around",
             defaultPivotY);
 
         Surface.OnValueChanged += ResetPositionIfNeeded;

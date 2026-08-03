@@ -85,7 +85,7 @@ public class WeaponVariantBinds : Module {
         // Create the bind settings
         for (int i = 0; i < NumWeapons; i++) {
             for (int j = 0; j < NumVariants; j++) {
-                Binds[i, j] = RegisterSetting(GunIds[i, j], GunNames[i, j], $"Keybind to switch to {GunNamesRaw[i, j]}",
+                Binds[i, j] = CreateSetting(GunIds[i, j], GunNames[i, j], $"Keybind to switch to {GunNamesRaw[i, j]}",
                     new Keybind(KeyCode.None));
                 var i1 = i;
                 var j1 = j;
