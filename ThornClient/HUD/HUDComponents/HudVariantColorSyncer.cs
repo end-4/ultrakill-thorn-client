@@ -5,16 +5,31 @@ using UnityEngine.UI;
 
 namespace ThornClient.HUD.HUDComponents;
 
+/// <summary>
+/// Component to sync the color of the Image component in the same GameObject to the user configured variant color. Remember to set the Variation property.
+/// </summary>
 public class HudVariantColorSyncer : MonoBehaviour {
+    /// <summary>
+    /// The weapon variant. Changing this will update the color of the HUD element accordingly.
+    /// </summary>
     public int Variation {
-        get => field;
+        get;
         set {
             field = value;
             UpdateColor();
         }
     } = 0;
 
-    public float ColorMultiplier = 1f;
+    /// <summary>
+    /// The color multiplier. Changing this will update the color of the HUD element accordingly.
+    /// </summary>
+    public float ColorMultiplier {
+        get;
+        set {
+            field = value;
+            UpdateColor();
+        }
+    }
 
     private Image? _target;
 
@@ -34,6 +49,9 @@ public class HudVariantColorSyncer : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Updates the color of the HUD element.
+    /// </summary>
     public void UpdateColor() {
         if (_target == null) return;
         var color = ColorUtils.GetWeaponVariantColor(Variation) * ColorMultiplier;

@@ -21,7 +21,7 @@ internal class EnemyListJsonConverter : JsonConverter<EnemyList> {
 
         writer.WriteEndArray();
     }
-
+    
     public override EnemyList? ReadJson(JsonReader reader, Type objectType, EnemyList? existingValue,
         bool hasExistingValue, JsonSerializer serializer) {
         if (reader.TokenType == JsonToken.Null) return null;

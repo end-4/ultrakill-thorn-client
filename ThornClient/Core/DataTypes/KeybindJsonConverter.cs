@@ -1,6 +1,5 @@
 ﻿using System;
 using Newtonsoft.Json;
-using ThornClient.Core.DataTypes;
 using UnityEngine;
 
 namespace ThornClient.Core.DataTypes;

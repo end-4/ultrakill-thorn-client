@@ -4,10 +4,12 @@ using UnityEngine;
 namespace ThornClient.HUD.HUDComponents;
 
 /// <summary>
-/// Note that most processing is still in the HudModule.
-/// We use a MonoBehavior here to make use of the active/inactive state for easier unhooking
+/// Controller for HUD elements. Handles positioning including the coordinates and pivot.
 /// </summary>
 public class HudElementController : MonoBehaviour {
+    /// <summary>
+    /// The HUD module that this controller is associated with.
+    /// </summary>
     public HudModule? hudModule;
 
     private void Start() {

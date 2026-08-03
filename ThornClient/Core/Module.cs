@@ -11,6 +11,17 @@ public abstract class Module : Configurable {
     public virtual Sprite Icon => AssetManager.Get<Sprite>(ThornClient.System.ClickGUI.BundleKey, "cube");
     public virtual string[]? Tags { get; }
 
+    /// <summary>
+    /// Constructor for a module
+    /// </summary>
+    /// <param name="guid">The globally unique identifier. It's recommended to follow a PROVIDER.NAME format, such as thorn.fullbright or myQolMod.betterCrosshairs</param>
+    /// <param name="name">The display name</param>
+    /// <param name="description">The description, shown when hovered in the config menu</param>
+    /// <param name="moduleCategory">The category of the module</param>
+    /// <param name="defaultKey">The default key to toggle the module, recommended to leave out to avoid conflicts. You can nudge the user to set one via Notiffy.</param>
+    /// <param name="defaultModifier">The default modifier key to toggle the module</param>
+    /// <param name="defaultToggleOnRelease">Whether the module should toggle on key release</param>
+    /// <param name="hasToggling">Whether the module can be toggled</param>
     protected Module(
         string guid,
         string name,

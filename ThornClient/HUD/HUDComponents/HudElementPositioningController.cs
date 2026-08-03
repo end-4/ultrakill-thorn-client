@@ -12,10 +12,13 @@ using UnityEngine.UI;
 namespace ThornClient.HUD.HUDComponents;
 
 /// <summary>
-/// Component to add to the GameObject that controls
+/// Component to add to the GameObject that controls the positioning of a HUD element.
 /// </summary>
 public class HudElementPositioningController : FreeMoveDragHandler, IEndDragHandler, IPointerEnterHandler,
     IPointerExitHandler {
+    /// <summary>
+    /// The HUD module that this controller is associated with.
+    /// </summary>
     public HudModule? TargetModule;
     private GameObject? _dragOverlay;
 

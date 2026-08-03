@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace ThornClient.Core;
+﻿namespace ThornClient.Core;
 
 internal abstract class SystemModule : Module {
     public override string CheatReason => "";
