@@ -3,7 +3,7 @@
 /// <summary>
 /// The type of a setting. Mostly used for the UI.
 /// </summary>
-internal enum SettingType {
+public enum SettingType {
     Bind,
     Bool,
     Color,
