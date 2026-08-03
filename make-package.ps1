@@ -19,7 +19,8 @@ Set-StrictMode -Version Latest
 $root = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $tmpPackageBuildDir = 'package_build'
 $pluginDir = Join-Path "$tmpPackageBuildDir" "plugins"
-$assemblyName = 'ThornClient.dll'
+$assemblyName = "ThornClient.dll"
+$docName = "ThornClient.xml"
 Write-Host "Repository root: $root"
 
 # 1) Prepare staging directory
@@ -32,7 +33,8 @@ New-Item -ItemType Directory -Path $pluginDir | Out-Null
 
 # 2) Build the mod and copy it
 $modFolder = $root
-$assemblyPath = Join-Path $modFolder "ThornClient/bin/Release/netstandard2.1/$assemblyName"
+$assemblyPath = Join-Path $modFolder "ThornClient/bin/$Configuration/netstandard2.1/$assemblyName"
+$docPath = Join-Path $modFolder "ThornClient/bin/$Configuration/netstandard2.1/$docName"
 Push-Location ($modFolder)
 Write-Host "Building mod in 'mod' using configuration: $Configuration"
 dotnet build -c $Configuration
@@ -41,6 +43,7 @@ if ($LASTEXITCODE -ne 0) {
     throw "dotnet build failed with exit code $LASTEXITCODE"
 }
 Copy-Item -Path ($assemblyPath) -Destination $pluginDir -Recurse -Force
+Copy-Item -Path ($docPath) -Destination $pluginDir -Recurse -Force
 Pop-Location
 
 # 3) Copy all files from package folder into staging
