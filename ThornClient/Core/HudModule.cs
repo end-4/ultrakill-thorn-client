@@ -77,7 +77,6 @@ public abstract class HudModule : Module {
         PivotY = RegisterSetting("pivotY", "Pivot Y", "Y (0-1) of origin point that the element expands around",
             defaultPivotY);
 
-        HudManager.ReadyForScene += InitializeIfNeeded;
         Surface.OnValueChanged += ResetPositionIfNeeded;
         var hideHint = new InterfaceHints {
             Hidden = true,
@@ -98,24 +97,24 @@ public abstract class HudModule : Module {
     /// The wrapper object
     /// </summary>
     protected GameObject? _wrapper;
-    
+
     /// <summary>
     /// The content object
     /// </summary>
     protected GameObject? _content;
-    
+
     /// <summary>
     /// The wrapper rectangle
     /// </summary>
     protected RectTransform? _wrapperRect;
-    
+
     /// <summary>
     /// The content rectangle
     /// </summary>
     protected RectTransform? _contentRect;
 
     private void InitializeIfNeeded() {
-        if (!IsEnabled) return; // Lazy loading
+        if (!IsEnabled || SceneHelper.CurrentScene == null) return; // Lazy loading and don't create stuff when not possible
         if (_wrapper == null) {
             _wrapper = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "Wrapper"));
             _wrapperRect = _wrapper.transform as RectTransform;
@@ -154,6 +153,7 @@ public abstract class HudModule : Module {
     /// Stuff to run when the module is enabled
     /// </summary>
     protected override void OnEnable() {
+        HudManager.ReadyForScene += InitializeIfNeeded;
         InitializeIfNeeded();
         if (_wrapper == null) return;
         _wrapper.SetActive(true);
@@ -165,6 +165,7 @@ public abstract class HudModule : Module {
     protected override void OnDisable() {
         if (_wrapper == null) return;
         _wrapper.SetActive(false);
+        HudManager.ReadyForScene -= InitializeIfNeeded;
     }
 
     /// <summary>

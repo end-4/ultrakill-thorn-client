@@ -38,7 +38,7 @@ public abstract class Setting : IConfigurableElement {
     /// <summary>
     /// The type of the setting. Used for determining how to display the setting in the config menu.
     /// </summary>
-    [JsonIgnore] public SettingType Type { get; set; }
+    [JsonIgnore] public SettingType Type { get; protected set; }
 
     /// <summary>
     /// Whether the setting is currently at its default value.

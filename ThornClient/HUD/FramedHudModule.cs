@@ -43,6 +43,7 @@ public abstract class FramedHudModule : HudModule {
 
         Background = obj;
         _opacitySyncer = Background.GetOrAddComponent<HudBackgroundOpacitySyncer>();
+        _opacitySyncer.ForceTransparent = !ShowBackground.Value;
 
         return obj;
     }
