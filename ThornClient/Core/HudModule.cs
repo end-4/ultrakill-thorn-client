@@ -16,23 +16,32 @@ public abstract class HudModule : Module {
     /// <summary>
     /// X position of the module
     /// </summary>
-    [JsonIgnore] public Setting<float> PositionX { get; }
+    [JsonIgnore]
+    public Setting<float> PositionX { get; }
+
     /// <summary>
     /// Y position of the module
     /// </summary>
-    [JsonIgnore] public Setting<float> PositionY { get; }
+    [JsonIgnore]
+    public Setting<float> PositionY { get; }
+
     /// <summary>
     /// Surface to draw the module on
     /// </summary>
-    [JsonIgnore] public Setting<HudSurface> Surface { get; }
+    [JsonIgnore]
+    public Setting<HudSurface> Surface { get; }
+
     /// <summary>
     /// X pivot of the module
     /// </summary>
-    [JsonIgnore] public Setting<float> PivotX { get; }
+    [JsonIgnore]
+    public Setting<float> PivotX { get; }
+
     /// <summary>
     /// Y pivot of the module
     /// </summary>
-    [JsonIgnore] public Setting<float> PivotY { get; }
+    [JsonIgnore]
+    public Setting<float> PivotY { get; }
 
     /// <summary>
     /// Default local position for each surface
@@ -114,7 +123,8 @@ public abstract class HudModule : Module {
     protected RectTransform? _contentRect;
 
     private void InitializeIfNeeded() {
-        if (!IsEnabled || SceneHelper.CurrentScene == null) return; // Lazy loading and don't create stuff when not possible
+        if (!IsEnabled || SceneHelper.CurrentScene == null)
+            return; // Lazy loading and don't create stuff when not possible
         if (_wrapper == null) {
             _wrapper = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "Wrapper"));
             _wrapperRect = _wrapper.transform as RectTransform;
@@ -150,7 +160,7 @@ public abstract class HudModule : Module {
     }
 
     /// <summary>
-    /// Stuff to run when the module is enabled
+    /// Stuff to run when the module is enabled. If you override, make sure to run base.OnEnable() for proper UI creation.
     /// </summary>
     protected override void OnEnable() {
         HudManager.ReadyForScene += InitializeIfNeeded;
@@ -183,9 +193,9 @@ public abstract class HudModule : Module {
         _wrapperRect.gameObject.SetLayerRecursive(LayerMask.NameToLayer("AlwaysOnTop"));
         var hudMaterial = Addressables.LoadAssetAsync<Material>("Assets/Materials/HUDMaterial.mat").WaitForCompletion();
         _wrapperRect.gameObject.SetImageMaterialRecursive(hudMaterial);
-        var hudTextMaterial = Addressables.LoadAssetAsync<Material>("Assets/Fonts/VCR_OSD_MONO Overlay.mat").WaitForCompletion();
+        var hudTextMaterial = Addressables.LoadAssetAsync<Material>("Assets/Fonts/VCR_OSD_MONO Overlay.mat")
+            .WaitForCompletion();
         _wrapperRect.gameObject.SetTextMaterialRecursive(hudTextMaterial);
-
     }
 
     /// <summary>

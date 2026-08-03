@@ -73,7 +73,6 @@ public class InputGeneral : FramedHudModule {
             var inputSource = MonoSingleton<InputManager>.Instance?.InputSource;
             if (inputSource == null) return;
 
-            // TODO this works for controller but won't capture both W and S or A and D pressed
             Vector2 moveVector = inputSource.Move.ReadValue<Vector2>();
             UpdateKeyPressed(_u, moveVector.y > 0f);
             UpdateKeyPressed(_d, moveVector.y < 0f);
