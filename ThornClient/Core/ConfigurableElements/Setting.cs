@@ -9,7 +9,7 @@ using ThornClient.Core.DataTypes;
 namespace ThornClient.Core.ConfigurableElements;
 
 /// <summary>
-/// A setting item that is saved to a Configurable's config file. 
+/// A setting item that is saved to a Configurable's config file.
 /// You cannot instantiate this directly; use the generic class instead.
 /// </summary>
 public abstract class Setting : IConfigurableElement {
@@ -29,8 +29,8 @@ public abstract class Setting : IConfigurableElement {
     public string Description { get; }
 
     /// <summary>
-    /// The interface hints for the setting. 
-    /// Used for tweaking the appearance of the setting in the config menu where applicable. 
+    /// The interface hints for the setting.
+    /// Used for tweaking the appearance of the setting in the config menu where applicable.
     /// Can be null.
     /// </summary>
     public InterfaceHints? Hints { get; set; }
@@ -38,7 +38,7 @@ public abstract class Setting : IConfigurableElement {
     /// <summary>
     /// The type of the setting. Used for determining how to display the setting in the config menu.
     /// </summary>
-    [JsonIgnore] internal SettingType Type { get; set; }
+    [JsonIgnore] public SettingType Type { get; set; }
 
     /// <summary>
     /// Whether the setting is currently at its default value.
@@ -48,7 +48,7 @@ public abstract class Setting : IConfigurableElement {
     [JsonIgnore] internal Action? InternalOnValueChanged { get; set; }
 
     /// <summary>
-    /// Emitted when the setting's value changes. 
+    /// Emitted when the setting's value changes.
     /// This is a general event that does not provide the new value. OnValueChanged does.
     /// </summary>
     public event Action? OnChanged;
@@ -89,7 +89,7 @@ public abstract class Setting : IConfigurableElement {
 }
 
 /// <summary>
-/// A typed setting item that is saved to a Configurable's config file. 
+/// A typed setting item that is saved to a Configurable's config file.
 /// Register/Instantiate through Configurable.RegisterSetting().
 /// </summary>
 /// <typeparam name="T">The type of the setting. Supported types:
@@ -187,7 +187,7 @@ public class Setting<T> : Setting {
     /// </summary>
     /// <returns></returns>
     public override object GetValue() => Value!;
-    
+
     /// <summary>
     /// Resets the value
     /// </summary>
