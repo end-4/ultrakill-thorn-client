@@ -23,13 +23,7 @@ public class HudVariantColorSyncer : MonoBehaviour {
     /// <summary>
     /// The color multiplier. Changing this will update the color of the HUD element accordingly.
     /// </summary>
-    public float ColorMultiplier {
-        get;
-        set {
-            field = value;
-            UpdateColor();
-        }
-    }
+    public float ColorMultiplier = 1f;
 
     private Image? _target;
 
