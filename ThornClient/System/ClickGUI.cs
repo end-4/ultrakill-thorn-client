@@ -186,7 +186,7 @@ internal class ClickGUI : SystemModule {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        SetTab(_lastTabName);
+        PerformInitialFocus();
     }
 
     protected override void OnDisable() {
@@ -280,10 +280,14 @@ internal class ClickGUI : SystemModule {
             }
         }
 
+        Instance.PerformInitialFocus();
+    }
+
+    private void PerformInitialFocus() {
         if (_lastTabName == ModuleTabName) {
-            if (Instance._moduleSearchController != null) Instance._moduleSearchController.FocusSearch();
+            if (_moduleSearchController != null) _moduleSearchController.FocusSearch();
         } else if (_lastTabName == HudTabName) {
-            if (Instance._hudModuleSearchController != null) Instance._hudModuleSearchController.FocusSearch();
+            if (_hudModuleSearchController != null) _hudModuleSearchController.FocusSearch();
         }
     }
 
