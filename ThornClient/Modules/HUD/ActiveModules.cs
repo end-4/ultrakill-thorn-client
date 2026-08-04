@@ -35,7 +35,7 @@ public class ActiveModules : TextHudModule {
     /// Updates the whole list
     /// </summary>
     private void UpdateWholeList() {
-        modules = new SortedList<string, Module>(ModuleManager.Items
+        _modules = new SortedList<string, Module>(ModuleManager.Items
             .Where(m => m.IsEnabled && m is not SystemModule && m is not HudModule)
             .ToDictionary(m => m.Name, m => m));
 
@@ -43,6 +43,6 @@ public class ActiveModules : TextHudModule {
     }
 
     private void SyncText() {
-        Text = string.Join("\n", modules.Values.Select(m => m.Name));
+        Text = string.Join("\n", _modules.Values.Select(m => m.Name));
     }
 }

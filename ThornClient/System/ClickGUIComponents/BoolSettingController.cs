@@ -7,9 +7,9 @@ using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-public class BoolSettingController : MonoBehaviour {
+internal class BoolSettingController : MonoBehaviour {
     public Setting<bool>? TargetSetting;
-    private GameObject? Checkmark;
+    private GameObject? _checkMark;
 
     private void Start() {
         GetComponent<Button>().onClick.AddListener(ToggleSetting);
@@ -20,16 +20,17 @@ public class BoolSettingController : MonoBehaviour {
 
     private void OnDestroy() {
         GetComponent<Button>().onClick.RemoveListener(ToggleSetting);
-        TargetSetting.OnValueChanged -= UpdateCheckmark;
         if (TargetSetting == null) return;
+        TargetSetting.OnValueChanged -= UpdateCheckmark;
     }
 
     private void ToggleSetting() {
+        if (TargetSetting == null) return;
         TargetSetting.Value = !TargetSetting.Value;
     }
 
     private void UpdateCheckmark(bool value) {
-        if (Checkmark == null) Checkmark = gameObject.FindRecursive("Checkbox/Mark");
-        if (Checkmark != null) Checkmark.SetActive(value);
+        if (_checkMark == null) _checkMark = gameObject.FindRecursive("Checkbox/Mark");
+        if (_checkMark != null) _checkMark.SetActive(value);
     }
 }

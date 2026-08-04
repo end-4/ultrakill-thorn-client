@@ -19,9 +19,9 @@ public class FullBright : Module {
         Brightness = CreateSetting("brightness", "Brightness", "How bright the world should be", 0.2f);
     }
 
-    private bool lastFogEnabled;
-    private Color lastAmbientColor = Color.black;
-    private bool isStateSaved = false;
+    private bool _lastFogEnabled;
+    private Color _lastAmbientColor = Color.black;
+    private bool _isStateSaved = false;
 
     public override string? CheatReason {
         get {
@@ -41,20 +41,20 @@ public class FullBright : Module {
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        isStateSaved = false;
+        _isStateSaved = false;
         ApplyFullBright();
     }
 
     private void ApplyFullBright() {
         try {
-            if (!isStateSaved) {
-                lastFogEnabled = RenderSettings.fog;
+            if (!_isStateSaved) {
+                _lastFogEnabled = RenderSettings.fog;
                 // Normal ambient color to be black most of the time. Setting it dynamically tends to be quite weird,
                 //      and it doesn't reset across scene loads so it's quite difficult to manage
 
                 // lastAmbientColor = RenderSettings.ambientLight;
                 // Plugin.Log.LogInfo($"Last ambient color {lastAmbientColor}");
-                isStateSaved = true;
+                _isStateSaved = true;
             }
 
             RenderSettings.fog = false;
@@ -65,7 +65,7 @@ public class FullBright : Module {
     }
 
     private void UpdateAmbientLightColor(float brightness) {
-        if (!isStateSaved) return; // Don't touch light matrices if baseline isn't cached
+        if (!_isStateSaved) return; // Don't touch light matrices if baseline isn't cached
         RenderSettings.ambientLight = Color.white * brightness;
         CheatManager.UpdateCheatiness();
     }
@@ -74,10 +74,10 @@ public class FullBright : Module {
         SceneManager.sceneLoaded -= OnSceneLoaded;
         Brightness.OnValueChanged -= UpdateAmbientLightColor;
 
-        if (isStateSaved) {
-            RenderSettings.fog = lastFogEnabled;
-            RenderSettings.ambientLight = lastAmbientColor;
-            isStateSaved = false;
+        if (_isStateSaved) {
+            RenderSettings.fog = _lastFogEnabled;
+            RenderSettings.ambientLight = _lastAmbientColor;
+            _isStateSaved = false;
         }
     }
 }

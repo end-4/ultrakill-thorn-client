@@ -28,8 +28,8 @@ public class Fist : FramedHudModule {
     private class FistController : MonoBehaviour {
         private Image? _bg;
         private Image? _fg;
-        private HudVariantColorSyncer _bgCol;
-        private HudVariantColorSyncer _fgCol;
+        private HudVariantColorSyncer? _bgCol;
+        private HudVariantColorSyncer? _fgCol;
         private void OnEnable() {
             _bg = gameObject.FindRecursive("Background")?.GetComponent<Image>();
             _fg = gameObject.FindRecursive("Panel")?.GetComponent<Image>();
@@ -59,8 +59,8 @@ public class Fist : FramedHudModule {
             // 0 = Feedbacker, 1 = Knuckleblaster
             if (fistVariant != 0 && fistVariant != 1) return;
             var colVariant = fistVariant * 2; // 0 -> 0, 1 -> 2
-            _bgCol.Variation = colVariant;
-            _fgCol.Variation = colVariant;
+            if (_bgCol != null) _bgCol.Variation = colVariant;
+            if (_fgCol != null) _fgCol.Variation = colVariant;
             if (_bg == null || _fg == null) return;
             var iconName = fistVariant == 1 ? "knuckleblaster" : "feedbacker";
             _bg.sprite = AssetManager.Get<Sprite>(HudManager.BundleKey, iconName);
