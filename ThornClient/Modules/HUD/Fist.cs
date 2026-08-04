@@ -1,6 +1,4 @@
-﻿using System;
-using HarmonyLib;
-using NukeLib.UI;
+﻿using NukeLib.UI;
 using ThornClient.Managers;
 using ThornClient.System;
 using UnityEngine;
@@ -11,14 +9,30 @@ using Object = UnityEngine.Object;
 
 namespace ThornClient.Modules.HUD;
 
+/// <summary>
+/// Module that shows active fist and punch stamina
+/// </summary>
 public class Fist : FramedHudModule {
+    /// <summary>
+    /// Icon of the module
+    /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "feedbacker");
+    /// <summary>
+    /// Tags for search
+    /// </summary>
     public override string[] Tags => ["hand", "punch", "feedbacker", "knuckleblaster"];
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public Fist() : base("thorn.fist", "Fist", "Shows punch cooldowns") {
 
     }
 
+    /// <summary>
+    /// Creates the content of the HUD element
+    /// </summary>
+    /// <returns>The content GameObject</returns>
     protected override GameObject CreateContentObject() {
         var obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "FistPanel"));
         obj.AddComponent<FistController>();

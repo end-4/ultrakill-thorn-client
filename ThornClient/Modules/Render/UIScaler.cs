@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
-using ThornClient.Core;
+﻿using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using UnityEngine.SceneManagement;
@@ -10,17 +8,38 @@ using ThornClient.System;
 
 namespace ThornClient.Modules.Render;
 
+/// <summary>
+/// Module that changes the scale of the user interface
+/// </summary>
 public class UIScaler : Module {
     private float _savedDefaultScale;
+
+    /// <summary>
+    /// The UI scale to change to
+    /// </summary>
     public Setting<float> Scale { get; }
 
+    /// <summary>
+    /// Icon of the module
+    /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "screen_scale");
+
+    /// <summary>
+    /// Tags for search
+    /// </summary>
     public override string[] Tags => ["interface", "scale"];
 
-    public UIScaler() : base("thorn.uiScaler", "UI Scaler", "Changes the scale of the user interface", ModuleCategory.Render) {
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    public UIScaler() : base("thorn.uiScaler", "UI Scaler", "Changes the scale of the user interface",
+        ModuleCategory.Render) {
         Scale = CreateSetting("scale", "Scale", "Smaller = smaller UI elements", 1.0f);
     }
 
+    /// <summary>
+    /// Stuff that run when enabled
+    /// </summary>
     protected override void OnEnable() {
         UpdateScale(Scale.Value);
         SceneManager.sceneLoaded += UpdateScale;
@@ -39,7 +58,9 @@ public class UIScaler : Module {
             _savedDefaultScale = scalerComp.scaleFactor;
 
         // Do the tweak
-        scalerComp.uiScaleMode = Mathf.Approximately(value, 1) ? CanvasScaler.ScaleMode.ScaleWithScreenSize : CanvasScaler.ScaleMode.ConstantPixelSize;
+        scalerComp.uiScaleMode = Mathf.Approximately(value, 1)
+            ? CanvasScaler.ScaleMode.ScaleWithScreenSize
+            : CanvasScaler.ScaleMode.ConstantPixelSize;
         // UltraTweaker does this weird hardcoding-ish thing and somehow it works
         // Before someone cries about copyright, two numbers do not meet the threshold of originality
         var prefsMan = PrefsManager.Instance;
@@ -55,6 +76,9 @@ public class UIScaler : Module {
         UpdateScale(Scale.Value);
     }
 
+    /// <summary>
+    /// Stuff that run when disabled
+    /// </summary>
     protected override void OnDisable() {
         Scale.OnValueChanged -= UpdateScale;
         SceneManager.sceneLoaded -= UpdateScale;

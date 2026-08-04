@@ -8,14 +8,30 @@ using UnityEngine.UI;
 
 namespace ThornClient.Modules.HUD;
 
+/// <summary>
+/// Module that shows currently equipped weapon
+/// </summary>
 public class Gun : FramedHudModule {
+    /// <summary>
+    /// Icon of the module
+    /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "gun");
+
+    /// <summary>
+    /// Tags for search
+    /// </summary>
     public override string[] Tags => ["variant", "gun", "weapon"];
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public Gun() : base("thorn.gun", "Gun", "Shows currently equipped icon") {
-
     }
 
+    /// <summary>
+    /// Creates the content GameObject that sits on the frame
+    /// </summary>
+    /// <returns>The content object</returns>
     protected override GameObject CreateContentObject() {
         var obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "GunPanel"));
         obj.AddComponent<GunIconController>();

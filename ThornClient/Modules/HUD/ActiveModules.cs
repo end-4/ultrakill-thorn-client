@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ThornClient.Core;
 using UnityEngine;
@@ -9,20 +8,40 @@ using ThornClient.System;
 
 namespace ThornClient.Modules.HUD;
 
+/// <summary>
+/// HUD element that displays active modules
+/// </summary>
 public class ActiveModules : TextHudModule {
-    private SortedList<string, Module> modules = [];
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "list");
+    private SortedList<string, Module> _modules = [];
+
+    /// <summary>
+    /// Tags for search
+    /// </summary>
     public override string[] Tags => ["module", "control", "system"];
 
+    /// <summary>
+    /// Icon of the module
+    /// </summary>
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "list");
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public ActiveModules() : base("thorn.activeModules", "Active Modules", "A list of active modules") {
         UpdateWholeList();
     }
 
+    /// <summary>
+    /// Stuff that run when enabled
+    /// </summary>
     protected override void OnEnable() {
         ModuleManager.SomeModuleToggled += UpdateWholeList;
         UpdateWholeList();
     }
 
+    /// <summary>
+    /// Stuff that run when disabled
+    /// </summary>
     protected override void OnDisable() {
         ModuleManager.SomeModuleToggled -= UpdateWholeList;
     }

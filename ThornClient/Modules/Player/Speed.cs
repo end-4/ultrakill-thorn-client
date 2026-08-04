@@ -6,24 +6,51 @@ using ThornClient.Core.ConfigurableElements;
 
 namespace ThornClient.Modules.Player;
 
+/// <summary>
+/// I'm Sonic
+/// </summary>
 public class Speed : Module {
     private static readonly float BaseWalkSpeed = 750;
+
+    /// <summary>
+    /// How fast to go
+    /// </summary>
     public Setting<float> SpeedMultiplier { get; }
+
+    /// <summary>
+    /// Icon of this module
+    /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "speed");
+
+    /// <summary>
+    /// Tags for search
+    /// </summary>
     public override string[] Tags => ["cheat", "fast", "slow", "movement", "sonic"];
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public Speed() : base("thorn.speed", "Speed", "Adjusts your speed",
         ModuleCategory.Player) {
         SpeedMultiplier = CreateSetting("speedMultiplier", "Speed multiplier", "How much to scale the speed", 2f);
     }
 
+    /// <summary>
+    /// Why this disables leaderboards
+    /// </summary>
     public override string? CheatReason => IsEnabled ? "Adds crazy movement" : "";
 
+    /// <summary>
+    /// Stuff that run when enabled
+    /// </summary>
     protected override void OnEnable() {
         UpdateSpeed(SpeedMultiplier.Value);
         SpeedMultiplier.OnValueChanged += UpdateSpeed;
     }
 
+    /// <summary>
+    /// Stuff that run when disabled
+    /// </summary>
     protected override void OnDisable() {
         SpeedMultiplier.OnValueChanged -= UpdateSpeed;
         UpdateSpeed(1f);

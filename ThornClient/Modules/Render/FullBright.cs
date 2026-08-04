@@ -9,12 +9,27 @@ using ThornClient.System;
 
 namespace ThornClient.Modules.Render;
 
+/// <summary>
+/// Module that adjusts brightness of the world
+/// </summary>
 public class FullBright : Module {
+    /// <summary>
+    /// How bright should it be. 0 is normal
+    /// </summary>
     public Setting<float> Brightness { get; }
 
+    /// <summary>
+    /// Icon of this module
+    /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "light_bulb");
+    /// <summary>
+    /// Tags for search
+    /// </summary>
     public override string[] Tags => ["light", "vision", "sight", "clear", "see", "illuminate"];
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public FullBright() : base("thorn.fullBright", "FullBright", "Adjust brightness for accessibility", ModuleCategory.Render) {
         Brightness = CreateSetting("brightness", "Brightness", "How bright the world should be", 0.2f);
     }
@@ -23,6 +38,9 @@ public class FullBright : Module {
     private Color _lastAmbientColor = Color.black;
     private bool _isStateSaved = false;
 
+    /// <summary>
+    /// Why leaderboards might be disabled
+    /// </summary>
     public override string? CheatReason {
         get {
             List<string> darkLevels = ["Level 0-S", "Level 4-3"];
@@ -31,6 +49,9 @@ public class FullBright : Module {
         }
     }
 
+    /// <summary>
+    /// Stuff that run when enabled
+    /// </summary>
     protected override void OnEnable() {
         SceneManager.sceneLoaded += OnSceneLoaded;
         Brightness.OnValueChanged += UpdateAmbientLightColor;
@@ -70,6 +91,9 @@ public class FullBright : Module {
         CheatManager.UpdateCheatiness();
     }
 
+    /// <summary>
+    /// Stuff that run when disabled
+    /// </summary>
     protected override void OnDisable() {
         SceneManager.sceneLoaded -= OnSceneLoaded;
         Brightness.OnValueChanged -= UpdateAmbientLightColor;

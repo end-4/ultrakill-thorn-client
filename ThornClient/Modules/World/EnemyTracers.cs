@@ -1,5 +1,4 @@
-﻿using System;
-using ThornClient.Managers;
+﻿using ThornClient.Managers;
 using ThornClient.System;
 using UnityEngine;
 using System.Collections.Generic;
@@ -9,15 +8,43 @@ using ThornClient.Core.DataTypes;
 
 namespace ThornClient.Modules.World;
 
+/// <summary>
+/// Module that draws lines from the player to enemies
+/// </summary>
 public class EnemyTracers : Module {
+    /// <summary>
+    /// The color of the lines
+    /// </summary>
     public Setting<Color> TracerColor;
+
+    /// <summary>
+    /// The thickness of the lines
+    /// </summary>
     public Setting<float> LineThickness;
+
+    /// <summary>
+    /// The number of enemies remaining to start drawing tracers
+    /// </summary>
     public Setting<int> EnemyCountThreshold;
+
+    /// <summary>
+    /// Always draw lines to these enemies
+    /// </summary>
     public Setting<EnemyList> ForceTraceEnemies;
 
+    /// <summary>
+    /// Icon of this module
+    /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "point_dot");
+
+    /// <summary>
+    /// Tags for search
+    /// </summary>
     public override string[] Tags => ["lines", "position", "indicator", "path"];
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public EnemyTracers() : base("thorn.enemyTracers", "Enemy Tracers", "Draws lines from you to enemies",
         ModuleCategory.World) {
         TracerColor = CreateSetting("tracerColor", "Tracer Color", "Color used for the trace lines",
@@ -62,6 +89,9 @@ public class EnemyTracers : Module {
                enemy.gameObject.activeInHierarchy;
     }
 
+    /// <summary>
+    /// The rendering loop
+    /// </summary>
     public override void OnRender() {
         var tracker = EnemyTracker.Instance;
         if (tracker == null) return;
@@ -99,7 +129,8 @@ public class EnemyTracers : Module {
             var enemy = tracker.enemies[i];
 
             // Skip if not meaningful or not in non-threshold-triggered whitelist
-            if (!IsEnemyMeaningful(enemy) || (remainingCount >= EnemyCountThreshold.Value && !ForceTraceEnemies.Value.Includes(enemy.enemyType))) {
+            if (!IsEnemyMeaningful(enemy) || (remainingCount >= EnemyCountThreshold.Value &&
+                                              !ForceTraceEnemies.Value.Includes(enemy.enemyType))) {
                 continue;
             }
 

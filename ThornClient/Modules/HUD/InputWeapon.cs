@@ -1,12 +1,8 @@
-﻿using System;
-using NukeLib.UI;
+﻿using NukeLib.UI;
 using NukeLib.Utils;
-using ThornClient.Core.ConfigurableElements;
-using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
 using UnityEngine;
 using ThornClient.HUD;
-using ThornClient.HUD.HUDComponents;
 using ThornClient.Modules.Player;
 using ThornClient.System;
 using UnityEngine.InputSystem;
@@ -15,14 +11,30 @@ using Object = UnityEngine.Object;
 
 namespace ThornClient.Modules.HUD;
 
+/// <summary>
+/// Module that shows weapon switching inputs
+/// </summary>
 public class InputWeapon : FramedHudModule {
+    /// <summary>
+    /// Icon of the module
+    /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "weapon_wheel");
+    /// <summary>
+    /// Tags for search
+    /// </summary>
     public override string[] Tags => ["keyboard", "mouse", "weapon", "controller"];
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public InputWeapon() : base("thorn.inputWeapon", "Input - Weapons",
         "Shows weapon switching inputs. Variant binds will only show for Thorn's Weapon Variant Binds, not for the standalone mod.") {
     }
 
+    /// <summary>
+    /// Creates the content GameObject
+    /// </summary>
+    /// <returns>The content object</returns>
     protected override GameObject CreateContentObject() {
         var obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "KeyLayoutWeapon"));
         obj.AddComponent<InputWeaponController>();
@@ -76,12 +88,29 @@ public class InputWeapon : FramedHudModule {
             }
         }
 
-        private void OnPressVariant0() { _variantHeld[0] = true; }
-        private void OnReleaseVariant0() { _variantHeld[0] = false; }
-        private void OnPressVariant1() { _variantHeld[1] = true; }
-        private void OnReleaseVariant1() { _variantHeld[1] = false; }
-        private void OnPressVariant2() { _variantHeld[2] = true; }
-        private void OnReleaseVariant2() { _variantHeld[2] = false; }
+        private void OnPressVariant0() {
+            _variantHeld[0] = true;
+        }
+
+        private void OnReleaseVariant0() {
+            _variantHeld[0] = false;
+        }
+
+        private void OnPressVariant1() {
+            _variantHeld[1] = true;
+        }
+
+        private void OnReleaseVariant1() {
+            _variantHeld[1] = false;
+        }
+
+        private void OnPressVariant2() {
+            _variantHeld[2] = true;
+        }
+
+        private void OnReleaseVariant2() {
+            _variantHeld[2] = false;
+        }
 
         private bool IsVanillaSlotHeld() {
             var inputSource = MonoSingleton<InputManager>.Instance?.InputSource;
@@ -96,6 +125,7 @@ public class InputWeapon : FramedHudModule {
                     _ => null
                 };
             }
+
             return _vanillaInputAction != null && _vanillaInputAction.IsPressed();
         }
 
@@ -107,12 +137,14 @@ public class InputWeapon : FramedHudModule {
                 UpdateColors(baseColor, iconColor, true);
                 return;
             }
+
             if (IsVanillaSlotHeld()) UpdateColors(Color.white, Color.black, true);
             else UpdateColors(Color.white, Color.white, false);
         }
 
         private void UpdateColors(Color baseColor, Color iconColor, bool baseFill) {
-            var targetBaseSprite = AssetManager.Get<Sprite>(HudManager.BundleKey, baseFill ? "Round_FillLarge" : "Round_BorderLarge");
+            var targetBaseSprite =
+                AssetManager.Get<Sprite>(HudManager.BundleKey, baseFill ? "Round_FillLarge" : "Round_BorderLarge");
             if (_bg != null && _bg.sprite != targetBaseSprite) _bg.sprite = targetBaseSprite;
             if (_bg != null && _bg.color != baseColor) _bg.color = baseColor;
             if (_fg != null && _fg.color != iconColor) _fg.color = iconColor;

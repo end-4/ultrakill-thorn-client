@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ThornClient.Core;
+﻿using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
@@ -9,11 +7,28 @@ using UnityEngine;
 
 namespace ThornClient.Modules.Player;
 
+/// <summary>
+/// Module that allows you to bind keys to specific weapon variants
+/// </summary>
 public class WeaponVariantBinds : Module {
+    /// <summary>
+    /// The singleton instance
+    /// </summary>
     public static WeaponVariantBinds? Instance;
+
+    /// <summary>
+    /// Number of weapons available
+    /// </summary>
     public const int NumWeapons = 5;
+
+    /// <summary>
+    /// Number of variants available
+    /// </summary>
     public const int NumVariants = 3;
 
+    /// <summary>
+    /// Gun setting IDs
+    /// </summary>
     public static readonly string[,] GunIds = new[,] {
         { "revolver_piercer", "revolver_marksman", "revolver_sharpshooter" },
         { "shotgun_core_eject", "shotgun_pump_charge", "shotgun_sawed_on" },
@@ -70,15 +85,22 @@ public class WeaponVariantBinds : Module {
         }
     };
 
-    // Allocates a 5-row, 3-column array for Keybind objects
+    /// <summary>
+    /// Keybinds for the weapon variants
+    /// </summary>
     public Setting<Keybind>[,] Binds = new Setting<Keybind>[5, 3];
 
+    /// <summary>
+    /// Icon of the module
+    /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "gun");
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public WeaponVariantBinds() : base("thorn.weaponVariantBinds", "Weapon Variant Binds",
         "Allows you to bind keys to specific weapons",
         ModuleCategory.Player) {
-
         if (Instance != null) return;
         Instance = this;
 
