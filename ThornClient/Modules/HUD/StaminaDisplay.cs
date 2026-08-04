@@ -14,7 +14,7 @@ public class StaminaDisplay : BoundedValueHudModule {
 
     public StaminaDisplay() : base("thorn.staminaHud", "Stamina", "Shows stamina", 3) {
         Continuous = CreateSetting("continuousDisplay", "Continuous Display", "Whether to show the value as continuous or discrete (dash count)", false);
-        ValueColor.DefaultValue = new Color(0, 0.93f, 1);
+        ValueColor.DefaultValue = new Color(0, 0.77f, 1);
     }
 
     public override void OnUpdate() {
