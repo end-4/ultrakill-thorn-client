@@ -86,12 +86,12 @@ public abstract class BoundedValueHudModule : FramedHudModule {
 
     public Setting<IndicatorStyle> Style;
     public Setting<bool> ShowName;
-    // TODO make this^ work and add more option to hide stuff. Maybe via some comp to be put in ancestor that does syncing like the color one
     public Setting<Color> ValueColor;
     public Setting<Color> SoftBoundColor;
 
     public BoundedValueHudModule(string guid, string name, string description) : base(guid, name, description) {
         Style = CreateSetting("indicatorStyle", "Indicator Style", "The style to present the value", IndicatorStyle.Progress);
+        ShowName = CreateSetting("showName", "Show Name", "The name of the value", true);
         ValueColor = CreateSetting("valueColor", "Value Color", "The color of the value", new Color(0.098f, 0.624f, 0.525f));
         SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound Color", "The color of the soft bound, for example HP hard damage", new Color(1f, 1f, 1f, 0.36f));
         Style.OnValueChanged += SwitchStyle;
