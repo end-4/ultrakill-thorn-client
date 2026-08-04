@@ -140,7 +140,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     }
 
     private void UpdateSoftBound() {
-        var value = TargetModule?.BoundReduction ?? TargetModule?.Bound ?? 1;
+        var value = (TargetModule?.Bound ?? 1) - (TargetModule?.BoundReduction ?? 0);
         _textCap?.SetText($"/{Math.Round(value, TargetModule?.DecimalPlaces ?? 1)}");
     }
 }

@@ -147,7 +147,10 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// <param name="guid">The globally unique identifier for the module, such as thorn.healthHud</param>
     /// <param name="name">The name of the module (shown in the ClickGUI)</param>
     /// <param name="description">The description of the module</param>
-    public BoundedValueHudModule(string guid, string name, string description, float bound, string displayName = "",
+    /// <param name="bound">The max value</param>
+    /// <param name="displayName">The name that shown on the HUD element</param>
+    /// <param name="displayIcon">The icon shown on the HUD element</param>
+    public BoundedValueHudModule(string guid, string name, string description, float bound = 1, string displayName = "",
         Sprite? displayIcon = null) : base(guid, name, description) {
         Style = CreateSetting("indicatorStyle", "Indicator Style", "The style to present the value",
             IndicatorStyle.Progress);
