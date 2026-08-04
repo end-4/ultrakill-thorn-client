@@ -21,7 +21,11 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         /// <summary>
         /// The standard horizontal line style, much like vanilla health bar
         /// </summary>
-        Progress = 0
+        Progress = 0,
+        /// <summary>
+        /// The circular style, like Taberry's cybergrind wave progress indicator
+        /// </summary>
+        Circular = 1,
     };
 
     /// <summary>
@@ -129,18 +133,13 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     public Setting<IndicatorStyle> Style;
 
     public Setting<bool> ShowName;
-
-    // TODO make this^ work and add more option to hide stuff. Maybe via some comp to be put in ancestor that does syncing like the color one
-
-    /// <summary>
-    /// The color of the main value fill element of the indicator.
-    /// </summary>
     public Setting<Color> ValueColor;
 
     /// <summary>
     /// The color of the soft bound fill element of the indicator.
     /// </summary>
     public Setting<Color> SoftBoundColor;
+    public SettingGroup ColorGroup;
 
     /// <summary>
     /// Constructor
@@ -148,48 +147,61 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// <param name="guid">The globally unique identifier for the module, such as thorn.healthHud</param>
     /// <param name="name">The name of the module (shown in the ClickGUI)</param>
     /// <param name="description">The description of the module</param>
-    public BoundedValueHudModule(string guid, string name, string description) : base(guid, name, description) {
+    public BoundedValueHudModule(string guid, string name, string description, float bound, string displayName = "",
+        Sprite? displayIcon = null) : base(guid, name, description) {
         Style = CreateSetting("indicatorStyle", "Indicator Style", "The style to present the value",
             IndicatorStyle.Progress);
+        ShowName = CreateSetting("showName", "Show Name", "The name of the value", true);
+        ColorGroup = CreateGroup("colorGroup", "Color Group", "Colors used on the indicator");
         ValueColor = CreateSetting("valueColor", "Value Color", "The color of the value",
-            new Color(0.098f, 0.624f, 0.525f));
+            new Color(0.098f, 0.624f, 0.525f), ColorGroup);
         SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound Color",
-            "The color of the soft bound, for example HP hard damage", new Color(1f, 1f, 1f, 0.36f));
+            "The color of the soft bound, for example HP hard damage", new Color(1f, 1f, 1f, 0.36f), ColorGroup);
         Style.OnValueChanged += SwitchStyle;
+        DisplayName = displayName.Length > 0 ? displayName : name;
+        DisplayIcon = displayIcon ?? Icon;
+        Bound = bound;
+        SoftBound = bound;
         SwitchStyle(Style.Value);
     }
 
     private static Dictionary<IndicatorStyle, string> _stylePaths = new() {
         [IndicatorStyle.Progress] = "ProgressStyle",
+        [IndicatorStyle.Circular] = "CircularStyle",
     };
 
     private static Dictionary<IndicatorStyle, IBoundedValueController?> _styleComps = new();
     private static Dictionary<IndicatorStyle, GameObject?> _styleGameObjects = new();
+    private GameObject? _contentObject;
 
     /// <summary>
     /// Creates the content object that goes on the frame.
     /// </summary>
     /// <returns>The content object</returns>
-    protected sealed override GameObject CreateContentObject() {
-        var go = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "BoundedValueLayout"));
+    protected override GameObject CreateContentObject() {
+        _contentObject = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "BoundedValueLayout"));
         // Styles
         foreach (var pair in _stylePaths) {
-            var targetObj = go.FindRecursive(pair.Value);
+            var targetObj = _contentObject.FindRecursive(pair.Value);
             // Plugin.Log.LogInfo($"Found {targetObj} for {pair.Key.ToString()}");
             _styleGameObjects[pair.Key] = targetObj;
+            IBoundedValueController? comp = null;
             switch (pair.Key) {
                 case IndicatorStyle.Progress:
-                    var comp = targetObj?.AddComponent<ProgressBoundedValueController>();
-                    _styleComps[pair.Key] = comp;
-                    if (comp != null) comp.TargetModule = this;
-                    // Plugin.Log.LogInfo($"Added comp {_styleComps[pair.Key]}");
+                    comp = targetObj?.AddComponent<ProgressBoundedValueController>();
+                    break;
+                case IndicatorStyle.Circular:
+                    comp = targetObj?.AddComponent<CircularBoundedValueController>();
                     break;
             }
+
+            _styleComps[pair.Key] = comp;
+            if (comp != null) comp.TargetModule = this;
         }
 
         SwitchStyle(Style.Value);
 
-        return go;
+        return _contentObject;
     }
 
     private void SwitchStyle(IndicatorStyle style) {
@@ -197,5 +209,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
             // Plugin.Log.LogInfo($"Checking {pair.Key.ToString()} -> {style == pair.Key}");
             pair.Value?.SetActive(style == pair.Key);
         }
+
+        if (_contentObject != null) _contentObject.UnfuckLayoutHack();
     }
 }

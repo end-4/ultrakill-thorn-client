@@ -7,7 +7,7 @@ namespace ThornClient.Modules.HUD;
 /// <summary>
 /// Module that shows HP
 /// </summary>
-public class HealthModule : BoundedValueHudModule {
+public class HealthDisplay : BoundedValueHudModule {
     /// <summary>
     /// The icon of the module
     /// </summary>
@@ -18,10 +18,12 @@ public class HealthModule : BoundedValueHudModule {
     /// </summary>
     public override string[] Tags => ["hp", "hit points", "blood"];
 
+
     /// <summary>
     /// Constructor
     /// </summary>
-    public HealthModule() : base("thorn.healthHud", "Health", "Shows health") {
+    public HealthDisplay() : base("thorn.healthHud", "Health", "Shows health", 100) {
+        ValueColor.DefaultValue = new Color(1, 0, 0);
     }
 
     /// <summary>
@@ -29,11 +31,7 @@ public class HealthModule : BoundedValueHudModule {
     /// </summary>
     protected override void OnEnable() {
         base.OnEnable();
-        // TODO nicer API for this
-        DisplayName = "Health";
-        Bound = 100;
         DecimalPlaces = 0;
-        DisplayIcon = AssetManager.Get<Sprite>(HudManager.BundleKey, "plus_thick");
     }
 
     /// <summary>

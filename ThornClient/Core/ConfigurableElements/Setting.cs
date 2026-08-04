@@ -115,7 +115,7 @@ public class Setting<T> : Setting {
     /// <summary>
     /// The default value of the setting.
     /// </summary>
-    [JsonIgnore] public T DefaultValue { get; }
+    [JsonIgnore] public T DefaultValue { get; set; }
     /// <summary>
     /// Emitted when the setting's value changes. Provides the new value as a parameter.
     /// </summary>
