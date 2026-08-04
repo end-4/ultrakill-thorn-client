@@ -66,7 +66,7 @@ public abstract class TextHudModule : FramedHudModule {
         if (_wrapper != null) _wrapper.UnfuckLayoutHack();
     }
 
-    protected override GameObject CreateContentObject() {
+    protected sealed override GameObject CreateContentObject() {
         GameObject obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "TextLayout"));
         _textObj = obj.FindRecursive("Text");
         _icon = obj.FindRecursive("Icon")?.GetComponent<Image>();

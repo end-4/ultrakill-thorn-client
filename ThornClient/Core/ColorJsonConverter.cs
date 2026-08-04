@@ -7,7 +7,7 @@ namespace ThornClient.Core;
 /// <summary>
 /// Json converter for Unity Color type
 /// </summary>
-public class ColorJsonConverter : JsonConverter<Color> {
+internal class ColorJsonConverter : JsonConverter<Color> {
     public override void WriteJson(JsonWriter writer, Color value, JsonSerializer serializer) {
         // #RRGGBBAA
         string hex = "#" + ColorUtility.ToHtmlStringRGBA(value);
