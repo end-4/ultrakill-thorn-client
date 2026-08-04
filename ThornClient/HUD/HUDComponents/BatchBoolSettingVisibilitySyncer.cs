@@ -4,7 +4,7 @@ using NukeLib.UI;
 using ThornClient.Core.ConfigurableElements;
 using UnityEngine;
 
-namespace ThornClient.Core.UI;
+namespace ThornClient.HUD.HUDComponents;
 
 /// <summary>
 /// A component that sets visibility for children of a GameObject, following a bool Setting
@@ -17,13 +17,14 @@ public class BatchBoolSettingVisibilitySyncer : MonoBehaviour {
 
     private Dictionary<string, GameObject?> Cached = [];
 
-    private void OnEnable() {
+    private void Start() {
         foreach (var pair in SyncPairs) {
             pair.Key.OnChanged += SyncVisibilities;
         }
+        SyncVisibilities();
     }
 
-    private void OnDisable() {
+    private void OnDestroy() {
         foreach (var pair in SyncPairs) {
             pair.Key.OnChanged -= SyncVisibilities;
         }
@@ -33,8 +34,11 @@ public class BatchBoolSettingVisibilitySyncer : MonoBehaviour {
         foreach (var pair in SyncPairs) {
             var obj = GetObjectFromPath(pair.Value);
             if (obj == null) continue;
-            if (obj.activeSelf != pair.Key.Value) obj.SetActive(pair.Key.Value);
+            if (obj.activeSelf != pair.Key.Value) {
+                obj.SetActive(pair.Key.Value);
+            }
         }
+        gameObject.UnfuckLayoutHack();
     }
 
     private GameObject? GetObjectFromPath(string path) {

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NukeLib.UI;
-using NukeLib.Utils;
 using ThornClient.Core.ConfigurableElements;
-using ThornClient.Core.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,9 +36,9 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         if (sofObj != null) {
             sofObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
         }
-        _visibilitySyncer = gameObject.AddComponent<BatchBoolSettingVisibilitySyncer>();
+        _visibilitySyncer = gameObject.GetOrAddComponent<BatchBoolSettingVisibilitySyncer>();
         _visibilitySyncer.SyncPairs = new Dictionary<Setting<bool>, string> {
-            {TargetModule.ShowName, "NameLayout/Name"}
+            {TargetModule.ShowName, "NameLayout"}
         };
 
         UpdateName();
