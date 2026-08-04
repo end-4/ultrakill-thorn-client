@@ -78,6 +78,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
 
     private void UpdateName(string value) {
         _textName?.SetText(value);
+        gameObject.UnfuckLayoutHack();
     }
 
     private void UpdateIcon() {
