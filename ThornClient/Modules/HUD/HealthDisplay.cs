@@ -40,7 +40,7 @@ public class HealthDisplay : BoundedValueHudModule {
     public override void OnUpdate() {
         var nm = NewMovement.Instance;
         if (nm != null) {
-            SoftBound = Bound - nm.antiHp;
+            BoundReduction = nm.antiHp;
             Value = nm.hp;
         }
     }

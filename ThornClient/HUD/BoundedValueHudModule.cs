@@ -77,9 +77,9 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     }
 
     /// <summary>
-    /// Soft bound value (raw, not normalized). This is for temporary limits like hard damage on HP.
+    /// Reduction value from the max value, for temporary limits like hard damage on HP.
     /// </summary>
-    public float SoftBound {
+    public float BoundReduction {
         get;
         set {
             if (Mathf.Approximately(field, value)) return;
@@ -161,7 +161,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         DisplayName = displayName.Length > 0 ? displayName : name;
         DisplayIcon = displayIcon ?? Icon;
         Bound = bound;
-        SoftBound = bound;
+        BoundReduction = 0;
         SwitchStyle(Style.Value);
     }
 

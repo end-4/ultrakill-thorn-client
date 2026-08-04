@@ -16,6 +16,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     /// The BoundedValueHudModule that this controller works with. This must be set immediately after creation.
     /// </summary>
     public BoundedValueHudModule? TargetModule { get; set; }
+
     private TextMeshProUGUI? _textName;
     private RectTransform? _transTrough;
     private RectTransform? _transValue;
@@ -38,13 +39,15 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         if (valObj != null) {
             valObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
         }
+
         var sofObj = gameObject.FindRecursive("Trough/SoftBound");
         if (sofObj != null) {
             sofObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
         }
+
         _visibilitySyncer = gameObject.GetOrAddComponent<BatchBoolSettingVisibilitySyncer>();
         _visibilitySyncer.SyncPairs = new Dictionary<Setting<bool>, string> {
-            {TargetModule.ShowName, "NameLayout"}
+            { TargetModule.ShowName, "NameLayout" }
         };
 
         UpdateName();
@@ -108,7 +111,8 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
 
     private void UpdateValue() {
         var normalizedValue = (TargetModule?.Value ?? 0) / (TargetModule?.Bound ?? 1);
-        var normalizedSoftBound = 1 - ((TargetModule?.SoftBound ?? 0) / (TargetModule?.Bound ?? 1)); // normalized softbound segment width
+        var normalizedSoftBound =
+            (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1); // normalized softbound segment width
         if (_transTrough == null || _transValue == null || _transSoftBound == null) return;
         var height = _transValue.sizeDelta.y;
         var width = _transValue.sizeDelta.x;
@@ -119,6 +123,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         if (!Mathf.Approximately(currNormalized, normalizedValue)) {
             _transValue.sizeDelta = new Vector2(availableWidth * normalizedValue, height);
         }
+
         if (!Mathf.Approximately(currSoftNormalized, normalizedSoftBound)) {
             _transSoftBound.sizeDelta = new Vector2(availableWidth * normalizedSoftBound, height);
         }
@@ -135,7 +140,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     }
 
     private void UpdateSoftBound() {
-        var value = TargetModule?.SoftBound ?? TargetModule?.Bound ?? 1;
+        var value = TargetModule?.BoundReduction ?? TargetModule?.Bound ?? 1;
         _textCap?.SetText($"/{Math.Round(value, TargetModule?.DecimalPlaces ?? 1)}");
     }
 }
