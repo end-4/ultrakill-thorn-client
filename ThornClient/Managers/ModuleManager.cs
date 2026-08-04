@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
 using ThornClient.Core;
 using Module = ThornClient.Core.Module;
 
 namespace ThornClient.Managers;
 
+/// <summary>
+/// The manager that discovers and loads Modules.
+/// </summary>
 public static class ModuleManager {
+    /// <summary>
+    /// All modules
+    /// </summary>
     public static List<Module> Items { get; private set; } = [];
 
+    /// <summary>
+    /// Triggered when a module is toggled. Useful for module lists elements.
+    /// </summary>
     public static Action<Module, bool>? SomeModuleToggled;
 
     internal static void HeyIToggled(Module module, bool enabled) {

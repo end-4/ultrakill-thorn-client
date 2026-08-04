@@ -3,9 +3,18 @@ using UnityEngine;
 
 namespace ThornClient.Managers;
 
+/// <summary>
+/// The manager that runs the rendering pipeline for modules.
+/// </summary>
 public static class RenderManager {
+    /// <summary>
+    /// The material used for rendering lines and other flat graphics.
+    /// </summary>
     private static Material _lineMaterial;
 
+    /// <summary>
+    /// Does initializations.
+    /// </summary>
     public static void Initialize() {
         // Internal-Colored is a built-in flat shader perfect for lines/ESP
         Shader shader = Shader.Find("Hidden/Internal-Colored");
@@ -16,6 +25,9 @@ public static class RenderManager {
         }
     }
 
+    /// <summary>
+    /// The rendering update loop. This is called from the main plugin class.
+    /// </summary>
     public static void RenderPipeline() {
         if (Camera.current != Camera.main || _lineMaterial == null) return;
 

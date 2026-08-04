@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 
 namespace ThornClient.Managers;
 
+/// <summary>
+/// Manages cheaty items for leaderboard disabling.
+/// </summary>
 public static class CheatManager {
     private static bool _cheating = false;
 
@@ -25,12 +28,19 @@ public static class CheatManager {
         _cheating = false;
     }
 
+    /// <summary>
+    /// Gets a list of all active cheaty modules.
+    /// </summary>
+    /// <returns>The list of active cheaty modules</returns>
     public static List<Module> GetActiveCheatyModules() {
         return ModuleManager.Items
             .Where(module => (module.CheatReason != null && module.CheatReason.Length > 0))
             .ToList();
     }
 
+    /// <summary>
+    /// Updates the cheatiness state and disables leaderboards if any cheaty modules are active.
+    /// </summary>
     public static void UpdateCheatiness() {
         // Plugin.Log.LogInfo(
         //     $"Checking in scene '{SceneHelper.CurrentScene}', length = {SceneHelper.CurrentScene?.Length ?? 0}");

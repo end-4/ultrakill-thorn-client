@@ -8,6 +8,9 @@ namespace ThornClient.HUD.HUDComponents;
 /// Component that syncs the same-GameObject Image component color to that of a setting
 /// </summary>
 public class ColorSettingSyncer : MonoBehaviour {
+    /// <summary>
+    /// The setting to sync the color of the Image component to
+    /// </summary>
     public Setting<Color>? TargetSetting;
     private Image? _img;
     private void Start() {

@@ -7,7 +7,13 @@ using UnityEngine.UI;
 
 namespace ThornClient.HUD.HUDComponents;
 
+/// <summary>
+/// The controller for a BoundedValueHudModule.
+/// </summary>
 public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueController {
+    /// <summary>
+    /// The BoundedValueHudModule that this controller works with. This must be set immediately after creation.
+    /// </summary>
     public BoundedValueHudModule? TargetModule { get; set; }
     private TextMeshProUGUI? _textName;
     private RectTransform? _transTrough;

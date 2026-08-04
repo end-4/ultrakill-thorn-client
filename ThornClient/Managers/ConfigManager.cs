@@ -12,6 +12,9 @@ using ThornClient.Core.DataTypes;
 
 namespace ThornClient.Managers;
 
+/// <summary>
+/// Handles saving and loading of configurable settings to and from disk, as well as hot-reloading when configuration files are changed externally.
+/// </summary>
 public static class ConfigManager {
     private static readonly string ConfigFolder = Path.Combine(Paths.ConfigPath, "ThornClient", "Default");
     private static FileSystemWatcher? _watcher;
@@ -31,6 +34,10 @@ public static class ConfigManager {
         }
     };
 
+    /// <summary>
+    /// Registers a JSON converter for a setting of custom type.
+    /// </summary>
+    /// <param name="converter"></param>
     public static void RegisterJsonConverter(JsonConverter converter) {
         if (SerializerSettings.Converters.Any(c => c.GetType() == converter.GetType())) return;
         SerializerSettings.Converters.Add(converter);

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace ThornClient.HUD.HUDComponents;
 
 /// <summary>
-/// A component that makes the opacity of the Image component in the same GameObject follow the hudBackgroundOpacity config value.
+/// A component that makes the opacity of the Image component in the same GameObject follow the hudBackgroundOpacity config value from the base game.
 /// </summary>
 public class HudBackgroundOpacitySyncer : MonoBehaviour {
     private Image? _bg;

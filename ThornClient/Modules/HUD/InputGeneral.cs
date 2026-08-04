@@ -8,14 +8,30 @@ using Object = UnityEngine.Object;
 
 namespace ThornClient.Modules.HUD;
 
+/// <summary>
+/// A HUD module that shows general input information, including movement, fist, and variant cycle inputs.
+/// </summary>
 public class InputGeneral : FramedHudModule {
+    /// <summary>
+    /// The icon for this module, which is a WASD key layout.
+    /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "wasd");
+    /// <summary>
+    /// Tags for searching
+    /// </summary>
     public override string[] Tags => ["keyboard", "movement", "punch", "controller"];
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public InputGeneral() : base("thorn.inputGeneral", "Input - General",
         "Shows movement-related, fist, and variant cycle inputs") {
     }
 
+    /// <summary>
+    /// Creates the content object that sits on the frame
+    /// </summary>
+    /// <returns>The content object</returns>
     protected override GameObject CreateContentObject() {
         var obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "KeyLayoutGeneral"));
         obj.AddComponent<InputGeneralController>();

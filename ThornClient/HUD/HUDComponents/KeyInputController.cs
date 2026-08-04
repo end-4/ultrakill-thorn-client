@@ -9,10 +9,21 @@ namespace ThornClient.HUD.HUDComponents;
 /// Component to control the appearance of a key. Just set the Pressed property as needed.
 /// </summary>
 public class KeyInputController : MonoBehaviour {
-
+    /// <summary>
+    /// The sprite to use for the button background when not pressed
+    /// </summary>
     public Sprite baseSprite = AssetManager.Get<Sprite>(HudManager.BundleKey, "Round_BorderLarge");
+    /// <summary>
+    /// The sprite to use for the button background when pressed
+    /// </summary>
     public Sprite baseSpritePressed = AssetManager.Get<Sprite>(HudManager.BundleKey, "Round_FillLarge");
+    /// <summary>
+    /// The color to use for the button icon when not pressed
+    /// </summary>
     public Color iconColor = Color.white;
+    /// <summary>
+    /// The color to use for the button icon when pressed
+    /// </summary>
     public Color iconColorPressed = Color.black;
 
     private Image? _border;
@@ -30,6 +41,9 @@ public class KeyInputController : MonoBehaviour {
         }
     } = false;
 
+    /// <summary>
+    /// Standard Unity Start declaration
+    /// </summary>
     protected virtual void Start() {
         _border = gameObject.GetComponent<Image>();
         _icon = gameObject.FindRecursive("Image", warnings: false)?.GetComponent<Image>();

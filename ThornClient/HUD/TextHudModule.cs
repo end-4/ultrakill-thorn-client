@@ -1,9 +1,7 @@
 ﻿using NukeLib.UI;
-using ThornClient.Core;
 using ThornClient.Managers;
 using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 namespace ThornClient.HUD;
@@ -13,6 +11,9 @@ namespace ThornClient.HUD;
 /// dynamically sized based on content (you need min size/preferred size on your content element for that)
 /// </summary>
 public abstract class TextHudModule : FramedHudModule {
+    /// <summary>
+    /// The text displayed by this HUD module. Changes are reactive.
+    /// </summary>
     public string Text {
         get;
         set {
@@ -23,6 +24,9 @@ public abstract class TextHudModule : FramedHudModule {
         }
     }
 
+    /// <summary>
+    /// The icon displayed by this HUD module. Changes are reactive. Set to null to hide the icon.
+    /// </summary>
     public virtual Sprite? DisplayIcon {
         get;
         set {
@@ -33,6 +37,12 @@ public abstract class TextHudModule : FramedHudModule {
         }
     } = null;
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="guid">The unique identifier for the module</param>
+    /// <param name="name">The name of the module</param>
+    /// <param name="description">The description of the module</param>
     public TextHudModule(string guid, string name, string description) : base(guid, name, description) {
     }
 
@@ -66,6 +76,10 @@ public abstract class TextHudModule : FramedHudModule {
         if (_wrapper != null) _wrapper.UnfuckLayoutHack();
     }
 
+    /// <summary>
+    /// Creates the content object for this HUD module. This method is sealed and should not be overridden by subclasses.
+    /// </summary>
+    /// <returns>The content object (which is a row containing the icon and text) to put on the frame</returns>
     protected sealed override GameObject CreateContentObject() {
         GameObject obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "TextLayout"));
         _textObj = obj.FindRecursive("Text");

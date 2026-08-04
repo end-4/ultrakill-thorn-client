@@ -16,9 +16,17 @@ public static class AssetManager {
     static AssetManager() {
     }
 
+    /// <summary>
+    /// Initializes the AssetManager.
+    /// </summary>
     public static void Initialize() {
     }
 
+    /// <summary>
+    /// Load a bundle and keep all of its assets in memory for later retrieval. If the bundle is already loaded, this method does nothing.
+    /// </summary>
+    /// <param name="bundleKey">The key for the bundle for later retrieval</param>
+    /// <param name="bundlePath">The path to the bundle file</param>
     public static void LoadBundle(string bundleKey, string bundlePath) {
         if (LoadedBundles.ContainsKey(bundleKey)) return;
 

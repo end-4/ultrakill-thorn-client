@@ -7,7 +7,13 @@ using UnityEngine;
 
 namespace ThornClient.Managers;
 
+/// <summary>
+/// The central manager for Thorn's inputs including keybinds
+/// </summary>
 public static class InputManager {
+    /// <summary>
+    /// Whether to prevent keybinds from triggering
+    /// </summary>
     public static bool BlockInput {
         get => field;
         set {
@@ -23,12 +29,19 @@ public static class InputManager {
 
     private static readonly List<Setting<Keybind>> KeybindSettings = [];
 
+    /// <summary>
+    /// Registers a keybind setting to receive input event triggers.
+    /// </summary>
+    /// <param name="setting">The keybind setting to register</param>
     public static void RegisterKeybindSetting(Setting<Keybind> setting) {
         if (!KeybindSettings.Contains(setting)) {
             KeybindSettings.Add(setting);
         }
     }
 
+    /// <summary>
+    /// Key listening loop
+    /// </summary>
     public static void Update() {
         if (BlockInput) return;
 
