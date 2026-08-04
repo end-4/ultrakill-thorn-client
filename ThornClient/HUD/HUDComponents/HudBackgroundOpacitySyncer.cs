@@ -9,7 +9,7 @@ namespace ThornClient.HUD.HUDComponents;
 /// A component that makes the opacity of the Image component in the same GameObject follow the hudBackgroundOpacity config value.
 /// </summary>
 public class HudBackgroundOpacitySyncer : MonoBehaviour {
-    private Image _bg;
+    private Image? _bg;
 
     private PrefsManager? _prefs => PrefsManager.Instance;
 
