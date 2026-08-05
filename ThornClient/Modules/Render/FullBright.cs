@@ -53,7 +53,7 @@ public class FullBright : Module {
     /// Stuff that run when enabled
     /// </summary>
     protected override void OnEnable() {
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        Plugin.SafeSceneLoaded += OnSceneLoaded;
         Brightness.OnValueChanged += UpdateAmbientLightColor;
 
         if (SceneManager.GetActiveScene().isLoaded) {
@@ -95,7 +95,7 @@ public class FullBright : Module {
     /// Stuff that run when disabled
     /// </summary>
     protected override void OnDisable() {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        Plugin.SafeSceneLoaded -= OnSceneLoaded;
         Brightness.OnValueChanged -= UpdateAmbientLightColor;
 
         if (_isStateSaved) {

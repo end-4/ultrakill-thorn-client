@@ -28,8 +28,8 @@ internal class ClickGUI : SystemModule {
     public ClickGUI() : base("thorn.clickGui", "ClickGUI", "The main interaction panel") {
         AssetManager.LoadBundle(BundleKey, BundlePath);
         // Note Keybind is registered in ThornModule
-        SceneManager.sceneLoaded += (_, __) => _isInitialized = InitializeIfNeeded();
-        SceneManager.sceneLoaded += (_, __) => {
+        Plugin.SafeSceneLoaded += (_, __) => _isInitialized = InitializeIfNeeded();
+        Plugin.SafeSceneLoaded += (_, __) => {
             // Hide menu every toggle
             // Also ensures the initial show state is always hidden, so the user wouldn't have to press the bind twice
             if (IsEnabled) Toggle();

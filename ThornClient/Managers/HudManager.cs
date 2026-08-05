@@ -37,7 +37,7 @@ public static class HudManager {
         AssetManager.LoadBundle(BundleKey, BundlePath);
 
         // Hook
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        Plugin.SafeSceneLoaded += OnSceneLoaded;
     }
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode) {

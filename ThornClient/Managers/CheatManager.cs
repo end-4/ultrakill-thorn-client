@@ -16,7 +16,7 @@ public static class CheatManager {
     private static string _hexColor = "#44ff45";
 
     static CheatManager() {
-        SceneManager.sceneLoaded += ResetCheatinessAndUpdate;
+        Plugin.SafeSceneLoaded += ResetCheatinessAndUpdate;
     }
 
     private static void ResetCheatinessAndUpdate(Scene scene, LoadSceneMode mode) {

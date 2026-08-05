@@ -42,7 +42,7 @@ public class UIScaler : Module {
     /// </summary>
     protected override void OnEnable() {
         UpdateScale(Scale.Value);
-        SceneManager.sceneLoaded += UpdateScale;
+        Plugin.SafeSceneLoaded += UpdateScale;
         Scale.OnValueChanged += UpdateScale;
     }
 
@@ -81,7 +81,7 @@ public class UIScaler : Module {
     /// </summary>
     protected override void OnDisable() {
         Scale.OnValueChanged -= UpdateScale;
-        SceneManager.sceneLoaded -= UpdateScale;
+        Plugin.SafeSceneLoaded -= UpdateScale;
         UpdateScale(1f);
     }
 }
