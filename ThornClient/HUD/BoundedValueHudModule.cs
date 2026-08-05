@@ -173,8 +173,8 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         [IndicatorStyle.Circular] = "CircularStyle",
     };
 
-    private static Dictionary<IndicatorStyle, IBoundedValueController?> _styleComps = new();
-    private static Dictionary<IndicatorStyle, GameObject?> _styleGameObjects = new();
+    private readonly Dictionary<IndicatorStyle, IBoundedValueController?> _styleComps = new();
+    private readonly Dictionary<IndicatorStyle, GameObject?> _styleGameObjects = new();
     private GameObject? _contentObject;
 
     /// <summary>
