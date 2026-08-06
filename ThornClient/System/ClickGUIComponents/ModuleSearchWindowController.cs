@@ -33,7 +33,7 @@ internal class ModuleSearchWindowController : MonoBehaviour {
         }
     } = _ => true;
 
-    private void OnEnable() {
+    private void Start() {
         var inputObj = gameObject.FindRecursive("Modules/Input");
         if (inputObj != null) _input = inputObj.GetComponent<TMP_InputField>();
         _results = gameObject.FindRecursive("Modules/Results");
@@ -43,7 +43,7 @@ internal class ModuleSearchWindowController : MonoBehaviour {
         Query("");
     }
 
-    private void OnDisable() {
+    private void OnDestroy() {
         if (_input != null) _input.onValueChanged.RemoveListener(Query);
     }
 

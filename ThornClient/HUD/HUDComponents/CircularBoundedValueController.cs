@@ -17,7 +17,7 @@ public class CircularBoundedValueController : MonoBehaviour, IBoundedValueContro
     private Image? _icon;
     private BatchBoolSettingVisibilitySyncer? _visibilitySyncer;
 
-    private void OnEnable() {
+    private void Start() {
         if (TargetModule == null) return;
         _textName = gameObject.FindRecursive("Name")?.GetComponent<TextMeshProUGUI>();
         _icon = gameObject.FindRecursive("Trough/Icon")?.GetComponent<Image>();
@@ -25,11 +25,11 @@ public class CircularBoundedValueController : MonoBehaviour, IBoundedValueContro
         _fillSoftBound = gameObject.FindRecursive("Trough/SoftBound")?.GetComponent<Image>();
         var valObj = gameObject.FindRecursive("Trough/Value/ValueBase");
         if (valObj != null) {
-            valObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
+            valObj.GetOrAddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
         }
         var sofObj = gameObject.FindRecursive("Trough/SoftBound/SoftBoundBase");
         if (sofObj != null) {
-            sofObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
+            sofObj.GetOrAddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
         }
         _visibilitySyncer = gameObject.GetOrAddComponent<BatchBoolSettingVisibilitySyncer>();
         _visibilitySyncer.SyncPairs = new Dictionary<Setting<bool>, string> {
@@ -50,7 +50,7 @@ public class CircularBoundedValueController : MonoBehaviour, IBoundedValueContro
         TargetModule.DecimalPlacesChanged += UpdateValue;
     }
 
-    private void OnDisable() {
+    private void OnDestroy() {
         if (TargetModule == null) return;
         TargetModule.NameChanged -= UpdateName;
         TargetModule.IconChanged -= UpdateIcon;

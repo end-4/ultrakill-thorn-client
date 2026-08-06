@@ -44,7 +44,7 @@ public class Gun : FramedHudModule {
 
         private GunControl? Gci => GunControl.Instance;
 
-        private void OnEnable() {
+        private void Start() {
             _icon = gameObject.FindRecursive("Icon")?.GetComponent<Image>();
             _iconColSyncer = _icon.GetOrAddComponent<HudVariantColorSyncer>();
             if (_icon == null) return;
@@ -52,7 +52,7 @@ public class Gun : FramedHudModule {
             UpdateIcon();
         }
 
-        private void OnDisable() {
+        private void OnDestroy() {
             if (Gci != null) Gci.OnWeaponChange -= UpdateIcon;
         }
 

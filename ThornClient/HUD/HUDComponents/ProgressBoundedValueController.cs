@@ -26,7 +26,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     private TextMeshProUGUI? _textCap;
     private BatchBoolSettingVisibilitySyncer? _visibilitySyncer;
 
-    private void OnEnable() {
+    private void Start() {
         if (TargetModule == null) return;
         _textName = gameObject.FindRecursive("NameLayout/Name")?.GetComponent<TextMeshProUGUI>();
         _icon = gameObject.FindRecursive("Trough/ValueLayout/Icon")?.GetComponent<Image>();
@@ -68,7 +68,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         TargetModule.DecimalPlacesChanged += UpdateSoftBound;
     }
 
-    private void OnDisable() {
+    private void OnDestroy() {
         if (TargetModule == null) return;
         TargetModule.NameChanged -= UpdateName;
         TargetModule.IconChanged -= UpdateIcon;

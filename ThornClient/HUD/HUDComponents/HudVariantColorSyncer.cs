@@ -27,13 +27,13 @@ public class HudVariantColorSyncer : MonoBehaviour {
 
     private Image? _target;
 
-    private void OnEnable() {
+    private void Start() {
         _target = GetComponent<Image>();
         PrefsManager.onPrefChanged += CheckAndUpdate;
         UpdateColor();
     }
 
-    private void OnDisable() {
+    private void OnDestroy() {
         PrefsManager.onPrefChanged -= CheckAndUpdate;
     }
 
