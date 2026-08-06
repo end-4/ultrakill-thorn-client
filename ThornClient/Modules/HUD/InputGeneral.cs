@@ -1,4 +1,7 @@
-﻿using NukeLib.UI;
+﻿using System.Collections.Generic;
+using NukeLib.UI;
+using ThornClient.Core;
+using ThornClient.Core.ConfigurableElements;
 using ThornClient.Managers;
 using UnityEngine;
 using ThornClient.HUD;
@@ -21,12 +24,23 @@ public class InputGeneral : FramedHudModule {
     /// </summary>
     public override string[] Tags => ["keyboard", "movement", "punch", "controller"];
 
+    public Setting<bool> ShowDashSlam;
+    public Setting<bool> ShowMovement;
+    public Setting<bool> ShowArms;
+
     /// <summary>
     /// Constructor
     /// </summary>
     public InputGeneral() : base("thorn.inputGeneral", "Input - General",
         "Shows movement-related, fist, and variant cycle inputs") {
+        ShowDashSlam = CreateSetting("showDashSlam", "Show Dash/Slam",
+            "Shows the keys for dashing and slamming on the left", true);
+        ShowMovement = CreateSetting("showMovement", "Show Movement Keys",
+            "Shows directional movement (WASD) and jump input", true);
+        ShowArms = CreateSetting("showArms", "Show Arms", "Shows Feedbacker/Knuckleblaster/Whiplash", true);
     }
+
+    private BatchBoolSettingVisibilitySyncer? _visibilitySyncer;
 
     /// <summary>
     /// Creates the content object that sits on the frame
@@ -35,6 +49,12 @@ public class InputGeneral : FramedHudModule {
     protected override GameObject CreateContentObject() {
         var obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "KeyLayoutGeneral"));
         obj.AddComponent<InputGeneralController>();
+        _visibilitySyncer = obj.GetOrAddComponent<BatchBoolSettingVisibilitySyncer>();
+        _visibilitySyncer.SyncPairs = new Dictionary<Setting<bool>, string> {
+            {ShowDashSlam, "Col/General/MovementCol"},
+            {ShowMovement, "Col/General/MainCol"},
+            {ShowArms, "Col/General/FistCol"},
+        };
         return obj;
     }
 
