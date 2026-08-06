@@ -7,6 +7,7 @@ using NukeLib.Utils;
 using ThornClient.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace ThornClient.Managers;
 
@@ -21,7 +22,7 @@ public static class HudManager {
     /// </summary>
     public static readonly string BundleKey = "hud";
 
-    private static Dictionary<HudSurface, GameObject> _surfaces = new Dictionary<HudSurface, GameObject>();
+    private static Dictionary<HudSurface, GameObject?> _surfaces = new();
 
     /// <summary>
     /// Emitted when the HUD manager has finished preparing for a scene and is ready to spawn HUD modules.
@@ -41,24 +42,38 @@ public static class HudManager {
         SceneUtils.SafeSceneLoaded += OnSceneLoaded;
     }
 
+    private const string GunCanvasName = "ThornGunCanvas";
+    private const string StyleCanvasName = "ThornStyleCanvas";
+
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         try {
-            // Plugin.Log.LogInfo($"[HUD Manager] Preparing for scene '{SceneHelper.CurrentScene}'...");
             var rootGameObjects = scene.GetRootGameObjects();
-            // Plugin.Log.LogInfo($"[HUD Manager] Root objects: {rootGameObjects.Length}");
             var player = rootGameObjects.Where(obj => obj.name == "Player").FirstOrDefault();
             var canvas = rootGameObjects.Where(obj => obj.name == "Canvas").FirstOrDefault();
-            // Plugin.Log.LogInfo($"[HUD Manager] player: {player}, canvas: {canvas}");
-            if (player == null) return;
-            // Plugin.Log.LogInfo($"[HUD Manager] pass player nonnull");
-            var hud = player.FindRecursive("Main Camera/HUD Camera/HUD");
-            // Plugin.Log.LogInfo($"[HUD Manager] hud {hud}");
-            if (canvas == null || hud == null) return;
-            _surfaces[HudSurface.Left] = hud.FindRecursive("GunCanvas");
-            _surfaces[HudSurface.Right] = hud.FindRecursive("StyleCanvas");
-            _surfaces[HudSurface.Overlay] = canvas.FindRecursive("Crosshair Filler");
-            // Plugin.Log.LogInfo(
-            //     $"[HUD Manager] surfaces {_surfaces[HudSurface.Left]}, {_surfaces[HudSurface.Right]}, {_surfaces[HudSurface.Overlay]}");
+            var hud = player?.FindRecursive("Main Camera/HUD Camera/HUD");
+            if (hud != null) {
+                var thornGunCanvas = hud.FindRecursive(GunCanvasName);
+                if (thornGunCanvas == null) {
+                    var vanillaGunCanvas = hud.FindRecursive("GunCanvas");
+                    if (vanillaGunCanvas != null) {
+                        thornGunCanvas = Object.Instantiate(vanillaGunCanvas, vanillaGunCanvas.transform.parent);
+                        thornGunCanvas.name = GunCanvasName;
+                    }
+                }
+                _surfaces[HudSurface.Left] = thornGunCanvas;
+
+                var thornStyleCanvas = hud.FindRecursive(StyleCanvasName);
+                if (thornStyleCanvas == null) {
+                    var vanillaStyleCanvas = hud.FindRecursive("StyleCanvas");
+                    if (vanillaStyleCanvas != null) {
+                        thornStyleCanvas = Object.Instantiate(vanillaStyleCanvas, vanillaStyleCanvas.transform.parent);
+                        thornStyleCanvas.name = StyleCanvasName;
+                    }
+                }
+                _surfaces[HudSurface.Right] = thornStyleCanvas;
+            }
+
+            _surfaces[HudSurface.Overlay] = canvas?.FindRecursive("Crosshair Filler");
             if (_surfaces.Values.Any(g => g == null)) return;
             ReadyForScene?.Invoke();
         } catch (Exception e) {
