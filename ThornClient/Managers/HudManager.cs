@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NukeLib.UI;
+using NukeLib.Utils;
 using ThornClient.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,7 +38,7 @@ public static class HudManager {
         AssetManager.LoadBundle(BundleKey, BundlePath);
 
         // Hook
-        Plugin.SafeSceneLoaded += OnSceneLoaded;
+        SceneUtils.SafeSceneLoaded += OnSceneLoaded;
     }
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode) {

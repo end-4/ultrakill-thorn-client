@@ -2,6 +2,7 @@
 using System.Linq;
 using Notiffy.API;
 using NukeLib.Game.Scores;
+using NukeLib.Utils;
 using ThornClient.Core;
 using UnityEngine.SceneManagement;
 
@@ -16,7 +17,7 @@ public static class CheatManager {
     private static string _hexColor = "#44ff45";
 
     static CheatManager() {
-        Plugin.SafeSceneLoaded += ResetCheatinessAndUpdate;
+        SceneUtils.SafeSceneLoaded += ResetCheatinessAndUpdate;
     }
 
     private static void ResetCheatinessAndUpdate(Scene scene, LoadSceneMode mode) {

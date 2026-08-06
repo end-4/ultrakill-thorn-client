@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NukeLib.Utils;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
@@ -53,7 +54,7 @@ public class FullBright : Module {
     /// Stuff that run when enabled
     /// </summary>
     protected override void OnEnable() {
-        Plugin.SafeSceneLoaded += OnSceneLoaded;
+        SceneUtils.SafeSceneLoaded += OnSceneLoaded;
         Brightness.OnValueChanged += UpdateAmbientLightColor;
 
         if (SceneManager.GetActiveScene().isLoaded) {
@@ -95,7 +96,7 @@ public class FullBright : Module {
     /// Stuff that run when disabled
     /// </summary>
     protected override void OnDisable() {
-        Plugin.SafeSceneLoaded -= OnSceneLoaded;
+        SceneUtils.SafeSceneLoaded -= OnSceneLoaded;
         Brightness.OnValueChanged -= UpdateAmbientLightColor;
 
         if (_isStateSaved) {

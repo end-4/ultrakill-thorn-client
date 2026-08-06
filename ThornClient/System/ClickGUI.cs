@@ -7,13 +7,14 @@ using ThornClient.System.ClickGUIComponents;
 using UnityEngine.SceneManagement;
 using System;
 using System.Linq;
-using NukeLib.Text;
 using NukeLib.UI;
+using NukeLib.Utils;
 using ThornClient.Managers;
 using TMPro;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using TextUtils = NukeLib.Text.TextUtils;
 
 namespace ThornClient.System;
 
@@ -28,8 +29,8 @@ internal class ClickGUI : SystemModule {
     public ClickGUI() : base("thorn.clickGui", "ClickGUI", "The main interaction panel") {
         AssetManager.LoadBundle(BundleKey, BundlePath);
         // Note Keybind is registered in ThornModule
-        Plugin.SafeSceneLoaded += (_, __) => _isInitialized = InitializeIfNeeded();
-        Plugin.SafeSceneLoaded += (_, __) => {
+        SceneUtils.SafeSceneLoaded += (_, __) => {
+            _isInitialized = InitializeIfNeeded();
             // Hide menu every toggle
             // Also ensures the initial show state is always hidden, so the user wouldn't have to press the bind twice
             if (IsEnabled) Toggle();

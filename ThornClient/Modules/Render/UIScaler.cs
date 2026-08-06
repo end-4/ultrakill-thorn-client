@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NukeLib.Utils;
+using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using UnityEngine.SceneManagement;
@@ -42,7 +43,7 @@ public class UIScaler : Module {
     /// </summary>
     protected override void OnEnable() {
         UpdateScale(Scale.Value);
-        Plugin.SafeSceneLoaded += UpdateScale;
+        SceneUtils.SafeSceneLoaded += UpdateScale;
         Scale.OnValueChanged += UpdateScale;
     }
 
@@ -81,7 +82,7 @@ public class UIScaler : Module {
     /// </summary>
     protected override void OnDisable() {
         Scale.OnValueChanged -= UpdateScale;
-        Plugin.SafeSceneLoaded -= UpdateScale;
+        SceneUtils.SafeSceneLoaded -= UpdateScale;
         UpdateScale(1f);
     }
 }
