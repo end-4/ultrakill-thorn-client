@@ -15,7 +15,7 @@ namespace ThornClient.HUD.HUDComponents;
 /// Component to add to the GameObject that controls the positioning of a HUD element.
 /// </summary>
 public class HudElementPositioningController : FreeMoveDragHandler, IEndDragHandler, IPointerEnterHandler,
-    IPointerExitHandler {
+    IPointerExitHandler, IPointerClickHandler {
     /// <summary>
     /// The HUD module that this controller is associated with.
     /// </summary>
@@ -46,7 +46,7 @@ public class HudElementPositioningController : FreeMoveDragHandler, IEndDragHand
     private Dictionary<string, PivotChoice> _pivotChoices = [];
 
     private void Start() {
-        _dragOverlay = gameObject.FindRecursive("Overlay");
+        _dragOverlay = gameObject.FindRecursive("Overlay", warnings: false);
         var colorizer = _dragOverlay?.FindRecursive("Image").GetOrAddComponent<Colorizer>();
         colorizer?.UpdateHighlight(true);
         _pivotChoices = [];
@@ -120,5 +120,11 @@ public class HudElementPositioningController : FreeMoveDragHandler, IEndDragHand
     public void OnPointerExit(PointerEventData eventData) {
         if (_dragOverlay == null) return;
         _dragOverlay.SetActive(false);
+    }
+
+    public void OnPointerClick(PointerEventData eventData) {
+        if (eventData.button == PointerEventData.InputButton.Right && _dragOverlay != null) {
+            ClickGUI.NestConfigPanel(TargetModule);
+        }
     }
 }

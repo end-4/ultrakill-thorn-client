@@ -73,26 +73,7 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
 
     public void OnPointerClick(PointerEventData eventData) {
         if (eventData.button == PointerEventData.InputButton.Right) {
-            if (TargetModule == null) return;
-            var panel = CreateConfigPanel(TargetModule);
-            if (panel != null) ClickGUI.NestPanel(panel);
-            ClickGUI.SurrenderTooltipText(TargetModule.Description);
+            ClickGUI.NestConfigPanel(TargetModule);
         }
-    }
-
-    private static GameObject? CreateConfigPanel(Configurable config) {
-        if (AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleCategory") == null) return null;
-
-        var configurableObj = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleCategory"));
-        if (configurableObj == null) {
-            return null;
-        }
-
-        // Add controller
-        var configController = configurableObj.GetOrAddComponent<ConfigurableWindowController>();
-        configController.IsPopup = true;
-        configController.TargetConfigurable = config;
-
-        return configurableObj;
     }
 }

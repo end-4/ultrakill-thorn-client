@@ -378,4 +378,27 @@ internal class ClickGUI : SystemModule {
 
         SurrenderTooltipText("", force: true);
     }
+
+    public static void NestConfigPanel(Configurable? config) {
+        if (config == null) return;
+        var panel = CreateConfigPanel(config);
+        if (panel != null) NestPanel(panel);
+        SurrenderTooltipText("", true);
+    }
+
+    private static GameObject? CreateConfigPanel(Configurable config) {
+        if (AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleCategory") == null) return null;
+
+        var configurableObj = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleCategory"));
+        if (configurableObj == null) {
+            return null;
+        }
+
+        // Add controller
+        var configController = configurableObj.GetOrAddComponent<ConfigurableWindowController>();
+        configController.IsPopup = true;
+        configController.TargetConfigurable = config;
+
+        return configurableObj;
+    }
 }
