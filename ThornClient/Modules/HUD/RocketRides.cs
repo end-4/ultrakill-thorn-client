@@ -12,15 +12,14 @@ public class RocketRides : BoundedValueHudModule {
     private Setting<int> EffectiveRides;
 
     public RocketRides() : base("thorn.rocketRides", "Rocket Rides", "Shows number of remaining effective rocket rides",
-        5, displayIcon: AssetManager.Get<Sprite>(HudManager.BundleKey, "rocket_ride"), displayName: "Rides") {
-        ValueColor.DefaultValue = new Color(1, 0.5f, 0.23f);
+        5, displayIcon: AssetManager.Get<Sprite>(HudManager.BundleKey, "rocket_ride"), displayName: "Rides",
+        defaultValueColor: new Color(1, 0.5f, 0.23f)) {
         EffectiveRides = CreateSetting("effectiveRides", "Effective Rides",
             "Number of effective rocket rides. There is no strict value, but the 6th one droops immediately and noticeably.",
             5);
     }
 
-    protected override void OnEnable() {
-        base.OnEnable();
+    protected override void OnHudEnable() {
         DecimalPlaces = 0;
     }
 

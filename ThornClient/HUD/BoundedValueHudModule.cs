@@ -22,6 +22,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         /// The standard horizontal line style, much like vanilla health bar
         /// </summary>
         Progress = 0,
+
         /// <summary>
         /// The circular style, like Taberry's cybergrind wave progress indicator
         /// </summary>
@@ -139,6 +140,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// The color of the soft bound fill element of the indicator.
     /// </summary>
     public Setting<Color> SoftBoundColor;
+
     public SettingGroup ColorGroup;
 
     /// <summary>
@@ -151,15 +153,17 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// <param name="displayName">The name that shown on the HUD element</param>
     /// <param name="displayIcon">The icon shown on the HUD element</param>
     public BoundedValueHudModule(string guid, string name, string description, float bound = 1, string displayName = "",
-        Sprite? displayIcon = null) : base(guid, name, description) {
+        Sprite? displayIcon = null, Color? defaultValueColor = null, Color? defaultSoftBoundColor = null) : base(guid,
+        name, description) {
         Style = CreateSetting("indicatorStyle", "Indicator Style", "The style to present the value",
             IndicatorStyle.Progress);
         ShowName = CreateSetting("showName", "Show Name", "The name of the value", true);
         ColorGroup = CreateGroup("colorGroup", "Color Group", "Colors used on the indicator");
         ValueColor = CreateSetting("valueColor", "Value Color", "The color of the value",
-            new Color(0.098f, 0.624f, 0.525f), ColorGroup);
+            defaultValueColor ?? new Color(0.098f, 0.624f, 0.525f), ColorGroup);
         SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound Color",
-            "The color of the soft bound, for example HP hard damage", new Color(1f, 1f, 1f, 0.36f), ColorGroup);
+            "The color of the soft bound, for example HP hard damage",
+            defaultSoftBoundColor ?? new Color(1f, 1f, 1f, 0.36f), ColorGroup);
         Style.OnValueChanged += SwitchStyle;
         DisplayName = displayName.Length > 0 ? displayName : name;
         DisplayIcon = displayIcon ?? Icon;

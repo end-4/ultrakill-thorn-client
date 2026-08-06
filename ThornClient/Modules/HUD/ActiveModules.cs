@@ -5,6 +5,7 @@ using UnityEngine;
 using ThornClient.HUD;
 using ThornClient.Managers;
 using ThornClient.System;
+using UnityEngine.SceneManagement;
 
 namespace ThornClient.Modules.HUD;
 
@@ -28,13 +29,13 @@ public class ActiveModules : TextHudModule {
     /// Constructor
     /// </summary>
     public ActiveModules() : base("thorn.activeModules", "Active Modules", "A list of active modules") {
-        UpdateWholeList();
+
     }
 
     /// <summary>
     /// Stuff that run when enabled
     /// </summary>
-    protected override void OnEnable() {
+    protected override void OnHudEnable() {
         ModuleManager.SomeModuleToggled += UpdateWholeList;
         UpdateWholeList();
     }
@@ -42,8 +43,12 @@ public class ActiveModules : TextHudModule {
     /// <summary>
     /// Stuff that run when disabled
     /// </summary>
-    protected override void OnDisable() {
+    protected override void OnHudDisable() {
         ModuleManager.SomeModuleToggled -= UpdateWholeList;
+    }
+
+    private void UpdateWholeList(Scene _, LoadSceneMode __) {
+        UpdateWholeList();
     }
 
     private void UpdateWholeList(Module module, bool enabled) {

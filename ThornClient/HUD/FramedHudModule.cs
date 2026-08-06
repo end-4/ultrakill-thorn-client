@@ -66,6 +66,4 @@ public abstract class FramedHudModule : HudModule {
 
         return obj;
     }
-
-
 }

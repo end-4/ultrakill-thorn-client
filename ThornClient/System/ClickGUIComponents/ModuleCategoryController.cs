@@ -47,9 +47,10 @@ internal class ModuleCategoryController : MonoBehaviour {
         }
         var moduleList = ModuleManager.GetByCategory(Category).Where(m => (!(m is SystemModule)));
         foreach (var module in moduleList) {
+            var module1 = module;
             var moduleButtonObj = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleButton"), moduleCol.transform);
             var buttonController = moduleButtonObj.GetOrAddComponent<ModuleButtonController>();
-            buttonController.TargetModule = module;
+            buttonController.TargetModule = module1;
         }
     }
 }

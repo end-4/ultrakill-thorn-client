@@ -22,7 +22,7 @@ public abstract class TextHudModule : FramedHudModule {
 
             UpdateText(value);
         }
-    }
+    } = "Text module";
 
     /// <summary>
     /// The icon displayed by this HUD module. Changes are reactive. Set to null to hide the icon.
@@ -52,12 +52,13 @@ public abstract class TextHudModule : FramedHudModule {
 
     private void UpdateText(string value) {
         if (_textComp == null) return;
-        // bool newWidth = value.Length != _textComp.text.Length;
+        bool newWidth = value.Length != _textComp.text.Length;
+
         if (value != _textComp.text) {
             _textComp.text = value;
             UnfuckAll();
         }
-        // if (newWidth) UnfuckAll();
+        if (newWidth) UnfuckAll();
     }
 
     private void UpdateIcon(Sprite? icon) {

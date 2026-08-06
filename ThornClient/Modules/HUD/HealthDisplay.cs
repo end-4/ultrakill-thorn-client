@@ -22,15 +22,14 @@ public class HealthDisplay : BoundedValueHudModule {
     /// <summary>
     /// Constructor
     /// </summary>
-    public HealthDisplay() : base("thorn.healthHud", "Health", "Shows health", 100) {
-        ValueColor.DefaultValue = new Color(1, 0, 0);
+    public HealthDisplay() : base("thorn.healthHud", "Health", "Shows health", 100,
+        defaultValueColor: new Color(1, 0, 0)) {
     }
 
     /// <summary>
     /// Stuff that run when the module is enabled
     /// </summary>
-    protected override void OnEnable() {
-        base.OnEnable();
+    protected override void OnHudEnable() {
         DecimalPlaces = 0;
     }
 
