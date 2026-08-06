@@ -52,25 +52,26 @@ public static class HudManager {
             var canvas = rootGameObjects.Where(obj => obj.name == "Canvas").FirstOrDefault();
             var hud = player?.FindRecursive("Main Camera/HUD Camera/HUD");
             if (hud != null) {
-                var thornGunCanvas = hud.FindRecursive(GunCanvasName);
-                if (thornGunCanvas == null) {
-                    var vanillaGunCanvas = hud.FindRecursive("GunCanvas");
-                    if (vanillaGunCanvas != null) {
-                        thornGunCanvas = Object.Instantiate(vanillaGunCanvas, vanillaGunCanvas.transform.parent);
-                        thornGunCanvas.name = GunCanvasName;
-                    }
+                var thornGunCanvas = hud.FindRecursive(GunCanvasName, false);
+                var vanillaGunCanvas = hud.FindRecursive("GunCanvas");
+                if (thornGunCanvas == null && vanillaGunCanvas != null) {
+                    thornGunCanvas = Object.Instantiate(vanillaGunCanvas, vanillaGunCanvas.transform.parent);
+                    thornGunCanvas.name = GunCanvasName;
                 }
-                _surfaces[HudSurface.Left] = thornGunCanvas;
 
-                var thornStyleCanvas = hud.FindRecursive(StyleCanvasName);
-                if (thornStyleCanvas == null) {
-                    var vanillaStyleCanvas = hud.FindRecursive("StyleCanvas");
-                    if (vanillaStyleCanvas != null) {
-                        thornStyleCanvas = Object.Instantiate(vanillaStyleCanvas, vanillaStyleCanvas.transform.parent);
-                        thornStyleCanvas.name = StyleCanvasName;
-                    }
+                _surfaces[HudSurface.Left] = thornGunCanvas ?? vanillaGunCanvas;
+
+                var thornStyleCanvas = hud.FindRecursive(StyleCanvasName, false);
+                var vanillaStyleCanvas = hud.FindRecursive("StyleCanvas");
+                if (thornStyleCanvas == null && vanillaStyleCanvas != null) {
+                    thornStyleCanvas = Object.Instantiate(vanillaStyleCanvas, vanillaStyleCanvas.transform.parent);
+                    thornStyleCanvas.name = StyleCanvasName;
                 }
-                _surfaces[HudSurface.Right] = thornStyleCanvas;
+
+                _surfaces[HudSurface.Right] = thornStyleCanvas ?? vanillaStyleCanvas;
+
+                // _surfaces[HudSurface.Left] = hud.FindRecursive("GunCanvas");
+                // _surfaces[HudSurface.Right] = hud.FindRecursive("StyleCanvas");
             }
 
             _surfaces[HudSurface.Overlay] = canvas?.FindRecursive("Crosshair Filler");
