@@ -11,12 +11,11 @@ public class WallJumps : BoundedValueHudModule {
     public static readonly int MaxWallJumps = 3;
 
     public WallJumps() : base("thorn.wallJumps", "Wall Jumps", "Shows remaining wall jumps before you have to land",
-        MaxWallJumps, displayIcon: AssetManager.Get<Sprite>(HudManager.BundleKey, "wall_jump"),
+        MaxWallJumps,
         displayName: "Wall Jumps", defaultValueColor: new Color(0.78f, 0.77f, 0.38f)) {
     }
 
     protected override void OnHudEnable() {
-        base.OnEnable();
         DecimalPlaces = 0;
     }
 
