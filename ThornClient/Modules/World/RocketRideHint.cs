@@ -76,7 +76,7 @@ public class RocketRideHint : Module {
     /// </summary>
     public override string[] Tags => ["movement", "freezeframe"];
 
-    private static Material? _lineMaterial; // TODO apply the same optimization for EnemyTracer
+    private static Material? _lineMaterial;
 
     /// <summary>
     /// Constructor.

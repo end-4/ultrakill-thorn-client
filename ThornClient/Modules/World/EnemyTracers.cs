@@ -89,6 +89,17 @@ public class EnemyTracers : Module {
                enemy.gameObject.activeInHierarchy;
     }
 
+    private static Material? _lineMaterial;
+
+    private static void EnsureMaterial() {
+        if (_lineMaterial != null) return;
+
+        var shader = Shader.Find("Hidden/Internal-Colored");
+        if (shader != null) {
+            _lineMaterial = new Material(shader);
+        }
+    }
+
     /// <summary>
     /// The rendering loop
     /// </summary>
@@ -99,8 +110,10 @@ public class EnemyTracers : Module {
         var mainCam = Camera.main;
         if (mainCam == null) return;
 
-        var tracerMaterial = new Material(Shader.Find("Hidden/Internal-Colored"));
-        tracerMaterial.SetPass(0);
+        EnsureMaterial();
+        if (_lineMaterial == null) return;
+
+        _lineMaterial.SetPass(0);
 
         // Render directly in 3D space
         GL.PushMatrix();
