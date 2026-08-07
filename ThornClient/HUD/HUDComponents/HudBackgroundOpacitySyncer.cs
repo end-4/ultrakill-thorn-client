@@ -1,4 +1,5 @@
-﻿using ThornClient.Managers;
+﻿using NukeLib.Game;
+using ThornClient.Managers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -26,22 +27,18 @@ public class HudBackgroundOpacitySyncer : MonoBehaviour {
 
     private void Start() {
         _bg = gameObject.GetComponent<Image>();
-        PrefsManager.onPrefChanged += CheckAndUpdate;
+        PrefsHelper.Subscribe<float>("hudBackgroundOpacity", UpdateFromPrefs);
         HudManager.ReadyForScene += UpdateOpacity;
         if (_prefs != null) UpdateOpacity();
     }
 
     private void OnDestroy() {
-        PrefsManager.onPrefChanged -= CheckAndUpdate;
+        PrefsHelper.Unsubscribe<float>("hudBackgroundOpacity", UpdateFromPrefs);
         HudManager.ReadyForScene -= UpdateOpacity;
     }
 
-    private void CheckAndUpdate(string key, object? obj) {
-        if (key == "hudBackgroundOpacity") {
-            if (float.TryParse(obj?.ToString(), out float opacity)) {
-                UpdateOpacity(opacity / 100f);
-            }
-        }
+    private void UpdateFromPrefs(float opacity) {
+        UpdateOpacity(opacity / 100f);
     }
 
     /// <summary>

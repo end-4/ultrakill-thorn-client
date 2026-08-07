@@ -158,7 +158,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         Style = CreateSetting("indicatorStyle", "Indicator Style", "The style to present the value",
             IndicatorStyle.Progress);
         ShowName = CreateSetting("showName", "Show Name", "The name of the value", true);
-        ColorGroup = CreateGroup("colorGroup", "Color Group", "Colors used on the indicator");
+        ColorGroup = CreateGroup("colorGroup", "Colors", "Colors used on the indicator");
         ValueColor = CreateSetting("valueColor", "Value Color", "The color of the value",
             defaultValueColor ?? new Color(0.098f, 0.624f, 0.525f), ColorGroup);
         SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound Color",
