@@ -1,6 +1,6 @@
+
 # TODO BEFORE RELEASE
 
-- Wrap trycatches to all `sceneLoaded`s to not grant CGME users invincibility on failure
 - Remove or restrict test modules
 
 ## Utility mod for ULTRAKILL

@@ -17,7 +17,7 @@ public enum ModuleCategory {
     /// <summary>
     /// Modules that affect the rendering, such as ESP
     /// </summary>
-    Render, // viewmodel transform, hide gui
+    Render, // viewmodel transform, hide gui, visible portals
 
     /// <summary>
     /// Modules that affect the world, such as turning the floor into lava

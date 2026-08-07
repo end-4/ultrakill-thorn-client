@@ -44,7 +44,7 @@ public class Fist : FramedHudModule {
         private Image? _fg;
         private HudVariantColorSyncer? _bgCol;
         private HudVariantColorSyncer? _fgCol;
-        private void Start() {
+        private void OnEnable() {
             _bg = gameObject.FindRecursive("Background")?.GetComponent<Image>();
             _fg = gameObject.FindRecursive("Panel")?.GetComponent<Image>();
             if (_bg == null || _fg == null) return;
@@ -55,7 +55,7 @@ public class Fist : FramedHudModule {
             UpdateIcon();
         }
 
-        private void OnDestroy() {
+        private void OnDisable() {
             if (FistControl.Instance != null) FistControl.Instance.FistIconUpdated -= UpdateIcon;
         }
 
