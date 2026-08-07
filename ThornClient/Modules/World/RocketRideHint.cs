@@ -87,7 +87,7 @@ public class RocketRideHint : Module {
             RocketHintShowWhen.Freezeframe);
         LineColor = CreateSetting("lineColor", "Line Color", "Color used for the hint line.",
             new Color(64f / 255f, 232f / 255f, 1f));
-        LineThickness = CreateSetting("lineThickness", "Line Thickness", "How thicc the line is", 1f);
+        LineThickness = CreateSetting("lineThickness", "Line Thickness", "How thicc the line is", 2f);
         LineWidth = CreateSetting("lineWidth", "Line Width", "How long the line is", 1f);
         Distance = CreateSetting("distance", "Distance", "How far away from the camera to show the lines", 3f);
         UpperAngle = CreateSetting("upperAngle", "Upper Angle", "The vertical angle of the upper line, in degrees.",
