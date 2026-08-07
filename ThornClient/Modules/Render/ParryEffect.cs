@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using NukeLib.Game.Gameplay;
+using NukeLib.Game;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;

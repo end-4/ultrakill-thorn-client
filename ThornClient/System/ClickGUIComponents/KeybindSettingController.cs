@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Notiffy.API;
-using NukeLib.Game.Controls;
+using NukeLib.Game;
 using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Core;
