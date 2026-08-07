@@ -108,6 +108,7 @@ internal class ModuleSearchWindowController : MonoBehaviour {
         Searchable[] results = query.Length > 0 ? Search.Invoke(query, _searchables) : [];
 
         foreach (var button in _allModules.Values) {
+            if (button == null) continue;
             button.UnfuckLayoutHack();
             button.SetActive(false);
         }
