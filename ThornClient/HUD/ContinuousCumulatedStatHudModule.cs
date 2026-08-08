@@ -46,7 +46,7 @@ public abstract class ContinuousCumulatedStatHudModule : TextHudModule {
     /// Constructor
     /// </summary>
     public ContinuousCumulatedStatHudModule(string guid, string name, string description,
-        DataSmoothing smoothing = DataSmoothing.None, float updateInterval = 0.5f, float ewmaAlpha = 0.2f) : base(guid, name, description) {
+        DataSmoothing smoothing = DataSmoothing.None, float updateInterval = 0.5f, float ewmaAlpha = 0.5f) : base(guid, name, description) {
         ShowIcon = CreateSetting("showIcon", "Show icon", "Shows an icon next to the text (if available)", true);
         MeasurementGroup = CreateGroup("measurementGroup", "Measurement", "How to measure the data");
         UpdateInterval = CreateSetting("updateInterval", "Update interval", "How fast to update the text", updateInterval, MeasurementGroup);

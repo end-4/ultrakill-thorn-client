@@ -17,19 +17,13 @@ public class DPSDisplay : ContinuousCumulatedStatHudModule {
     /// </summary>
     public Setting<bool> ShowDpsText;
 
-    /// <summary>
-    /// Icon of the module
-    /// </summary>
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "fps");
+    /// <inheritdoc />
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "fire");
 
-    /// <summary>
-    /// Tags for search
-    /// </summary>
+    /// <inheritdoc />
     public override string[] Tags => ["damage", "burst", "firepower"];
 
-    /// <summary>
-    /// Constructor
-    /// </summary>
+    /// <inheritdoc />
     public DPSDisplay() : base("thorn.dpsDisplay", "DPS", "Shows damage per second") {
         ShowDpsText = CreateSetting("showDpsText", "Show \"DPS\" text",
             "Makes the indicator say \"DPS:20\" instead of \"20\"", true);

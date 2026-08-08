@@ -66,23 +66,17 @@ public class RocketRideHint : Module {
     /// </summary>
     public Setting<float> LowerAngle { get; }
 
-    /// <summary>
-    /// Icon of this module.
-    /// </summary>
+    /// <inheritdoc />
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "rocket_ride");
 
-    /// <summary>
-    /// Tags for search.
-    /// </summary>
+    /// <inheritdoc />
     public override string[] Tags => ["movement", "freezeframe"];
 
     private static Material? _lineMaterial;
 
-    /// <summary>
-    /// Constructor.
-    /// </summary>
+    /// <inheritdoc />
     public RocketRideHint() : base("thorn.rocketRideHint", "Rocket Ride Hint",
-        "Draws assist lines to help with Freezeframe rocket ride aiming", ModuleCategory.World) {
+        "Draws assist lines to help with Freezeframe rocket ride aiming", ModuleCategory.Render) {
         ShowWhen = CreateSetting("showWhen", "Show when holding", "When to show the hint lines",
             RocketHintShowWhen.Freezeframe);
         LineColor = CreateSetting("lineColor", "Line Color", "Color used for the hint line.",

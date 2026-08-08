@@ -27,8 +27,6 @@ public abstract class NumberSettingController<T> : MonoBehaviour {
         _inputField.onSelect.AddListener(SavePrevValue);
         _inputField.onEndEdit.AddListener(SaveNewValue);
         if (TargetSetting != null) {
-            TargetSetting.OnValueChanged += UpdateFieldValue;
-            UpdateFieldValue(TargetSetting.Value);
             if (TargetSetting.Hints != null && TargetSetting.Hints.Range != null) {
                 if (TargetSetting.Hints.Decimals != null) _decimals = TargetSetting.Hints.Decimals.Value;
                 var range = TargetSetting.Hints.Range;
@@ -45,6 +43,8 @@ public abstract class NumberSettingController<T> : MonoBehaviour {
                 _scrubController.OnScrubStart += SavePrevValue;
                 _scrubController.OnValueScrub += UpdateScrub;
             }
+            TargetSetting.OnValueChanged += UpdateFieldValue;
+            UpdateFieldValue(TargetSetting.Value);
         }
     }
 

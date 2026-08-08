@@ -46,7 +46,7 @@ public class EnemyTracers : Module {
     /// Constructor
     /// </summary>
     public EnemyTracers() : base("thorn.enemyTracers", "Enemy Tracers", "Draws lines from you to enemies",
-        ModuleCategory.World) {
+        ModuleCategory.Render) {
         TracerColor = CreateSetting("tracerColor", "Tracer Color", "Color used for the trace lines",
             new Color(0.65f, 0.95f, 0.89f, 0.5f));
         LineThickness = CreateSetting("lineThickness", "Line Thickness", "The pixel width of the tracer lines", 2f);
