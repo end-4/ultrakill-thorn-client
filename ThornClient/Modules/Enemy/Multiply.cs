@@ -1,4 +1,5 @@
-﻿using NukeLib.Game;
+﻿using System;
+using NukeLib.Game;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
@@ -9,25 +10,27 @@ using Object = UnityEngine.Object;
 namespace ThornClient.Modules.Enemy;
 
 /// <summary>
-/// Module that forces enemies to be sanded.
+/// Module that Multiplies enemies
 /// </summary>
 public class Multiply : Module {
-    /// <summary>
-    /// Icon of the module
-    /// </summary>
+    /// <inheritdoc />
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "copy");
 
-    /// <summary>
-    /// Tags for searching
-    /// </summary>
+    /// <inheritdoc />
     public override string[] Tags => ["buff", "mitosis", "duplicate", "many"];
 
+    /// <summary>
+    /// Multiply to how many enemies
+    /// </summary>
     public Setting<int> Multiplier { get; }
 
     public Multiply() : base("thorn.multiplyEnemies", "Multiply",
         "Love me some Pain Atrophy (makes enemies duplicate)",
         ModuleCategory.Enemy) {
         Multiplier = CreateSetting("multiplier", "How many?", "1 -> x, where x=", 2);
+        Multiplier.Hints = new InterfaceHints {
+            Range = Tuple.Create(2f, 10f)
+        };
     }
 
     /// <summary>
