@@ -21,6 +21,9 @@ public class FloorIsLava : Module {
     /// <inheritdoc />
     public override string[] Tags => ["hazard", "hot"];
 
+    /// <inheritdoc />
+    public override string CheatReason => IsEnabled ? "Enables non-standard gameplay" : "";
+
     /// <summary>
     /// We hide this as a soft standardization and to avoid overwhelming
     /// </summary>
@@ -48,6 +51,7 @@ public class FloorIsLava : Module {
 
     protected override void OnEnable() {
         ResetTimer();
+        CheatManager.UpdateCheatiness();
     }
 
     private static NewMovement nm => NewMovement.Instance;
