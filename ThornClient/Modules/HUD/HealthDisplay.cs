@@ -29,7 +29,7 @@ public class HealthDisplay : BoundedValueHudModule {
     /// <summary>
     /// Stuff that run when the module is enabled
     /// </summary>
-    protected override void OnHudEnable() {
+    protected override void OnHudModuleEnable() {
         DecimalPlaces = 0;
     }
 

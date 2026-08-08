@@ -15,7 +15,7 @@ public class WallJumps : BoundedValueHudModule {
         displayName: "Wall Jumps", defaultValueColor: new Color(0.78f, 0.77f, 0.38f)) {
     }
 
-    protected override void OnHudEnable() {
+    protected override void OnHudModuleEnable() {
         DecimalPlaces = 0;
     }
 

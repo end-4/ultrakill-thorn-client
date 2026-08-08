@@ -19,7 +19,7 @@ public class RocketRides : BoundedValueHudModule {
             5);
     }
 
-    protected override void OnHudEnable() {
+    protected override void OnHudModuleEnable() {
         DecimalPlaces = 0;
     }
 

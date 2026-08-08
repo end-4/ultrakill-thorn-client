@@ -159,8 +159,8 @@ public abstract class HudModule : Module {
         PositionY.Value = DefaultLocalPosition[surface].y;
     }
 
-    protected virtual void OnHudEnable() {}
-    protected virtual void OnHudDisable() {}
+    protected virtual void OnHudModuleEnable() {}
+    protected virtual void OnHudModuleDisable() {}
 
     /// <summary>
     /// Stuff to run when the module is enabled. If you override, make sure to run base.OnEnable() for proper UI creation.
@@ -171,14 +171,14 @@ public abstract class HudModule : Module {
         if (_wrapper != null) {
             _wrapper.SetActive(true);
         }
-        OnHudEnable();
+        OnHudModuleEnable();
     }
 
     /// <summary>
     /// Stuff to run when the module is disabled
     /// </summary>
     protected sealed override void OnDisable() {
-        OnHudDisable();
+        OnHudModuleDisable();
         if (_wrapper == null) return;
         _wrapper.SetActive(false);
         HudManager.ReadyForScene -= InitializeIfNeeded;

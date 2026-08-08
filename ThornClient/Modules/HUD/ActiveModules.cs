@@ -35,7 +35,7 @@ public class ActiveModules : TextHudModule {
     /// <summary>
     /// Stuff that run when enabled
     /// </summary>
-    protected override void OnHudEnable() {
+    protected override void OnHudModuleEnable() {
         ModuleManager.SomeModuleToggled += UpdateWholeList;
         UpdateWholeList();
     }
@@ -43,7 +43,7 @@ public class ActiveModules : TextHudModule {
     /// <summary>
     /// Stuff that run when disabled
     /// </summary>
-    protected override void OnHudDisable() {
+    protected override void OnHudModuleDisable() {
         ModuleManager.SomeModuleToggled -= UpdateWholeList;
     }
 
