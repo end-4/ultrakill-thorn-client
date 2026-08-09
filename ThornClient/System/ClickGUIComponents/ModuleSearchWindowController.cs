@@ -33,10 +33,13 @@ internal class ModuleSearchWindowController : MonoBehaviour {
         }
     } = _ => true;
 
+    private void Awake() {
+        _results = gameObject.FindRecursive("Modules/Results");
+    }
+
     private void Start() {
         var inputObj = gameObject.FindRecursive("Modules/Input");
         if (inputObj != null) _input = inputObj.GetComponent<TMP_InputField>();
-        _results = gameObject.FindRecursive("Modules/Results");
         PopulateIfNeeded();
         if (_input != null) _input.onValueChanged.AddListener(Query);
         gameObject.FindRecursive("Header")?.GetOrAddComponent<TitlebarDragHandler>();
@@ -117,6 +120,7 @@ internal class ModuleSearchWindowController : MonoBehaviour {
             if (i >= maxResults) break;
             var result = results[i];
             if (_allModules.TryGetValue(result.Primary, out var item)) {
+                if (item == null) continue;
                 item.SetActive(true);
                 item.transform.SetAsLastSibling();
             }

@@ -168,6 +168,7 @@ internal class ClickGUI : SystemModule {
         var layout = page.FindRecursive("Layout")?.transform;
         if (layout == null || item == null) return item!;
         item.transform.SetParent(layout, false);
+        layout.gameObject.UnfuckLayoutHack();
         return item;
     }
 

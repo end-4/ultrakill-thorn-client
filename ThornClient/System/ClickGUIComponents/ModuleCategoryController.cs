@@ -30,7 +30,7 @@ internal class ModuleCategoryController : MonoBehaviour {
         if (_doneSetup) return;
         _doneSetup = true;
 
-        var moduleCol = gameObject.FindRecursive("Modules");
+        var moduleCol = gameObject.FindRecursive("Scroll View/Viewport/Content/Modules");
 
         // Header: icon, text, dragging behavior
         gameObject.FindRecursive("Header/TitleButton").GetComponent<Button>().interactable = false;
@@ -52,5 +52,6 @@ internal class ModuleCategoryController : MonoBehaviour {
             var buttonController = moduleButtonObj.GetOrAddComponent<ModuleButtonController>();
             buttonController.TargetModule = module1;
         }
+        gameObject.UnfuckLayoutHack();
     }
 }

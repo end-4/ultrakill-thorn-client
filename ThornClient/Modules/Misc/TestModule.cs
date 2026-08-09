@@ -70,6 +70,13 @@ public class TestModule : Module {
         chemistry.OnClick += x => {
             NotificationSystem.NotifySend("Thorn::Debug", $"Clicked button numba {x}");
         };
+
+        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Foo", "Bar"]);
+        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Five"]);
+        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Five", "little"]);
+        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Five", "little", "Chuddies"]);
+        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Five", "little", "Chuddies", "jumping"]);
+        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Five", "little", "Chuddies", "jumping", "on"]);
     }
 
     protected override void OnEnable() {

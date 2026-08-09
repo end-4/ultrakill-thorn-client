@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
+/// <summary>
+/// This is for the button that opens up a new window, not the window itself
+/// </summary>
 public class WindowedGroupSettingController : MonoBehaviour {
     public SettingGroup? TargetGroup;
     private TextMeshProUGUI? text;

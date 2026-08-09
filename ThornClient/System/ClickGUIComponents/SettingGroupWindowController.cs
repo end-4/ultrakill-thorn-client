@@ -38,7 +38,7 @@ public class SettingGroupWindowController : MonoBehaviour {
         backBtn!.onClick.AddListener(() => Destroy(gameObject));
 
         // Body. Note we're reusing ModuleCategory prefab for this
-        Transform listBody = gameObject.FindRecursive("Modules")!.transform;
+        Transform listBody = gameObject.FindRecursive("Scroll View/Viewport/Content/Modules")!.transform;
         Populate(listBody, TargetGroup.Elements);
         gameObject.UnfuckLayoutHack();
     }

@@ -202,6 +202,8 @@ public abstract class HudModule : Module {
         // var hudTextMaterial = Addressables.LoadAssetAsync<Material>("Assets/Fonts/VCR_OSD_MONO Overlay.mat")
         //     .WaitForCompletion();
         // _wrapperRect.gameObject.SetTextMaterialRecursive(hudTextMaterial);
+
+        // TODO fix font layering and hide on final rank screen
     }
 
     /// <summary>
