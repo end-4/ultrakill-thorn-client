@@ -120,7 +120,7 @@ public class WeaponVariantBinds : Module {
 
     private void Switch(int weaponIndex, int variantIndex) {
         if (!IsEnabled || Time.timeScale == 0) return;
-        if ((weaponIndex is >= NumWeapons or < 0) || (variantIndex is >= NumVariants or < 0) || gcon == null) return;
+        if ((weaponIndex is >= NumWeapons or < 0) || (variantIndex is >= NumVariants or < 0) || gcon == null || gcon.slots.Count <= weaponIndex) return;
         var slotList = gcon.slots[weaponIndex];
         if (slotList == null) return;
 
