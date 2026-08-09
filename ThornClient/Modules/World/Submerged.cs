@@ -71,6 +71,7 @@ public class Submerged : Module {
     }
 
     private void EnsureWater(bool on) {
+        if (!SceneUtils.IsSafe()) return;
         if (on) {
             if (_water != null) return;
             _water = GameObject.CreatePrimitive(PrimitiveType.Cube);
