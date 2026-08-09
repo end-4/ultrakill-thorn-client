@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using NukeLib.Game;
+using NukeLib.Utils;
+using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Managers;
@@ -46,6 +48,8 @@ public class ForceRadiance : Module {
         UpdateRadiance(true, RadianceTier.Value);
         CheatManager.UpdateCheatiness();
         RadianceTier.OnValueChanged += UpdateRadiance;
+        SceneUtils.SafeSceneLoadedNoParam += AddInfoLine;
+        AddInfoLine();
     }
 
     /// <summary>
@@ -54,6 +58,14 @@ public class ForceRadiance : Module {
     protected override void OnDisable() {
         RadianceTier.OnValueChanged -= UpdateRadiance;
         UpdateRadiance(false, RadianceTier.Value);
+        SceneUtils.SafeSceneLoadedNoParam -= AddInfoLine;
+        FinalRankHelper.RemoveInfoLine(InfoLine);
+
+    }
+
+    private static string InfoLine = "<color=#fff>+ <color=#ff5f59>R<color=#ffa347>A<color=#faf56b>D<color=#79f263>I<color=#8ae0ff>A<#bc82ff>N<color=#f37cf7>T CLEAR</color>";
+    private void AddInfoLine() {
+        FinalRankHelper.AddInfoLine(InfoLine);
     }
 
     private void UpdateRadiance(float value) {

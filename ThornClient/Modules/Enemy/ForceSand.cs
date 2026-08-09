@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using NukeLib.Game;
+using NukeLib.Utils;
+using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Managers;
 using ThornClient.System;
@@ -32,6 +34,8 @@ public class ForceSand : Module {
     protected override void OnEnable() {
         UpdateSand(true);
         CheatManager.UpdateCheatiness();
+        SceneUtils.SafeSceneLoadedNoParam += AddInfoLine;
+        AddInfoLine();
     }
 
     /// <summary>
@@ -39,6 +43,13 @@ public class ForceSand : Module {
     /// </summary>
     protected override void OnDisable() {
         UpdateSand(false);
+        SceneUtils.SafeSceneLoadedNoParam -= AddInfoLine;
+        FinalRankHelper.RemoveInfoLine(InfoLine);
+    }
+
+    private static string InfoLine = "<color=#fff>+ <color=#fffaa1>DESERTED</color>";
+    private void AddInfoLine() {
+        FinalRankHelper.AddInfoLine(InfoLine);
     }
 
     private void UpdateSand(bool enabled) {

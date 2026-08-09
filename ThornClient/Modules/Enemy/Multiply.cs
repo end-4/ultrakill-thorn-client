@@ -1,5 +1,6 @@
 ﻿using System;
 using NukeLib.Game;
+using NukeLib.Utils;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
@@ -42,11 +43,34 @@ public class Multiply : Module {
     protected override void OnEnable() {
         CheatManager.UpdateCheatiness();
         EnemyEvents.OnSpawn += Dupe;
+        SceneUtils.SafeSceneLoadedNoParam += AddInfoLine;
+        AddInfoLine();
     }
 
     /// <inheritdoc />
     protected override void OnDisable() {
         EnemyEvents.OnSpawn -= Dupe;
+        SceneUtils.SafeSceneLoadedNoParam -= AddInfoLine;
+        RemoveInfoLine();
+    }
+
+    private static string GetInfoLine(int multiplier) {
+        return $"<color=#fff>+ <color=orange>ENEMIES x{multiplier}";
+    }
+
+    private string? _registeredInfoLine = null;
+
+    private void AddInfoLine() {
+        RemoveInfoLine();
+        _registeredInfoLine = GetInfoLine(Multiplier.Value);
+        FinalRankHelper.AddInfoLine(_registeredInfoLine);
+    }
+
+    private void RemoveInfoLine() {
+        if (_registeredInfoLine != null && FinalRankHelper.ExtraInfoLines.Contains(_registeredInfoLine)) {
+            FinalRankHelper.RemoveInfoLine(_registeredInfoLine);
+            _registeredInfoLine = null;
+        }
     }
 
     private const string MultipliedTag = "[ThornMultiplied]";

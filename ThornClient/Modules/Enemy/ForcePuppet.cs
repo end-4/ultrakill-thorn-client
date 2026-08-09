@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using NukeLib.Game;
+using NukeLib.Utils;
+using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Managers;
 using ThornClient.System;
@@ -35,6 +37,8 @@ public class ForcePuppet : Module {
     protected override void OnEnable() {
         UpdatePuppet(true);
         CheatManager.UpdateCheatiness();
+        SceneUtils.SafeSceneLoadedNoParam += AddInfoLine;
+        AddInfoLine();
     }
 
     /// <summary>
@@ -42,6 +46,13 @@ public class ForcePuppet : Module {
     /// </summary>
     protected override void OnDisable() {
         UpdatePuppet(false);
+        SceneUtils.SafeSceneLoadedNoParam -= AddInfoLine;
+        FinalRankHelper.RemoveInfoLine(InfoLine);
+    }
+
+    private static string InfoLine = "<color=#fff>- <color=#fa1900>ALL <color=#fff>BLOOD, <color=#fa1900>NO <color=#fff>BALLS";
+    private void AddInfoLine() {
+        FinalRankHelper.AddInfoLine(InfoLine);
     }
 
     private void UpdatePuppet(bool enabled) {

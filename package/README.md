@@ -11,7 +11,7 @@ It aims to offer miscellaneous enhancements and a modern, free (as in freedom) a
 
 ## Thorn is open source
 
-The source code can be found [on GitHub](https://github.com/end-4/ultrakill-thorn-client) and is licensed under LGPL 3.0.
+The source code is available [on GitHub](https://github.com/end-4/ultrakill-thorn-client) and is licensed under LGPL 3.0.
 
 You are free to use and republish it as you wish, without further written permission, under the condition that all changes to Thorn's source code must also be open sourced under the same terms.
 
@@ -19,5 +19,5 @@ You are free to use and republish it as you wish, without further written permis
 
 - Thank you [eternalUnion](https://github.com/eternalUnion) for showing how to handle keybind listening and other configuration-related stuff in [PluginConfigurator](https://github.com/eternalUnion/UKPluginConfigurator)
 [manifest.json](manifest.json)
-- Thank you [wafflethings](https://github.com/wafflethings) for showing how to scale the UI in [UltraTweaker](https://github.com/wafflethings/UltraTweaker)
+- Thank you [wafflethings](https://github.com/wafflethings) for inspiration and many implementation details from [UltraTweaker](https://github.com/wafflethings/UltraTweaker)
 
