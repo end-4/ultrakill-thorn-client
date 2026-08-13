@@ -47,7 +47,7 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IEndDragHa
     private void Start() {
         _dragOverlay = gameObject.FindRecursive("Overlay", warnings: false);
         var colorizer = _dragOverlay?.FindRecursive("Image").GetOrAddComponent<Colorizer>();
-        colorizer?.UpdateHighlight(true);
+        colorizer?.Highlighted = true;
         _pivotChoices = [];
         foreach (var pivotName in _pivotPositions) {
             var pivotPath = $"Pivot/{pivotName}";

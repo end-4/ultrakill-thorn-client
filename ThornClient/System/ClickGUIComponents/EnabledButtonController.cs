@@ -16,7 +16,7 @@ internal class EnabledButtonController : MonoBehaviour {
     private void Start() {
         if (Configurable == null) return;
         GetComponent<Button>().onClick.AddListener(ToggleIt);
-        _textComp = gameObject.FindRecursive("Text").GetComponent<TextMeshProUGUI>();
+        _textComp = gameObject.FindRecursive("Text")?.GetComponent<TextMeshProUGUI>();
         _buttonImageComp = gameObject.GetComponent<Image>();
         _colorizer = gameObject.GetOrAddComponent<Colorizer>();
         Configurable.OnToggleStateChanged += UpdateAppearance;
@@ -45,7 +45,7 @@ internal class EnabledButtonController : MonoBehaviour {
         }
 
         if (_colorizer != null) {
-            _colorizer.UpdateHighlight(isEnabled);
+            _colorizer.Highlighted = isEnabled;
         }
     }
 }

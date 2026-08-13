@@ -1,12 +1,9 @@
 ﻿using System;
 using NukeLib.UI;
-using ThornClient.Core;
-using ThornClient.Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 using Module = ThornClient.Core.Module;
 
 namespace ThornClient.System.ClickGUIComponents;
@@ -27,7 +24,7 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
         _checkmark = gameObject.FindRecursive("Checkbox/Mark");
 
         // Set icon
-        var buttonIcon = gameObject.FindRecursive("Icon").GetComponent<Image>();
+        var buttonIcon = gameObject.FindRecursive("Icon")?.GetComponent<Image>();
         try {
             buttonIcon.sprite = TargetModule.Icon;
         } catch (Exception e) {
@@ -35,8 +32,8 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
         }
 
         // Set text
-        var buttonText = gameObject.FindRecursive("Name").GetComponent<TextMeshProUGUI>();
-        buttonText.text = TargetModule.Name;
+        var buttonText = gameObject.FindRecursive("Name")?.GetComponent<TextMeshProUGUI>();
+        buttonText?.SetText(TargetModule.Name);
 
         // Setup click
         var button = gameObject.GetComponent<Button>();
@@ -51,9 +48,9 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
         // Setup visuals
         _iconColorizer = buttonIcon.GetOrAddComponent<Colorizer>();
         _textColorizer = buttonText.GetOrAddComponent<Colorizer>();
-        _checkmark.SetActive(true);
+        _checkmark?.SetActive(true);
         _checkIconColorizer = _checkmark.GetOrAddComponent<Colorizer>();
-        _checkmark.SetActive(false);
+        _checkmark?.SetActive(false);
         TargetModule.OnToggleStateChanged += UpdateVisualState;
         UpdateVisualState(TargetModule.IsEnabled);
     }
@@ -66,9 +63,9 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
     private void UpdateVisualState(bool isEnabled) {
         if (_checkmark == null) return;
         _checkmark.SetActive(isEnabled);
-        if (_iconColorizer != null) _iconColorizer.UpdateHighlight(isEnabled);
-        if (_textColorizer != null) _textColorizer.UpdateHighlight(isEnabled);
-        if (_checkIconColorizer != null) _checkIconColorizer.UpdateHighlight(isEnabled);
+        if (_iconColorizer != null) _iconColorizer.Highlighted = isEnabled;
+        if (_textColorizer != null) _textColorizer.Highlighted = isEnabled;
+        if (_checkIconColorizer != null) _checkIconColorizer.Highlighted = isEnabled;
     }
 
     public void OnPointerClick(PointerEventData eventData) {

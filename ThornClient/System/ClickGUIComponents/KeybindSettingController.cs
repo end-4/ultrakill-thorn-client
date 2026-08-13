@@ -17,7 +17,7 @@ internal class KeybindSettingController : MonoBehaviour {
     private static KeybindSettingController? _listeningInstance = null;
     private Button? _activateButton;
     private Colorizer? _keyBorder;
-    private TextMeshProUGUI _displayText;
+    private TextMeshProUGUI? _displayText;
     public Setting<Keybind> TargetSetting;
 
     private KeyCode _caughtModifier = KeyCode.None;
@@ -28,7 +28,7 @@ internal class KeybindSettingController : MonoBehaviour {
     private void Start() {
         _activateButton = gameObject.GetComponent<Button>();
         _keyBorder = gameObject.FindRecursive("ValueDisplay").GetOrAddComponent<Colorizer>();
-        _displayText = gameObject.FindRecursive("ValueDisplay/Text").GetComponent<TextMeshProUGUI>();
+        _displayText = gameObject.FindRecursive("ValueDisplay/Text")?.GetComponent<TextMeshProUGUI>();
         _activateButton.onClick.AddListener(ActivateKeyListen);
         UpdateKeyDisplay();
         TargetSetting.OnValueChanged += UpdateKeyDisplay;
@@ -36,11 +36,11 @@ internal class KeybindSettingController : MonoBehaviour {
 
     private void SetBorderColor(bool highlighted) {
         if (_keyBorder == null) return;
-        _keyBorder.UpdateHighlight(highlighted);
+        _keyBorder.Highlighted = highlighted;
     }
 
     private void ActivateKeyListen() {
-        ThornClient.Managers.InputManager.BlockInput = true;
+        Managers.InputManager.BlockInput = true;
         Pauser.Pause(true, PauseKey);
         if (_listeningInstance != null) {
             _listeningInstance.SetBorderColor(false);
@@ -53,7 +53,7 @@ internal class KeybindSettingController : MonoBehaviour {
     }
 
     private void DeactivateKeyListen() {
-        ThornClient.Managers.InputManager.BlockInput = false;
+        Managers.InputManager.BlockInput = false;
         GameStateManager.Instance.PopState(PauseKey);
         if (!IsListening()) return;
         _listeningInstance = null;
@@ -131,8 +131,6 @@ internal class KeybindSettingController : MonoBehaviour {
         if (current.type is EventType.KeyUp or EventType.MouseUp or EventType.ScrollWheel) {
             DeactivateKeyListen();
         }
-
-        return;
 
         // NotificationSystem.NotifySend("Keybind debug", $"Type {current.type.ToString()}, code {current.keyCode.ToString()}, modifiers {current.modifiers}");
     }

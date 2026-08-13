@@ -8,27 +8,33 @@ namespace ThornClient.System.ClickGUIComponents;
 /// Component that colors stuff based on active/inactive state
 /// </summary>
 public class Colorizer : MonoBehaviour {
-    private TextMeshProUGUI? textComp;
-    private Image? imageComp;
+    private TextMeshProUGUI? _textComp;
+    private Image? _imageComp;
 
     private Color? _overrideColor;
     private Color? _overrideNormalColor;
 
+    /// <summary>
+    /// The color to use when highlighted
+    /// </summary>
     public Color HighlightColor {
         get => _overrideColor ?? ThornModule.Instance!.Accent.Value;
         set {
-            if (imageComp == null) _overrideColor = value;
+            if (_imageComp == null) _overrideColor = value;
         }
     }
 
+    /// <summary>
+    /// The color to use when not highlighted
+    /// </summary>
     public Color NormalColor {
         get => _overrideNormalColor ?? Color.white;
         set => _overrideNormalColor = value;
     }
 
     private void Start() {
-        textComp = GetComponent<TextMeshProUGUI>();
-        imageComp = GetComponent<Image>();
+        _textComp = GetComponent<TextMeshProUGUI>();
+        _imageComp = GetComponent<Image>();
         if (_overrideColor == null) ThornModule.Instance!.Accent.OnChanged += UpdateHighlight;
         UpdateHighlight();
     }
@@ -37,18 +43,28 @@ public class Colorizer : MonoBehaviour {
         if (_overrideColor == null) ThornModule.Instance!.Accent.OnChanged -= UpdateHighlight;
     }
 
-    private bool _lastHighlight = false;
-    public void UpdateHighlight(bool highlighted) {
-        _lastHighlight = highlighted;
-        var targetColor = highlighted ? HighlightColor : NormalColor;
-        if (textComp != null) {
-            textComp.color = targetColor;
-        } else if (imageComp != null) {
-            imageComp.color = targetColor;
+    private bool _highlighted = false;
+
+    /// <summary>
+    /// Whether the current element should be highlighted
+    /// </summary>
+    public bool Highlighted {
+        get => _highlighted;
+        set {
+            _highlighted = value;
+            var targetColor = value ? HighlightColor : NormalColor;
+            if (_textComp != null) {
+                _textComp.color = targetColor;
+            } else if (_imageComp != null) {
+                _imageComp.color = targetColor;
+            }
         }
     }
 
-    public void UpdateHighlight() {
-        UpdateHighlight(_lastHighlight);
+    /// <summary>
+    /// Forces color update
+    /// </summary>
+    private void UpdateHighlight() {
+        Highlighted = _highlighted;
     }
 }
