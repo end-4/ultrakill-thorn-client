@@ -7,6 +7,7 @@ using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Managers;
+using ThornClient.System;
 using Object = UnityEngine.Object;
 
 namespace ThornClient.Modules.Render;
@@ -152,6 +153,8 @@ public class ViewmodelTweaks : Module {
             mat.SetFloat("_WireframeThickness", WeaponEdgeThickness.Value);
         }
     }
+
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "axes");
 
     public ViewmodelTweaks() : base(
         "thorn.viewmodelTweaks",
