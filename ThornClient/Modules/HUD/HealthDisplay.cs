@@ -26,9 +26,7 @@ public class HealthDisplay : BoundedValueHudModule {
         defaultValueColor: new Color(1, 0, 0)) {
     }
 
-    /// <summary>
-    /// Stuff that run when the module is enabled
-    /// </summary>
+    /// <inheritdoc />
     protected override void OnHudModuleEnable() {
         DecimalPlaces = 0;
     }
