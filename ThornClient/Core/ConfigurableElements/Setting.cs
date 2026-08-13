@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -113,6 +115,16 @@ public class Setting<T> : Setting {
     }
 
     /// <summary>
+    /// Manually notifies that the value has changed.
+    /// Useful for mutable reference types like lists, where modifying the contents does not trigger the setter.
+    /// </summary>
+    public void NotifyChanged() {
+        OnValueChanged?.Invoke(Value);
+        InternalOnValueChanged?.Invoke();
+        RaiseOnChanged();
+    }
+
+    /// <summary>
     /// The default value of the setting.
     /// </summary>
     [JsonIgnore] public T DefaultValue { get; set; }
@@ -147,6 +159,11 @@ public class Setting<T> : Setting {
             }
             if (typeof(T).IsEnum) {
                 return Convert.ToInt64(Value) == Convert.ToInt64(DefaultValue);
+            }
+
+            if (Value is ICollection valCollection &&
+                DefaultValue is ICollection defaultCollection) {
+                return valCollection.Cast<object>().SequenceEqual(defaultCollection.Cast<object>());
             }
 
             return EqualityComparer<T>.Default.Equals(Value, DefaultValue);

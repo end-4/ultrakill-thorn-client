@@ -19,24 +19,22 @@ public class EnemyList : IEquatable<EnemyList> {
     /// Constructor
     /// </summary>
     /// <param name="enemies">The array of enemy types</param>
-    public EnemyList(EnemyType[] enemies) {
-        this.Enemies = [.. enemies];
+    public EnemyList(params EnemyType[] enemies) {
+        Enemies = [.. enemies];
     }
 
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="enemies">The list of enemy types</param>
-    public EnemyList(List<EnemyType> enemies) {
-        this.Enemies = [.. enemies];
+    public EnemyList(IEnumerable<EnemyType> enemies) {
+        Enemies = [.. enemies];
     }
 
     /// <summary>
-    /// Constructor
+    /// Parameterless constructor for JSON deserialization
     /// </summary>
-    public EnemyList() {
-        this.Enemies = [];
-    }
+    public EnemyList() : this([]) { }
 
     /// <summary>
     /// Adds an enemy type to the list
@@ -85,7 +83,7 @@ public class EnemyList : IEquatable<EnemyList> {
     /// </summary>
     /// <returns>A new instance of the list</returns>
     public EnemyList Clone() {
-        return new EnemyList(Enemies.ToList());
+        return new EnemyList(Enemies);
     }
 
     /// <summary>

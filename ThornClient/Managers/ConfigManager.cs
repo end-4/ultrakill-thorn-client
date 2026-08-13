@@ -29,15 +29,14 @@ public static class ConfigManager {
         Formatting = Formatting.Indented,
         Converters = {
             new ColorJsonConverter(),
-            new KeybindJsonConverter(),
-            new Newtonsoft.Json.Converters.StringEnumConverter()
+            new Newtonsoft.Json.Converters.StringEnumConverter(),
         }
     };
 
     /// <summary>
     /// Registers a JSON converter for a setting of custom type.
     /// </summary>
-    /// <param name="converter"></param>
+    /// <param name="converter">The JSON converter</param>
     public static void RegisterJsonConverter(JsonConverter converter) {
         if (SerializerSettings.Converters.Any(c => c.GetType() == converter.GetType())) return;
         SerializerSettings.Converters.Add(converter);
