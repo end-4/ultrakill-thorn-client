@@ -2,15 +2,12 @@
 using ThornClient.Managers;
 using ThornClient.System;
 using UnityEngine;
-using System.Collections.Generic;
 using NukeLib.Game;
 using NukeLib.Utils;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
-using ThornClient.Core.DataTypes;
-using UnityEngine.Rendering;
 
-namespace ThornClient.Modules.World;
+namespace ThornClient.Modules.Gameplay;
 
 /// <summary>
 /// Module that draws lines from the player to enemies
@@ -39,7 +36,7 @@ public class FloorIsLava : Module {
     /// Constructor
     /// </summary>
     public FloorIsLava() : base("thorn.floorIsLava", "Floor is Lava", "..well, magma to be accurate",
-        ModuleCategory.World) {
+        ModuleCategory.Gameplay) {
         DamageGroup = CreateGroup("damageGroup", "Damage settings", "Configure damage frequency & amount");
         DamageUnderwater = CreateSetting("damageUnderwater", "Damage underwater", "Whether you get hurt when touching the floor underwater", false);
         DamageInterval = CreateSetting("damageInterval", "Damage interval",

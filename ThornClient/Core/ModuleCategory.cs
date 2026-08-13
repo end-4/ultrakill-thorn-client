@@ -5,24 +5,19 @@
 /// </summary>
 public enum ModuleCategory {
     /// <summary>
-    /// Modules that affect enemies, such as buffs
+    /// Utility modules
     /// </summary>
-    Enemy,
+    Utility, // minecraft fly, size
 
     /// <summary>
-    /// Modules that affect the player, such as movement tweaks and control enhancements
-    /// </summary>
-    Player, // minecraft fly, size
-
-    /// <summary>
-    /// Modules that affect the rendering, such as ESP
+    /// Modules that affect the rendering
     /// </summary>
     Render, // hide gui, visible portals
 
     /// <summary>
-    /// Modules that affect the world, such as turning the floor into lava
+    /// Modules that affect gameplay, such as turning the floor into lava
     /// </summary>
-    World, // waypoints, ice floor
+    Gameplay, // waypoints, ice floor
 
     /// <summary>
     /// Modules that don't fit into other categories

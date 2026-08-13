@@ -3,7 +3,7 @@ using NukeLib.Utils;
 using ThornClient.Managers;
 using UnityEngine;
 using ThornClient.HUD;
-using ThornClient.Modules.Player;
+using ThornClient.Modules.Utility;
 using ThornClient.System;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;

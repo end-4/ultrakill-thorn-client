@@ -6,7 +6,7 @@ using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
 
-namespace ThornClient.Modules.Render;
+namespace ThornClient.Modules.Utility;
 
 /// <summary>
 /// Module that draws lines from the player to enemies
@@ -51,7 +51,7 @@ public class EnemyTracers : Module {
     /// Constructor
     /// </summary>
     public EnemyTracers() : base("thorn.enemyTracers", "Enemy Tracers", "Draws lines from you to enemies",
-        ModuleCategory.Render) {
+        ModuleCategory.Utility) {
         TracerColor = CreateSetting("tracerColor", "Tracer Color", "Color used for the trace lines",
             new Color(0.65f, 0.95f, 0.89f, 0.5f));
         LineThickness = CreateSetting("lineThickness", "Line Thickness", "The pixel width of the tracer lines", 2f);

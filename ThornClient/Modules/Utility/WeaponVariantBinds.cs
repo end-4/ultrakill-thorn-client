@@ -6,7 +6,7 @@ using ThornClient.Managers;
 using ThornClient.System;
 using UnityEngine;
 
-namespace ThornClient.Modules.Player;
+namespace ThornClient.Modules.Utility;
 
 /// <summary>
 /// Module that allows you to bind keys to specific weapon variants
@@ -101,7 +101,7 @@ public class WeaponVariantBinds : Module {
     /// </summary>
     public WeaponVariantBinds() : base("thorn.weaponVariantBinds", "Weapon Variant Binds",
         "Allows you to bind keys to specific weapons",
-        ModuleCategory.Player) {
+        ModuleCategory.Utility) {
         if (Instance != null) return;
         Instance = this;
 

@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 using ThornClient.Managers;
 using ThornClient.System;
 
-namespace ThornClient.Modules.Render;
+namespace ThornClient.Modules.Utility;
 
 /// <summary>
 /// Module that adjusts brightness of the world
@@ -31,7 +31,7 @@ public class FullBright : Module {
     /// <summary>
     /// Constructor
     /// </summary>
-    public FullBright() : base("thorn.fullBright", "FullBright", "Adjust brightness for accessibility", ModuleCategory.Render) {
+    public FullBright() : base("thorn.fullBright", "FullBright", "Adjust brightness for accessibility", ModuleCategory.Utility) {
         Brightness = CreateSetting("brightness", "Brightness", "How bright the world should be", 0.2f);
     }
 

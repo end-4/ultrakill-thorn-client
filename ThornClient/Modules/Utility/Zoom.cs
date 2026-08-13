@@ -4,7 +4,7 @@ using ThornClient.Core.ConfigurableElements;
 using ThornClient.Managers;
 using ThornClient.System;
 
-namespace ThornClient.Modules.Render;
+namespace ThornClient.Modules.Utility;
 
 /// <summary>
 /// Module that zooms, similar to the railcannon's alt fire
@@ -30,7 +30,7 @@ public class Zoom : Module {
     /// </summary>
     public Zoom() : base("thorn.zoom", "Zoom",
         "Look more closely. Note: zooming only happens when the game is running, so use a keybind to toggle it",
-        ModuleCategory.Render, KeyCode.None, KeyCode.None, defaultToggleOnRelease: true) {
+        ModuleCategory.Utility, KeyCode.None, KeyCode.None, defaultToggleOnRelease: true) {
         ZoomFov = CreateSetting("zoomFov", "Zoom FOV", "Zoom amount. Lower = more zoomed in", 30.0f);
     }
 

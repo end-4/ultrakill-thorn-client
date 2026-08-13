@@ -6,54 +6,57 @@ using ThornClient.Managers;
 using ThornClient.System;
 using Object = UnityEngine.Object;
 
-namespace ThornClient.Modules.Enemy;
+namespace ThornClient.Modules.Gameplay;
 
 /// <summary>
-/// Module that forces enemies to be sanded.
+/// A module that forces enemies to be puppeted.
 /// </summary>
-public class ForceSand : Module {
+public class ForcePuppet : Module {
     /// <summary>
-    /// Icon of the module
+    /// The icon
     /// </summary>
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "sand");
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "puppet");
     /// <summary>
     /// Tags for searching
     /// </summary>
-    public override string[] Tags => ["buff", "bleed"];
-    public ForceSand() : base("thorn.forceSand", "Force Sand", "Makes enemies sanded, removing bleeding. You'll have to rely on parries for healing.", ModuleCategory.Enemy) {
+    public override string[] Tags => ["blood", "zombie"];
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    public ForcePuppet() : base("thorn.forcePuppet", "Force Puppet", "Makes enemies puppeted (become blood bois)\nWarning: This breaks Cybergrind", ModuleCategory.Gameplay) {
     }
 
     /// <summary>
-    /// Why this is cheaty
+    /// Why this module is considered a cheat
     /// </summary>
     public override string? CheatReason => IsEnabled ? "Enables non-standard gameplay" : "";
 
     /// <summary>
-    /// Run when enabled
+    /// Called when the module is enabled
     /// </summary>
     protected override void OnEnable() {
-        UpdateSand(true);
+        UpdatePuppet(true);
         CheatManager.UpdateCheatiness();
         SceneUtils.SafeSceneLoadedNoParam += AddInfoLine;
         AddInfoLine();
     }
 
     /// <summary>
-    /// RUn when disabled
+    /// Called when the module is disabled
     /// </summary>
     protected override void OnDisable() {
-        UpdateSand(false);
+        UpdatePuppet(false);
         SceneUtils.SafeSceneLoadedNoParam -= AddInfoLine;
         FinalRankHelper.RemoveInfoLine(InfoLine);
     }
 
-    private static string InfoLine = "<color=#fff>+ <color=#fffaa1>DESERTED</color>";
+    private static string InfoLine = "<color=#fff>- <color=#fa1900>ALL <color=#fff>BLOOD, <color=#fa1900>NO <color=#fff>BALLS";
     private void AddInfoLine() {
         FinalRankHelper.AddInfoLine(InfoLine);
     }
 
-    private void UpdateSand(bool enabled) {
-        OptionsManager.forceSand = enabled;
+    private void UpdatePuppet(bool enabled) {
+        OptionsManager.forcePuppet = enabled;
 
         foreach(EnemyIdentifier enemy in Object.FindObjectsOfType<EnemyIdentifier>()) {
             enemy.UpdateBuffs();

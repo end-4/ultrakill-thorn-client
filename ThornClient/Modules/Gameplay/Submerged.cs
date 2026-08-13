@@ -1,17 +1,13 @@
-﻿using System;
-using ThornClient.Managers;
+﻿using ThornClient.Managers;
 using ThornClient.System;
 using UnityEngine;
-using System.Collections.Generic;
 using NukeLib.Game;
 using NukeLib.Utils;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
-using ThornClient.Core.DataTypes;
-using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 
-namespace ThornClient.Modules.World;
+namespace ThornClient.Modules.Gameplay;
 
 /// <summary>
 /// Module that puts everything in water
@@ -31,9 +27,13 @@ public class Submerged : Module {
     public Setting<Color> WaterColor;
 
     /// <inheritdoc />
-    public Submerged() : base("thorn.submerged", "Submerged", "Makes the world full of water",
-        ModuleCategory.World) {
-        WaterColor = CreateSetting("waterColor", "Water color (re-enable after changing)", "Color of the water", new Color(0f, 0.5f, 1f));
+    public Submerged() : base(
+        "thorn.submerged", "Submerged",
+        "Makes the world full of water",
+        ModuleCategory.Gameplay
+    ) {
+        WaterColor = CreateSetting("waterColor", "Water color (re-enable after changing)", "Color of the water",
+            new Color(0f, 0.5f, 1f));
     }
 
     private static string InfoLine = "<color=#fff>+ <color=#1fe4f2>ATLANTIS</color>";

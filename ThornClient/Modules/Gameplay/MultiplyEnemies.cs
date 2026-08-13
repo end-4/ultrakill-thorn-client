@@ -8,12 +8,12 @@ using ThornClient.Managers;
 using ThornClient.System;
 using Object = UnityEngine.Object;
 
-namespace ThornClient.Modules.Enemy;
+namespace ThornClient.Modules.Gameplay;
 
 /// <summary>
 /// Module that Multiplies enemies
 /// </summary>
-public class Multiply : Module {
+public class MultiplyEnemies : Module {
     /// <inheritdoc />
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "copy");
 
@@ -25,9 +25,11 @@ public class Multiply : Module {
     /// </summary>
     public Setting<int> Multiplier { get; }
 
-    public Multiply() : base("thorn.multiplyEnemies", "Multiply",
+    public MultiplyEnemies() : base(
+        "thorn.multiplyEnemies", "Multiply Enemies",
         "Love me some Pain Atrophy (makes enemies duplicate)",
-        ModuleCategory.Enemy) {
+        ModuleCategory.Gameplay
+    ) {
         Multiplier = CreateSetting("multiplier", "How many?", "1 -> x, where x=", 2);
         Multiplier.Hints = new InterfaceHints {
             Range = Tuple.Create(2f, 10f)

@@ -1,12 +1,9 @@
-﻿using Notiffy.API;
-using NukeLib.UI;
-using ThornClient.Core;
+﻿using NukeLib.UI;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
 using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;

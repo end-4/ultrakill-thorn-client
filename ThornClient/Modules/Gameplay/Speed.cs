@@ -4,7 +4,7 @@ using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 
-namespace ThornClient.Modules.Player;
+namespace ThornClient.Modules.Gameplay;
 
 /// <summary>
 /// I'm Sonic
@@ -31,7 +31,7 @@ public class Speed : Module {
     /// Constructor
     /// </summary>
     public Speed() : base("thorn.speed", "Speed", "Adjusts your speed",
-        ModuleCategory.Player) {
+        ModuleCategory.Gameplay) {
         SpeedMultiplier = CreateSetting("speedMultiplier", "Speed multiplier", "How much to scale the speed", 2f);
     }
 

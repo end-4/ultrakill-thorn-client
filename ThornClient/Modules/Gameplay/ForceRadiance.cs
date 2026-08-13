@@ -7,7 +7,7 @@ using ThornClient.Managers;
 using ThornClient.System;
 using Object = UnityEngine.Object;
 
-namespace ThornClient.Modules.Enemy;
+namespace ThornClient.Modules.Gameplay;
 
 /// <summary>
 /// Module that forces radiance on enemies.
@@ -32,7 +32,7 @@ public class ForceRadiance : Module {
     /// Constructor
     /// </summary>
     public ForceRadiance() : base("thorn.forceRadiance", "Force Radiance", "Makes all enemies radiant, buffing them",
-        ModuleCategory.Enemy) {
+        ModuleCategory.Gameplay) {
         RadianceTier = CreateSetting("radianceTier", "Radiance tier", "How much to buff enemies", 1f);
     }
 
