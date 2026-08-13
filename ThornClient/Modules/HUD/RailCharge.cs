@@ -1,4 +1,5 @@
-﻿using ThornClient.HUD;
+﻿using System;
+using ThornClient.HUD;
 using ThornClient.Managers;
 using UnityEngine;
 
@@ -10,6 +11,11 @@ public class RailCharge : BoundedValueHudModule {
 
     public RailCharge() : base("thorn.railCharge", "Railcannon Charge", "Shows the railcannon charge", 1,
         displayName: "Railcannon", defaultValueColor: new Color(0.44f, 0.52f, 1f)) {
+    }
+
+    /// <inheritdoc />
+    protected override void OnHudModuleEnable() {
+        DecimalPlaces = 1;
     }
 
     public override void OnUpdate() {
