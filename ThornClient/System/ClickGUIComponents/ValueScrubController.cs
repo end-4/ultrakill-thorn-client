@@ -33,7 +33,7 @@ public class ValueScrubController : MonoBehaviour, IDragHandler, IBeginDragHandl
     }
 
     public void OnDrag(PointerEventData eventData) {
-        // TODO add a snackbar/toast to Notiffy then use it for vertical sensitivity adjustment
+        // TODO add a snackbar/toast to Notiffy then use it for vertical sensitivity adjustment, just like in Figma...
         _cumulatedDelta += eventData.delta * scaleFactor;
         OnValueScrub?.Invoke(_cumulatedDelta.x);
     }

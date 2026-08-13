@@ -23,6 +23,11 @@ public class EnemyTracers : Module {
     public Setting<float> LineThickness;
 
     /// <summary>
+    /// Whether the tracers should render through walls/geometry
+    /// </summary>
+    public Setting<bool> AlwaysOnTop;
+
+    /// <summary>
     /// The number of enemies remaining to start drawing tracers
     /// </summary>
     public Setting<int> EnemyCountThreshold;
@@ -50,6 +55,8 @@ public class EnemyTracers : Module {
         TracerColor = CreateSetting("tracerColor", "Tracer Color", "Color used for the trace lines",
             new Color(0.65f, 0.95f, 0.89f, 0.5f));
         LineThickness = CreateSetting("lineThickness", "Line Thickness", "The pixel width of the tracer lines", 2f);
+        AlwaysOnTop = CreateSetting("alwaysOnTop", "Always On Top",
+            "Render tracer lines through walls and world geometry", true);
         EnemyCountThreshold = CreateSetting("enemyCountThreshold", "Enemy Count Threshold",
             "Display tracers when there are this many enemies left", 5);
         ForceTraceEnemies = CreateSetting("forceTraceEnemies", "Force Trace Enemies",
@@ -89,14 +96,21 @@ public class EnemyTracers : Module {
                enemy.gameObject.activeInHierarchy;
     }
 
-    private static Material? _lineMaterial;
+    private static Material? _lineMaterialStandard;
+    private static Material? _lineMaterialAlwaysOnTop;
 
-    private static void EnsureMaterial() {
-        if (_lineMaterial != null) return;
-
+    private static void EnsureMaterials() {
         var shader = Shader.Find("Hidden/Internal-Colored");
-        if (shader != null) {
-            _lineMaterial = new Material(shader);
+        if (shader == null) return;
+
+        if (_lineMaterialStandard == null) {
+            _lineMaterialStandard = new Material(shader);
+        }
+
+        if (_lineMaterialAlwaysOnTop == null) {
+            _lineMaterialAlwaysOnTop = new Material(shader);
+            _lineMaterialAlwaysOnTop.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Always);
+            _lineMaterialAlwaysOnTop.SetInt("_ZWrite", 0);
         }
     }
 
@@ -110,10 +124,12 @@ public class EnemyTracers : Module {
         var mainCam = Camera.main;
         if (mainCam == null) return;
 
-        EnsureMaterial();
-        if (_lineMaterial == null) return;
+        EnsureMaterials();
 
-        _lineMaterial.SetPass(0);
+        var activeMaterial = AlwaysOnTop.Value ? _lineMaterialAlwaysOnTop : _lineMaterialStandard;
+        if (activeMaterial == null) return;
+
+        activeMaterial.SetPass(0);
 
         // Render directly in 3D space
         GL.PushMatrix();

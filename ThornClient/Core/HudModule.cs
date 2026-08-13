@@ -207,7 +207,7 @@ public abstract class HudModule : Module {
     }
 
     /// <summary>
-    /// Method to create the GameObject for the HUD. Please also attach any controller components to it.
+    /// Method to create the GameObject for the HUD. Please also attach any controller components to it if needed.
     /// </summary>
     /// <returns>The GameObject</returns>
     protected abstract GameObject CreateHudObject();

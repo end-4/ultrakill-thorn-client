@@ -22,9 +22,6 @@ public class Edges : Module {
 
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "icosahedron");
 
-    // TODO make an icon for this. maybe icosahedron edges?
-    // TODO make it not wireframize assist outlines
-
     public Setting<float> EdgeThickness;
     public Setting<Color> FillColor;
     public Setting<bool> SwapEdgeAndFill;

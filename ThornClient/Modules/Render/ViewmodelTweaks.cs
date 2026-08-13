@@ -16,8 +16,6 @@ namespace ThornClient.Modules.Render;
 /// </summary>
 public class ViewmodelTweaks : Module {
     // (Horrible) reference: https://github.com/daemon251/Ultrakill-DaemonWeaponUtils/blob/main/PluginConfig.cs
-    // TODO:
-    // - wireframe shader for programmatic ULTRAEDGES
 
     public static ViewmodelTweaks? Instance;
 

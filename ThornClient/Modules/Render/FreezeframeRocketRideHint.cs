@@ -99,6 +99,8 @@ public class FreezeframeRocketRideHint : Module {
         var shader = Shader.Find("Hidden/Internal-Colored");
         if (shader != null) {
             _lineMaterial = new Material(shader);
+            _lineMaterial.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Always);
+            _lineMaterial.SetInt("_ZWrite", 0); // Disable depth writing
         }
     }
 
