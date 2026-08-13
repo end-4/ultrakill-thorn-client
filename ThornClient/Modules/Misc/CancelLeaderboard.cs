@@ -9,28 +9,22 @@ namespace ThornClient.Modules.Misc;
 /// Module that disables score submissions
 /// </summary>
 public class CancelLeaderboard : Module {
-    /// <summary>
-    /// Icon of the module
-    /// </summary>
+    /// <inheritdoc />
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "no_trophy");
-    /// <summary>
-    /// Tags for search
-    /// </summary>
+
+    /// <inheritdoc />
     public override string[] Tags => ["cheat", "surrender", "fair play", "score", "rank"];
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    public CancelLeaderboard() : base("thorn.cancelLeaderboard", "Cancel Leaderboard", "Voluntarily exclude scores from the leaderboard. Useful when you're using cheaty mods that don't do this themselves", ModuleCategory.Misc) {
+
+    /// <inheritdoc />
+    public CancelLeaderboard() : base("thorn.cancelLeaderboard", "Cancel Leaderboard",
+        "Voluntarily exclude scores from the leaderboard. Useful when you're using cheaty mods that don't do this themselves",
+        ModuleCategory.Misc) {
     }
 
-    /// <summary>
-    /// Why this disables leaderboard
-    /// </summary>
+    /// <inheritdoc />
     public override string CheatReason => IsEnabled ? "Obviously" : "";
 
-    /// <summary>
-    /// Stuff run when this module is enabled
-    /// </summary>
+    /// <inheritdoc />
     protected override void OnEnable() {
         CheatManager.UpdateCheatiness();
     }
