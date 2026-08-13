@@ -38,7 +38,7 @@ internal class KeybindJsonConverter : JsonConverter<Keybind> {
                 return new Keybind(key);
             }
         } catch (Exception e) {
-            Plugin.Log.LogError($"[KeybindJsonConverter] Failed to parse keybind config string \"{rawValue}\": {e.Message}");
+            Plugin.Log.LogError($"[KeybindJsonConverter] Failed to parse Keybind config string \"{rawValue}\": {e}");
         }
 
         return new Keybind(KeyCode.None);
