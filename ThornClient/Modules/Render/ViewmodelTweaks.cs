@@ -84,6 +84,7 @@ public class ViewmodelTweaks : Module {
     // General
     public Setting<bool> Bobbing;
     public Setting<bool> WeaponEdges;
+    public Setting<float> WeaponEdgeThickness;
     public Setting<Color> WeaponFillColor;
 
     // Transforms: Global
@@ -146,16 +147,18 @@ public class ViewmodelTweaks : Module {
 
     private void UpdateVariantColors() {
         for (int i = 0; i < 3; i++) {
-            if (_matCache[i] == null) continue;
-            _matCache[i].SetColor("_WireframeColor", ColorUtils.GetWeaponVariantColor(i));
-            _matCache[i].SetColor("_FillColor", WeaponFillColor.Value);
+            var mat = _matCache[i];
+            if (mat == null) continue;
+            mat.SetColor("_WireframeColor", ColorUtils.GetWeaponVariantColor(i));
+            mat.SetColor("_FillColor", WeaponFillColor.Value);
+            mat.SetFloat("_WireframeThickness", WeaponEdgeThickness.Value);
         }
     }
 
     public ViewmodelTweaks() : base(
         "thorn.viewmodelTweaks",
         "Viewmodel Tweaks",
-        "The viewmodel is your hands, basically. You will need to restart mission when turning off.",
+        "The viewmodel is your hands, basically.",
         ModuleCategory.Render
     ) {
         if (Instance != null) return;
@@ -163,8 +166,10 @@ public class ViewmodelTweaks : Module {
 
         CreateHeader("generalHeader", "General");
         Bobbing = CreateSetting("bobbing", "Bobbing", "Whether your hands wiggle when walking", true);
-        WeaponEdges = CreateSetting("weaponEdges", "Edges style",
-            "ULTRAEDGES, but more detailed. Note that to un-apply, you need to restart the mission", false);
+        WeaponEdges = CreateSetting("weaponEdges", "Edges skin",
+            "Similar to the popular ULTRAEDGES skin. Cleaner but also more detailed. NOTE: to un-apply, you need to restart the mission", false);
+        WeaponEdgeThickness = CreateSetting("weaponEdgeThickness", "Edge thickness",
+            "Thickness of the edges", 2f);
         WeaponFillColor = CreateSetting("weaponFillColor", "Edges: fill color",
             "Color to fill surfaces between the lines", Color.black);
 
@@ -203,6 +208,10 @@ public class ViewmodelTweaks : Module {
             WeaponModelScaleOffsets[i] = CreateSetting($"weapon{i}ModelScaleOffset", "Scale", "Uniform scale offset",
                 0f, currGroup);
         }
+
+        SceneUtils.SafeSceneLoadedNoParam += () => {
+            gc.OnWeaponChange -= UpdateCurrentNextFrame;
+        };
     }
 
     private static GunControl? gc => GunControl.Instance;
@@ -210,7 +219,7 @@ public class ViewmodelTweaks : Module {
 
     /// <inheritdoc />
     protected override void OnEnable() {
-        SceneUtils.SafeSceneLoadedNoParam += OnSceneLoaded;
+        SceneUtils.SafeSceneLoadedNoParam += OnSceneLoadedWhenEnabled;
         ModelRollOffset.OnValueChanged += UpdateCurrent;
         ModelPitchOffset.OnValueChanged += UpdateCurrent;
         ModelYawOffset.OnValueChanged += UpdateCurrent;
@@ -236,7 +245,9 @@ public class ViewmodelTweaks : Module {
         }
 
         Bobbing.OnChanged += UpdateBobbing;
+        WeaponEdges.OnChanged += UpdateCurrentColor;
         WeaponFillColor.OnChanged += UpdateVariantColors;
+        WeaponEdgeThickness.OnChanged += UpdateVariantColors;
     }
 
     private void SubscribeStuffWhenSafe() {
@@ -250,9 +261,11 @@ public class ViewmodelTweaks : Module {
 
     /// <inheritdoc />
     protected override void OnDisable() {
+        WeaponEdges.OnChanged -= UpdateCurrentColor;
+        WeaponEdgeThickness.OnChanged -= UpdateVariantColors;
         WeaponFillColor.OnChanged -= UpdateVariantColors;
         Bobbing.OnChanged -= UpdateBobbing;
-        SceneUtils.SafeSceneLoadedNoParam -= OnSceneLoaded;
+        SceneUtils.SafeSceneLoadedNoParam -= OnSceneLoadedWhenEnabled;
         ModelRollOffset.OnValueChanged -= UpdateCurrent;
         ModelPitchOffset.OnValueChanged -= UpdateCurrent;
         ModelYawOffset.OnValueChanged -= UpdateCurrent;
@@ -270,10 +283,10 @@ public class ViewmodelTweaks : Module {
             WeaponModelScaleOffsets[i].OnValueChanged -= UpdateCurrent;
         }
 
-        if (gc != null) {
-            // gc.OnWeaponChange -= UpdateCurrent;
-            gc.OnWeaponChange += UpdateCurrentNextFrame;
-        }
+        // We disable on scene load instead to ensure consistency
+        // if (gc != null) {
+        //     gc.OnWeaponChange -= UpdateCurrentNextFrame;
+        // }
 
         SceneUtils.SafeSceneLoadedNoParam -= SubscribeStuffWhenSafe;
         ResetAllTransforms();
@@ -284,12 +297,13 @@ public class ViewmodelTweaks : Module {
         return prefs.GetInt("weaponHoldPosition") == 1 ? 1 : 0;
     }
 
-    private void OnSceneLoaded() {
+    private void OnSceneLoadedWhenEnabled() {
         UpdateCurrentNextFrame();
         // It seems we need to resubscribe to GunControl stuff every scene.
         // Hacky but works.
         Toggle();
         Toggle();
+        if (gc != null) ExecutionUtils.RunNextFrame(() => gc.ForceWeapon(gc.currentWeapon));
     }
 
     private void UpdateCurrentNextFrame(GameObject _) {
@@ -362,9 +376,10 @@ public class ViewmodelTweaks : Module {
             scaleOffset += WeaponModelScaleOffsets[weaponSettingIndex].Value;
         }
 
-        Vector3 targetPos = basePos + posOffset;
-        Vector3 targetAngle = baseAngle + angleOffset;
-        Vector3 targetScale = baseScale + Vector3.one * scaleOffset;
+        float offsetMultiplier = IsEnabled ? 1 : 0;
+        Vector3 targetPos = basePos + posOffset * offsetMultiplier;
+        Vector3 targetAngle = baseAngle + angleOffset * offsetMultiplier;
+        Vector3 targetScale = baseScale + Vector3.one * scaleOffset * offsetMultiplier;
 
         // Set
         SetTransform(weapon, targetPos, targetAngle, targetScale);
