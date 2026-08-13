@@ -7,6 +7,7 @@ using HarmonyLib;
 using Notiffy.API;
 using ThornClient.Managers;
 using ThornClient.Patches;
+using ThornClient.System;
 using UnityEngine.SceneManagement;
 
 namespace ThornClient;

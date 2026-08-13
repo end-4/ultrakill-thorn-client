@@ -14,9 +14,9 @@ internal class ModuleCategoryController : MonoBehaviour {
     public ModuleCategory Category;
     // icon name map
     private static readonly Dictionary<ModuleCategory, string> _iconNameMap = new() {
-        { ModuleCategory.Utility, "v1" },
+        { ModuleCategory.Utility, "compass" },
         { ModuleCategory.Render, "eye" },
-        { ModuleCategory.Gameplay, "compass" },
+        { ModuleCategory.Gameplay, "options" },
         { ModuleCategory.Misc, "shapes" },
         { ModuleCategory.Hud, "hud" },
     };

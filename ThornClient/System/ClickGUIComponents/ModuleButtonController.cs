@@ -8,25 +8,23 @@ using Module = ThornClient.Core.Module;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
+internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
     public Module? TargetModule;
-    private GameObject? _checkmark;
     private Colorizer? _iconColorizer;
     private Colorizer? _textColorizer;
-    private Colorizer? _checkIconColorizer;
+    private Colorizer? _settingIconColorizer;
+    private GameObject? _settingIcon;
 
     private void Start() {
         if (TargetModule == null) {
-            Plugin.Log.LogWarning("ModuleButtonController has no TargetModule assigned");
+            Plugin.Log.LogWarning("[ModuleButtonController] TargetModule not assigned!");
             return;
         }
-
-        _checkmark = gameObject.FindRecursive("Checkbox/Mark");
 
         // Set icon
         var buttonIcon = gameObject.FindRecursive("Icon")?.GetComponent<Image>();
         try {
-            buttonIcon.sprite = TargetModule.Icon;
+            if (buttonIcon != null) buttonIcon.sprite = TargetModule.Icon;
         } catch (Exception e) {
             Plugin.Log.LogError($"Failed to load icon for module '{TargetModule.Name}': {e}");
         }
@@ -35,9 +33,13 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
         var buttonText = gameObject.FindRecursive("Name")?.GetComponent<TextMeshProUGUI>();
         buttonText?.SetText(TargetModule.Name);
 
-        // Setup click
+        // Setup clicks
         var button = gameObject.GetComponent<Button>();
         button.onClick.AddListener(() => { TargetModule.Toggle(); });
+        _settingIcon = gameObject.FindRecursive("ConfigButton/Icon");
+        _settingIcon?.SetActive(false);
+        var settingButtonComp = gameObject.FindRecursive("ConfigButton")?.GetComponent<Button>();
+        if (settingButtonComp != null) settingButtonComp.onClick.AddListener(() => { ClickGUI.NestConfigPanel(TargetModule); });
 
         // Setup hover
         var providerName = TargetModule.GetType().Assembly.GetName().Name;
@@ -46,11 +48,11 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
         // tooltipComp.text = $"{TargetModule.Description}\n\n[{providerName}.dll]";
 
         // Setup visuals
+        var settingIcon = gameObject.FindRecursive("ConfigButton/Icon");
         _iconColorizer = buttonIcon.GetOrAddComponent<Colorizer>();
         _textColorizer = buttonText.GetOrAddComponent<Colorizer>();
-        _checkmark?.SetActive(true);
-        _checkIconColorizer = _checkmark.GetOrAddComponent<Colorizer>();
-        _checkmark?.SetActive(false);
+        _settingIconColorizer = settingIcon.GetOrAddComponent<Colorizer>();
+
         TargetModule.OnToggleStateChanged += UpdateVisualState;
         UpdateVisualState(TargetModule.IsEnabled);
     }
@@ -61,16 +63,23 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
     }
 
     private void UpdateVisualState(bool isEnabled) {
-        if (_checkmark == null) return;
-        _checkmark.SetActive(isEnabled);
         if (_iconColorizer != null) _iconColorizer.Highlighted = isEnabled;
         if (_textColorizer != null) _textColorizer.Highlighted = isEnabled;
-        if (_checkIconColorizer != null) _checkIconColorizer.Highlighted = isEnabled;
+        if (_settingIconColorizer != null) _settingIconColorizer.Highlighted = isEnabled;
     }
 
     public void OnPointerClick(PointerEventData eventData) {
         if (eventData.button == PointerEventData.InputButton.Right) {
             ClickGUI.NestConfigPanel(TargetModule);
+            _settingIcon?.SetActive(false);
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData) {
+        _settingIcon?.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData) {
+        _settingIcon?.SetActive(false);
     }
 }

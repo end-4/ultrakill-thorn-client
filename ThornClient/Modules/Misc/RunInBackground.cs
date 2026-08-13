@@ -1,4 +1,6 @@
 using ThornClient.Core;
+using ThornClient.Managers;
+using ThornClient.System;
 using UnityEngine;
 
 namespace ThornClient.Modules.Misc;
@@ -7,7 +9,7 @@ namespace ThornClient.Modules.Misc;
 /// Module that disables score submissions
 /// </summary>
 public class RunInBackground : Module {
-    // public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "no_trophy");
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "window_play_background");
 
     /// <inheritdoc />
     public override string[] Tags => ["inactive", "afk", "background", "naruto"];
