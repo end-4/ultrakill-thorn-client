@@ -6,7 +6,7 @@ using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
 
-namespace ThornClient.Modules.World;
+namespace ThornClient.Modules.Render;
 
 /// <summary>
 /// Module that draws lines from the player to enemies

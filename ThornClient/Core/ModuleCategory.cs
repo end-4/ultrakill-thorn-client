@@ -7,7 +7,7 @@ public enum ModuleCategory {
     /// <summary>
     /// Modules that affect enemies, such as buffs
     /// </summary>
-    Enemy, // mitosis
+    Enemy,
 
     /// <summary>
     /// Modules that affect the player, such as movement tweaks and control enhancements
@@ -17,7 +17,7 @@ public enum ModuleCategory {
     /// <summary>
     /// Modules that affect the rendering, such as ESP
     /// </summary>
-    Render, // viewmodel transform, hide gui, visible portals
+    Render, // hide gui, visible portals
 
     /// <summary>
     /// Modules that affect the world, such as turning the floor into lava
