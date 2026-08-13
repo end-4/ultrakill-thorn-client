@@ -6,6 +6,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using Notiffy.API;
 using ThornClient.Managers;
+using ThornClient.Patches;
 using UnityEngine.SceneManagement;
 
 namespace ThornClient;
@@ -30,12 +31,14 @@ public class Plugin : BaseUnityPlugin {
 
         AssetManager.Initialize();
         HudManager.Initialize();
+        EffectManager.Initialize();
         ModuleManager.Initialize();
         RenderManager.Initialize();
         ConfigManager.LoadAll();
         ConfigManager.SetupFileWatcher();
+
         Harmony harmony = new Harmony(PluginGUID);
-        harmony.PatchAll();
+        harmony.PatchAll(typeof(OptionsManagerPatches));
         Log.LogInfo($"Thorn is loaded");
     }
 

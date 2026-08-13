@@ -27,6 +27,7 @@ public class TestModule : Module {
     }
 
     public Setting<bool> Bulul { get; }
+    public Setting<bool> BululCheck { get; }
     public Setting<int> Inoue { get; }
     public Setting<float> Flatorte { get; }
     public Setting<string> Tung { get; }
@@ -44,6 +45,12 @@ public class TestModule : Module {
         ModuleCategory.Misc) {
         Bulul = CreateSetting("boolField", "Bool setting",
             "Either \"Brother that is the fakest statement I've ever seen\" or \"holy SHIT\"", false);
+        BululCheck = CreateSetting("boolFieldCheck", "Checkmark bool setting",
+            "Either \"Brother that is the fakest statement I've ever seen\" or \"holy SHIT\"", true);
+        BululCheck.Hints =
+            new InterfaceHints {
+                BoolPreferCheckmark = true
+            };
         Inoue = CreateSetting("intField", "Int", "int field!!", 2);
         Flatorte = CreateSetting("floatField", "Floatie", "float field!!", 4f);
         Tung = CreateSetting("textField", "Yap field", "Here bro have a tung tung", "sahur");
@@ -57,7 +64,8 @@ public class TestModule : Module {
         FavouriteBaka = CreateSetting("favouriteBaka", "Favourite baka", "popipo popipo", Baka.Miku, NestedGroup);
         DoubleNestedGroup = CreateGroup("nestederGroup", "Nestier group", "Nesty testy", NestedGroup);
         CreateHeader("subcat2", "Subcategory 2", headerType: HeaderType.H2);
-        Enemiez = CreateSetting("enemiez", "Funny monsters field", "spooky scary skeleton", new EnemyList(), NestedGroup);
+        Enemiez = CreateSetting("enemiez", "Funny monsters field", "spooky scary skeleton", new EnemyList(),
+            NestedGroup);
         Slippery = CreateSetting("slippery", "Slider field", "pls slide", 0.7f, DoubleNestedGroup);
 
         Slippery.Hints = new InterfaceHints {
@@ -67,16 +75,17 @@ public class TestModule : Module {
 
         var chemistry = CreateButtonRow("btnRow", "Button Row Name", "Eyyyyy",
             ["Helium", "Nitrogen", "Tantalum", "Iodine"]);
-        chemistry.OnClick += x => {
-            NotificationSystem.NotifySend("Thorn::Debug", $"Clicked button numba {x}");
-        };
+        chemistry.OnClick += x => { NotificationSystem.NotifySend("Thorn::Debug", $"Clicked button numba {x}"); };
 
         CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Foo", "Bar"]);
         CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Five"]);
         CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Five", "little"]);
-        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Five", "little", "Chuddies"]);
-        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Five", "little", "Chuddies", "jumping"]);
-        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling", ["Five", "little", "Chuddies", "jumping", "on"]);
+        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling",
+            ["Five", "little", "Chuddies"]);
+        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling",
+            ["Five", "little", "Chuddies", "jumping"]);
+        CreateButtonRow("_", "Overflow", "Useless buttons just to test overflow scrolling",
+            ["Five", "little", "Chuddies", "jumping", "on"]);
     }
 
     protected override void OnEnable() {

@@ -22,13 +22,13 @@ public enum ModuleCategory {
     /// <summary>
     /// Modules that affect the world, such as turning the floor into lava
     /// </summary>
-    World, // waypoints, ice floor, lava floor, atlantis
+    World, // waypoints, ice floor
 
     /// <summary>
     /// Modules that don't fit into other categories
     /// </summary>
     Misc,
-    
+
     /// <summary>
     /// Modules that affect the HUD. Use this ONLY on HudModules, or your module will not show up!
     /// </summary>

@@ -1,4 +1,5 @@
-﻿using ThornClient.Core;
+﻿using NukeLib.Game;
+using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
@@ -128,36 +129,7 @@ public class WeaponVariantBinds : Module {
         // Reference + "I've seen worse": https://github.com/daemon251/Ultrakill-WeaponVariantBinds/blob/580ecf6f0e150495639bcaec6ee5f48193b76bed/PluginConfig.cs#L219
         for (int i = 0; i < slotList.Count; i++) {
             var weapon = slotList[i];
-            int currVariant = -1;
-            switch (weaponIndex) {
-                case 0:
-                    var rComp = weapon.GetComponent<Revolver>();
-                    if (rComp != null) currVariant = rComp.gunVariation;
-                    break;
-                case 1:
-                    var sComp = weapon.GetComponent<Shotgun>();
-                    if (sComp != null) {
-                        currVariant = sComp.variation;
-                    } else {
-                        var shComp = weapon.GetComponent<ShotgunHammer>();
-                        if (shComp != null) currVariant = shComp.variation;
-                    }
-
-                    break;
-                case 2:
-                    var nComp = weapon.GetComponent<Nailgun>();
-                    if (nComp != null) currVariant = (4 - nComp.variation) % 3;
-                    break;
-                case 3:
-                    var raiComp = weapon.GetComponent<Railcannon>();
-                    if (raiComp != null) currVariant = raiComp.variation;
-                    break;
-                case 4:
-                    var rocComp = weapon.GetComponent<RocketLauncher>();
-                    if (rocComp != null) currVariant = rocComp.variation;
-                    break;
-            }
-
+            int currVariant = GunHelper.GetVariation(weapon, weaponIndex);
             if (currVariant == variantIndex) {
                 gcon.ForceWeapon(weapon);
                 return;

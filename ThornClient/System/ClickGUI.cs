@@ -159,7 +159,7 @@ internal class ClickGUI : SystemModule {
         // Hide canvas
         var cgroupComp = _canvas.GetComponent<CanvasGroup>();
         if (cgroupComp != null) cgroupComp.alpha = 1;
-        SetTab(ModuleTabName);
+        SetTab(ModuleTabName, animated: false);
         _canvas.SetActive(false);
         return true;
     }
@@ -245,7 +245,7 @@ internal class ClickGUI : SystemModule {
         }
     }
 
-    public static void SetTab(string tabName) {
+    public static void SetTab(string tabName, bool animated = true) {
         if (Instance == null) return;
         var pages = Instance._tabPages;
         var tabButtonRow = Instance._tabBarButtonRow;
@@ -254,8 +254,8 @@ internal class ClickGUI : SystemModule {
             var (key, val) = pages[i];
             bool active = (tabName == key);
             // Plugin.Log.LogInfo($"Set {tabName} active: {active}");
-            // val.SetActiveAnimated(active, PageHiddenOffset);
-            val.SetActive(active);
+            if (animated) val.SetActiveAnimated(active, PageHiddenOffset);
+            else val.SetActive(active);
             val.UnfuckLayoutHack();
             if (val != null && tabName == key) {
                 _lastTabName = tabName;
@@ -330,13 +330,13 @@ internal class ClickGUI : SystemModule {
         // Hide tab bar and current top-level view
         if (Instance._tabBarButtonRow != null) Instance._tabBarButtonRow.SetActive(false);
         if (Instance._panelStack.Count > 0) {
-            Instance._panelStack.Peek().SetActive(false);
+            Instance._panelStack.Peek().SetActiveAnimated(false, PageHiddenOffset);
         } else {
-            Instance._tabPages.ForEach(p => p.Item2.SetActive(false));
+            Instance._tabPages.ForEach(p => p.Item2.SetActiveAnimated(false, PageHiddenOffset));
         }
 
         // Show and push new panel
-        page.SetActive(true);
+        page.SetActiveAnimated(true, PageHiddenOffset);
         Instance._panelStack.Push(page);
 
         SurrenderTooltipText("", force: true);
@@ -368,7 +368,7 @@ internal class ClickGUI : SystemModule {
             Object.Destroy(topPanel);
 
             if (Instance._panelStack.Count > 0) {
-                Instance._panelStack.Peek().SetActive(true);
+                Instance._panelStack.Peek().SetActiveAnimated(true, PageHiddenOffset);
             } else {
                 SetTab(_lastTabName);
                 if (Instance._tabBarButtonRow != null) Instance._tabBarButtonRow.SetActive(true);

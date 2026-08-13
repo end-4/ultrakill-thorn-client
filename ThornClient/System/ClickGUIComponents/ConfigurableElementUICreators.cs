@@ -19,9 +19,15 @@ public static class ConfigurableElementUICreators {
             return go;
         },
         [SettingType.Bool] = (setting, parent) => {
-            var go = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "BoolSetting"), parent);
-            go.AddComponent<BoolSettingController>().TargetSetting = (Setting<bool>)setting;
-            return go;
+            if (setting.Hints?.BoolPreferCheckmark == true) {
+                var go = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "BoolSetting"), parent);
+                go.AddComponent<BoolSettingController>().TargetSetting = (Setting<bool>)setting;
+                return go;
+            } else {
+                var go = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "SwitchBoolSetting"), parent);
+                go.AddComponent<SwitchBoolSettingController>().TargetSetting = (Setting<bool>)setting;
+                return go;
+            }
         },
         [SettingType.Color] = (setting, parent) => {
             var go = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ColorSetting"), parent);

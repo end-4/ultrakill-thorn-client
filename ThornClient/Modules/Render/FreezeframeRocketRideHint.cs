@@ -7,10 +7,11 @@ using UnityEngine;
 
 namespace ThornClient.Modules.World;
 
+// TODO see if it's possible to draw on viewmodel camera so it doesn't get behind walls
 /// <summary>
-/// Module that draws a line to help with rocket riding.
+/// Module that draws lines to help with Freezeframe rocket riding.
 /// </summary>
-public class RocketRideHint : Module {
+public class FreezeframeRocketRideHint : Module {
     /// <summary>
     /// When to show rocket ride hint
     /// </summary>
@@ -75,7 +76,7 @@ public class RocketRideHint : Module {
     private static Material? _lineMaterial;
 
     /// <inheritdoc />
-    public RocketRideHint() : base("thorn.rocketRideHint", "Rocket Ride Hint",
+    public FreezeframeRocketRideHint() : base("thorn.freezeframeRocketRideHint", "Rocket Ride Hint",
         "Draws assist lines to help with Freezeframe rocket ride aiming", ModuleCategory.Render) {
         ShowWhen = CreateSetting("showWhen", "Show when holding", "When to show the hint lines",
             RocketHintShowWhen.Freezeframe);
