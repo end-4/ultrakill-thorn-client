@@ -6,7 +6,7 @@ namespace ThornClient.HUD.HUDComponents;
 /// <summary>
 /// Controller for HUD elements. Handles positioning including the coordinates and pivot.
 /// </summary>
-public class HudElementController : MonoBehaviour {
+internal class HudElementController : MonoBehaviour {
     /// <summary>
     /// The HUD module that this controller is associated with.
     /// </summary>

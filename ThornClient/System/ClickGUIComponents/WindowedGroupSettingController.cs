@@ -1,5 +1,4 @@
 ﻿using NukeLib.UI;
-using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Managers;
 using TMPro;
@@ -11,7 +10,7 @@ namespace ThornClient.System.ClickGUIComponents;
 /// <summary>
 /// This is for the button that opens up a new window, not the window itself
 /// </summary>
-public class WindowedGroupSettingController : MonoBehaviour {
+internal class WindowedGroupSettingController : MonoBehaviour {
     public SettingGroup? TargetGroup;
     private TextMeshProUGUI? text;
 

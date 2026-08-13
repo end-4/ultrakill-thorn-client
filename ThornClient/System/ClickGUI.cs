@@ -3,7 +3,6 @@ using System.IO;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.System.ClickGUIComponents;
-using UnityEngine.SceneManagement;
 using System;
 using System.Linq;
 using NukeLib.Game;
@@ -11,10 +10,8 @@ using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Managers;
 using TMPro;
-using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using TextUtils = NukeLib.Text.TextUtils;
 
 namespace ThornClient.System;
 

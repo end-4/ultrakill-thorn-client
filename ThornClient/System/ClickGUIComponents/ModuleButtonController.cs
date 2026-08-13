@@ -45,7 +45,7 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler {
         // Setup hover
         var providerName = TargetModule.GetType().Assembly.GetName().Name;
         var tooltipComp = gameObject.AddComponent<ClickGUITooltipHandler>();
-        tooltipComp.text = $"{TargetModule.Description}<size=8>\n\n</size><size=10>[<color=#{ColorUtility.ToHtmlStringRGB(ThornModule.AccentColor)}>{providerName}</color>]</size>";
+        tooltipComp.Text = $"{TargetModule.Description}<size=8>\n\n</size><size=10>[<color=#{ColorUtility.ToHtmlStringRGB(ThornModule.AccentColor)}>{providerName}</color>]</size>";
         // tooltipComp.text = $"{TargetModule.Description}\n\n[{providerName}.dll]";
 
         // Setup visuals

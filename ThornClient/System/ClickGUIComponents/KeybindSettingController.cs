@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using Notiffy.API;
-using NukeLib.Game;
+﻿using NukeLib.Game;
 using NukeLib.UI;
 using NukeLib.Utils;
-using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
 using TMPro;
@@ -12,7 +9,7 @@ using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-public class KeybindSettingController : MonoBehaviour {
+internal class KeybindSettingController : MonoBehaviour {
     private const string PauseKey = "Thorn_ClickGUI_KeybindListener";
     private static readonly Color NormalColor = new Color(1, 1, 1);
     private static Color ListeningColor => ThornModule.Instance?.Accent.Value ?? new Color(1f, 0.4048f, 0f);

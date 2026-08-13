@@ -1,7 +1,6 @@
 ﻿using NukeLib.Game;
 using ThornClient.Managers;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace ThornClient.HUD.HUDComponents;

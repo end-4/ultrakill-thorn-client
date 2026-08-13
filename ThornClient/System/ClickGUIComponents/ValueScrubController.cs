@@ -1,11 +1,13 @@
 ﻿using System;
-using ThornClient.Core;
 using ThornClient.Managers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace ThornClient.System.ClickGUIComponents;
 
+/// <summary>
+/// Controller to support value scrubbing
+/// </summary>
 public class ValueScrubController : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler,
     IPointerEnterHandler,
     IPointerExitHandler {

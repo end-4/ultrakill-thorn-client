@@ -1,6 +1,4 @@
 ﻿using NukeLib.UI;
-using NukeLib.Utils;
-using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Managers;
 using UnityEngine;
@@ -8,7 +6,10 @@ using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-public class SettingRowController : MonoBehaviour {
+/// <summary>
+/// Controller for a setting item wrapper. The row houses a reset button and the setting item itself.
+/// </summary>
+internal class SettingRowController : MonoBehaviour {
     public Setting? TargetSetting;
     private GameObject? _resetButton;
     private Image? _resetButtonIconImage;

@@ -1,20 +1,14 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NukeLib.UI;
 using NukeLib.Utils;
-using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-/// <summary>
-/// Controller for Color Setting fields
-/// </summary>
-public class ColorSettingController : MonoBehaviour {
+internal class ColorSettingController : MonoBehaviour {
     public Setting<Color>? TargetSetting;
 
     private Image? _colorPreview;

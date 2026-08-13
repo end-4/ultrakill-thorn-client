@@ -1,10 +1,9 @@
 ﻿using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-public class InputFocusGrab : MonoBehaviour {
+internal class InputFocusGrab : MonoBehaviour {
     private TMP_InputField? _input;
 
     private void OnEnable() {

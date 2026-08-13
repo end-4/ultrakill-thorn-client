@@ -16,7 +16,7 @@ namespace ThornClient.System.ClickGUIComponents;
 /// Inspiration: https://m3.material.io/components/button-groups/specs
 /// Keyword for pattern-mining code readers: EnumSettingController
 /// </summary>
-public class ConnectedButtonGroupSettingController : MonoBehaviour {
+internal class ConnectedButtonGroupSettingController : MonoBehaviour {
     public Setting? TargetSetting { get; set; }
     private Type? _enumType;
     private GameObject? _btnRow;

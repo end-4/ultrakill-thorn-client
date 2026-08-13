@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using NukeLib.UI;
-using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
-using ThornClient.HUD.HUDComponents;
 using ThornClient.Managers;
 using TMPro;
 using UnityEngine;
@@ -11,7 +9,7 @@ using UnityEngine.UI;
 namespace ThornClient.System.ClickGUIComponents;
 
 // Quite the same as ConfigurableWindowController, maybe give each configurable a SettingGroup for deduplication?
-public class SettingGroupWindowController : MonoBehaviour {
+internal class SettingGroupWindowController : MonoBehaviour {
     private bool _doneSetup = false;
     public SettingGroup TargetGroup;
 

@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
+/// <summary>
+/// Component that colors stuff based on active/inactive state
+/// </summary>
 public class Colorizer : MonoBehaviour {
     private TextMeshProUGUI? textComp;
     private Image? imageComp;

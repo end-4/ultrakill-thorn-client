@@ -7,7 +7,7 @@ namespace ThornClient.System.ClickGUIComponents;
 /// <summary>
 /// Component for free draggables
 /// </summary>
-public class FreeMoveDragHandler : MonoBehaviour, IDragHandler {
+internal class FreeMoveDragHandler : MonoBehaviour, IDragHandler {
     /// <summary>
     /// The transform of the GameObject that should be moved when dragging the holder of this component
     /// </summary>

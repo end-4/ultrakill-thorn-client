@@ -1,6 +1,5 @@
 ﻿using System;
 using NukeLib.UI;
-using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using TMPro;
 using UnityEngine;
@@ -10,7 +9,7 @@ namespace ThornClient.System.ClickGUIComponents;
 /// <summary>
 /// Controller for text/string setting fields.
 /// </summary>
-public class TextSettingController : MonoBehaviour {
+internal class TextSettingController : MonoBehaviour {
     public Setting<string>? TargetSetting;
     private TMP_InputField? _inputField;
     private string _lastString = string.Empty;

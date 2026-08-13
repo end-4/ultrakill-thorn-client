@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-public class ButtonRowSettingController : MonoBehaviour {
+internal class ButtonRowSettingController : MonoBehaviour {
     public ConfigButtonRow? TargetButtonRow;
 
     private void Start() {

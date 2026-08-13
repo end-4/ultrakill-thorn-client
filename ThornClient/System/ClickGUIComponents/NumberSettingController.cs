@@ -12,7 +12,7 @@ namespace ThornClient.System.ClickGUIComponents;
 /// Controller for number setting field. int and float only, please use IntSettingController or FloatSettingController
 /// </summary>
 /// <typeparam name="T">Number type</typeparam>
-public abstract class NumberSettingController<T> : MonoBehaviour {
+internal abstract class NumberSettingController<T> : MonoBehaviour {
     public Setting<T>? TargetSetting;
     private TMP_InputField? _inputField;
     private ValueScrubController? _scrubController;

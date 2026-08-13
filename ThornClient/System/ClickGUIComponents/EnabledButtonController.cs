@@ -2,13 +2,12 @@ using NukeLib.UI;
 using ThornClient.Core;
 using TMPro;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using ThornClient.Managers;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-public class EnabledButtonController : MonoBehaviour {
+internal class EnabledButtonController : MonoBehaviour {
     public Configurable? Configurable;
     private TextMeshProUGUI? _textComp;
     private Image? _buttonImageComp;

@@ -1,13 +1,11 @@
 using NukeLib.UI;
-using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-public class SettingDescriptionController : MonoBehaviour {
+internal class SettingDescriptionController : MonoBehaviour {
     public IConfigurableElement TargetSetting;
 
     private void Start() {
@@ -18,6 +16,6 @@ public class SettingDescriptionController : MonoBehaviour {
         var targetComp = targetObj.GetComponent<TextMeshProUGUI>();
         targetComp.text = TargetSetting.Name;
         var hoverComp = gameObject.GetOrAddComponent<ClickGUITooltipHandler>();
-        hoverComp.text = TargetSetting.Description;
+        hoverComp.Text = TargetSetting.Description;
     }
 }

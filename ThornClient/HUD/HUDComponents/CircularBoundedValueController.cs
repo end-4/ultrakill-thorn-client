@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NukeLib.UI;
 using ThornClient.Core.ConfigurableElements;
 using TMPro;
@@ -8,7 +7,7 @@ using UnityEngine.UI;
 
 namespace ThornClient.HUD.HUDComponents;
 
-public class CircularBoundedValueController : MonoBehaviour, IBoundedValueController {
+internal class CircularBoundedValueController : MonoBehaviour, IBoundedValueController {
     public BoundedValueHudModule? TargetModule { get; set; }
 
     private TextMeshProUGUI? _textName;

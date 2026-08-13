@@ -1,5 +1,4 @@
-﻿using System;
-using NukeLib.Utils;
+﻿using NukeLib.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 

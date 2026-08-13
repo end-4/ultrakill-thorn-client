@@ -8,10 +8,10 @@ using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-public class EnemyListSettingController : MonoBehaviour {
+internal class EnemyListSettingController : MonoBehaviour {
     public Setting<EnemyList>? TargetSetting;
     private TextMeshProUGUI? text;
-
+    
     private void Start() {
         if (TargetSetting == null) return;
         GetComponent<Button>().onClick.AddListener(OpenList);

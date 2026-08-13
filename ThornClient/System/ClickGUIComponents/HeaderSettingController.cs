@@ -1,13 +1,11 @@
 ﻿using NukeLib.UI;
-using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-public class HeaderSettingController : MonoBehaviour {
+internal class HeaderSettingController : MonoBehaviour {
     public ConfigHeader? TargetElement;
 
     private void Start() {

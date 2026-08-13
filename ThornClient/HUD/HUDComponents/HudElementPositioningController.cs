@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using NukeLib.UI;
 using ThornClient.Core;
 using ThornClient.System;
@@ -14,7 +13,7 @@ namespace ThornClient.HUD.HUDComponents;
 /// <summary>
 /// Component to add to the GameObject that controls the positioning of a HUD element.
 /// </summary>
-public class HudElementPositioningController : FreeMoveDragHandler, IEndDragHandler, IPointerEnterHandler,
+internal class HudElementPositioningController : FreeMoveDragHandler, IEndDragHandler, IPointerEnterHandler,
     IPointerExitHandler, IPointerClickHandler {
     /// <summary>
     /// The HUD module that this controller is associated with.
