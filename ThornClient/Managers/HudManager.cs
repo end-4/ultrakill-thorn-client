@@ -42,6 +42,7 @@ public static class HudManager {
 
         // Hook
         SceneUtils.SafeSceneLoadedDelayed += OnSceneLoaded;
+        FinalRankHelper.RankShown += HideHud;
     }
 
     private const string GunCanvasName = "ThornGunCanvas";
@@ -54,6 +55,13 @@ public static class HudManager {
         if (forceComp == null) return;
         forceComp.ForceActive = true;
         forceComp.ForceUpdate();
+    }
+
+    private static void HideHud() {
+        foreach (GameObject? go in _surfaces.Values) {
+            if (go == null) continue;
+            go.SetActive(false);
+        }
     }
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
@@ -99,7 +107,9 @@ public static class HudManager {
             _surfaces[HudSurface.Overlay] = canvas?.FindRecursive("Crosshair Filler");
             if (_surfaces.Values.Any(g => g == null)) return;
             foreach (GameObject? go in _surfaces.Values) {
-                ForceEnableHudPanel(go!);
+                if (go == null) continue;
+                ForceEnableHudPanel(go);
+                go.SetActive(SceneUtils.IsInGame());
             }
             Plugin.Log.LogInfo("[HUD Manager] ReadyForScene...]");
             ReadyForScene?.Invoke();
