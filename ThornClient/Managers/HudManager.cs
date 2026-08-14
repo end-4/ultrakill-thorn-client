@@ -39,7 +39,7 @@ public static class HudManager {
         AssetManager.LoadBundle(BundleKey, BundlePath);
 
         // Hook
-        SceneUtils.SafeSceneLoaded += OnSceneLoaded;
+        SceneUtils.SafeSceneLoadedDelayed += OnSceneLoaded;
     }
 
     private const string GunCanvasName = "ThornGunCanvas";
@@ -57,6 +57,7 @@ public static class HudManager {
                 if (thornGunCanvas == null && vanillaGunCanvas != null) {
                     thornGunCanvas = Object.Instantiate(vanillaGunCanvas, vanillaGunCanvas.transform.parent);
                     thornGunCanvas.name = GunCanvasName;
+                    thornGunCanvas.transform.SetAsLastSibling();
                 }
 
                 _surfaces[HudSurface.Left] = thornGunCanvas ?? vanillaGunCanvas;
@@ -66,6 +67,7 @@ public static class HudManager {
                 if (thornStyleCanvas == null && vanillaStyleCanvas != null) {
                     thornStyleCanvas = Object.Instantiate(vanillaStyleCanvas, vanillaStyleCanvas.transform.parent);
                     thornStyleCanvas.name = StyleCanvasName;
+                    thornStyleCanvas.transform.SetAsLastSibling();
                 }
 
                 _surfaces[HudSurface.Right] = thornStyleCanvas ?? vanillaStyleCanvas;
@@ -76,6 +78,7 @@ public static class HudManager {
 
             _surfaces[HudSurface.Overlay] = canvas?.FindRecursive("Crosshair Filler");
             if (_surfaces.Values.Any(g => g == null)) return;
+            Plugin.Log.LogInfo("[HUD Manager] ReadyForScene...]");
             ReadyForScene?.Invoke();
         } catch (Exception e) {
             Plugin.Log.LogWarning($"[HUD Manager] Scene load hook failed: {e.Message}");

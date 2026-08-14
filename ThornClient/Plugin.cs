@@ -25,7 +25,7 @@ public class Plugin : BaseUnityPlugin {
     public const string PluginVersion = "0.1.0";
     public static string PluginIconPath = Path.Combine(workingDir, "icon.png");
 
-    private void Awake() {
+    private void Start() {
         Log = Logger;
         if (Instance != null) return;
         Instance = this;

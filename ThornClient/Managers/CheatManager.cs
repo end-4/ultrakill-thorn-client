@@ -57,7 +57,7 @@ public static class CheatManager {
 
         if (!lastCheaty && _cheating) {
             NotificationSystem.NotifySend(
-                $"Thorn: <color={_hexColor}>Cheats</color>",
+                $"Thorn::<color={_hexColor}>Cheats</color>",
                 "Leaderboard disabled for this run\n" +
                 string.Join("\n",
                     cheaties.Select(
