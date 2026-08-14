@@ -64,6 +64,7 @@ public class UIScaler : Module {
             : CanvasScaler.ScaleMode.ConstantPixelSize;
         // UltraTweaker does this weird hardcoding-ish thing and somehow it works
         // Before someone cries about copyright, two numbers do not meet the threshold of originality
+        // Note: it's totally fucked on Linux for some reason
         var prefsMan = PrefsManager.Instance;
         float baseWidth = (prefsMan == null ? 1920f : prefsMan.GetFloatLocal("resolutionWidth"));
         if (scalerComp.uiScaleMode == CanvasScaler.ScaleMode.ConstantPixelSize) {
@@ -85,6 +86,4 @@ public class UIScaler : Module {
         SceneUtils.SafeSceneLoaded -= UpdateScale;
         UpdateScale(1f);
     }
-
-    // TODO smooth scale adjustment
 }

@@ -32,7 +32,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         _icon = gameObject.FindRecursive("Trough/ValueLayout/Icon")?.GetComponent<Image>();
         _transTrough = gameObject.FindRecursive("Trough")?.GetComponent<RectTransform>();
         _transValue = gameObject.FindRecursive("Trough/Value")?.GetComponent<RectTransform>();
-        _transSoftBound = gameObject.FindRecursive("Trough/SoftBound")?.GetComponent<RectTransform>();
+        _transSoftBound = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound")?.GetComponent<RectTransform>();
         _textValue = gameObject.FindRecursive("Trough/ValueLayout/Value")?.GetComponent<TextMeshProUGUI>();
         _textCap = gameObject.FindRecursive("Trough/ValueLayout/Cap")?.GetComponent<TextMeshProUGUI>();
         var valObj = gameObject.FindRecursive("Trough/Value");
@@ -40,7 +40,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
             valObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
         }
 
-        var sofObj = gameObject.FindRecursive("Trough/SoftBound");
+        var sofObj = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound");
         if (sofObj != null) {
             sofObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
         }
