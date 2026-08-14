@@ -7,8 +7,6 @@ using HarmonyLib;
 using Notiffy.API;
 using ThornClient.Managers;
 using ThornClient.Patches;
-using ThornClient.System;
-using UnityEngine.SceneManagement;
 
 namespace ThornClient;
 
@@ -25,7 +23,7 @@ public class Plugin : BaseUnityPlugin {
     public const string PluginVersion = "0.1.0";
     public static string PluginIconPath = Path.Combine(workingDir, "icon.png");
 
-    private void Start() {
+    private void Awake() {
         Log = Logger;
         if (Instance != null) return;
         Instance = this;
