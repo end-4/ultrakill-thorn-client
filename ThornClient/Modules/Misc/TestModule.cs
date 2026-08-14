@@ -10,7 +10,7 @@ namespace ThornClient.Modules.Misc;
 /// <summary>
 /// Module for testing
 /// </summary>
-public class TestModule : Module {
+internal abstract class TestModule : Module {
     public enum NonEmulatorYuzu {
         Yoshino,
         Mako,
