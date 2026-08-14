@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ThornClient.System;
 
-internal class ThornModule : SystemModule {
+public class ThornModule : SystemModule {
 
     internal static ThornModule? Instance;
     internal static Color AccentColor => Instance?.Accent.Value ?? Color.white;

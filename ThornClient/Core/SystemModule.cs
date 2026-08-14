@@ -1,9 +1,9 @@
 ﻿namespace ThornClient.Core;
 
-internal abstract class SystemModule : Module {
-    public override string CheatReason => "";
+public abstract class SystemModule : Module {
+    public sealed override string CheatReason => "";
 
-    protected SystemModule(string guid, string name, string description)
+    internal SystemModule(string guid, string name, string description)
         : base(guid, name, description, ModuleCategory.Misc, hasToggling: false) {
 
     }
