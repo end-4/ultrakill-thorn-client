@@ -60,6 +60,10 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
         TargetModule.OnToggleStateChanged -= UpdateVisualState;
     }
 
+    private void OnDisable() {
+        _settingIcon?.SetActive(false);
+    }
+
     private void UpdateVisualState(bool isEnabled) {
         if (_iconColorizer != null) _iconColorizer.Highlighted = isEnabled;
         if (_textColorizer != null) _textColorizer.Highlighted = isEnabled;
