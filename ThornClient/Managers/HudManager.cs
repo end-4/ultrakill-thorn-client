@@ -43,6 +43,7 @@ public static class HudManager {
         // Hook
         SceneUtils.SafeSceneLoadedDelayed += OnSceneLoaded;
         FinalRankHelper.RankShown += HideHud;
+        CheckpointEvents.CheckpointLoadedNoParam += ShowHud;
     }
 
     private const string GunCanvasName = "ThornGunCanvas";
@@ -61,6 +62,13 @@ public static class HudManager {
         foreach (GameObject? go in _surfaces.Values) {
             if (go == null) continue;
             go.SetActive(false);
+        }
+    }
+
+    private static void ShowHud() {
+        foreach (GameObject? go in _surfaces.Values) {
+            if (go == null) continue;
+            ForceEnableHudPanel(go);
         }
     }
 
