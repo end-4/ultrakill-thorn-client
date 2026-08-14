@@ -7,7 +7,6 @@ using UnityEngine;
 namespace ThornClient.System;
 
 public class ThornModule : SystemModule {
-
     internal static ThornModule? Instance;
     internal static Color AccentColor => Instance?.Accent.Value ?? Color.white;
 
@@ -57,6 +56,28 @@ public class ThornModule : SystemModule {
             "Color used for highlighting certain elements, preferably a bright one",
             new Color(0.65f, 0.95f, 0.89f));
 
+        var about = CreateHeader(
+            "about", "About",
+            "Thorn is an open-source, extensible utility mod for ULTRAKILL with a powerful configuration system."
+        );
+        var buttons = CreateButtonRow(
+            "engagementButtons", "Links",
+            "Links to Thorn stuff",
+            ["GitHub", "Docs 4 mod devs", "Donations"]
+        );
+        buttons.OnClick += (i) => {
+            switch (i) {
+                case 0:
+                    Application.OpenURL("https://github.com/end-4/ultrakill-thorn-client");
+                    break;
+                case 1:
+                    Application.OpenURL("https://github.com/end-4/ultrakill-thorn-client/wiki");
+                    break;
+                case 2:
+                    Application.OpenURL("https://github.com/sponsors/end-4");
+                    break;
+            }
+        };
     }
 
     public override void OnUpdate() {
