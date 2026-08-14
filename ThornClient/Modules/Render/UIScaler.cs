@@ -85,4 +85,6 @@ public class UIScaler : Module {
         SceneUtils.SafeSceneLoaded -= UpdateScale;
         UpdateScale(1f);
     }
+
+    // TODO smooth scale adjustment
 }

@@ -12,7 +12,6 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
     public Module? TargetModule;
     private Colorizer? _iconColorizer;
     private Colorizer? _textColorizer;
-    private Colorizer? _settingIconColorizer;
     private GameObject? _settingIcon;
 
     private void Start() {
@@ -51,7 +50,6 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
         var settingIcon = gameObject.FindRecursive("ConfigButton/Icon");
         _iconColorizer = buttonIcon.GetOrAddComponent<Colorizer>();
         _textColorizer = buttonText.GetOrAddComponent<Colorizer>();
-        _settingIconColorizer = settingIcon.GetOrAddComponent<Colorizer>();
 
         TargetModule.OnToggleStateChanged += UpdateVisualState;
         UpdateVisualState(TargetModule.IsEnabled);
@@ -65,7 +63,6 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
     private void UpdateVisualState(bool isEnabled) {
         if (_iconColorizer != null) _iconColorizer.Highlighted = isEnabled;
         if (_textColorizer != null) _textColorizer.Highlighted = isEnabled;
-        if (_settingIconColorizer != null) _settingIconColorizer.Highlighted = isEnabled;
     }
 
     public void OnPointerClick(PointerEventData eventData) {
