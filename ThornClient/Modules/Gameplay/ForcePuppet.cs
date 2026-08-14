@@ -38,6 +38,7 @@ public class ForcePuppet : Module {
         UpdatePuppet(true);
         CheatManager.UpdateCheatiness();
         SceneUtils.SafeSceneLoadedNoParam += AddInfoLine;
+        SceneUtils.SafeSceneLoadedDelayedNoParam += UpdatePuppet;
         AddInfoLine();
     }
 
@@ -46,6 +47,7 @@ public class ForcePuppet : Module {
     /// </summary>
     protected override void OnDisable() {
         UpdatePuppet(false);
+        SceneUtils.SafeSceneLoadedDelayedNoParam -= UpdatePuppet;
         SceneUtils.SafeSceneLoadedNoParam -= AddInfoLine;
         FinalRankHelper.RemoveInfoLine(InfoLine);
     }
@@ -53,6 +55,10 @@ public class ForcePuppet : Module {
     private static string InfoLine = "<color=#fff>- <color=#fa1900>ALL <color=#fff>BLOOD, <color=#fa1900>NO <color=#fff>BALLS";
     private void AddInfoLine() {
         FinalRankHelper.AddInfoLine(InfoLine);
+    }
+
+    private void UpdatePuppet() {
+        UpdatePuppet(IsEnabled);
     }
 
     private void UpdatePuppet(bool enabled) {

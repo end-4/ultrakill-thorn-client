@@ -48,6 +48,7 @@ public class ForceRadiance : Module {
         UpdateRadiance(true, RadianceTier.Value);
         CheatManager.UpdateCheatiness();
         RadianceTier.OnValueChanged += UpdateRadiance;
+        SceneUtils.SafeSceneLoadedDelayedNoParam += UpdateRadiance;
         SceneUtils.SafeSceneLoadedNoParam += AddInfoLine;
         AddInfoLine();
     }
@@ -59,6 +60,7 @@ public class ForceRadiance : Module {
         RadianceTier.OnValueChanged -= UpdateRadiance;
         UpdateRadiance(false, RadianceTier.Value);
         SceneUtils.SafeSceneLoadedNoParam -= AddInfoLine;
+        SceneUtils.SafeSceneLoadedDelayedNoParam -= UpdateRadiance;
         FinalRankHelper.RemoveInfoLine(InfoLine);
 
     }
@@ -70,6 +72,10 @@ public class ForceRadiance : Module {
 
     private void UpdateRadiance(float value) {
         UpdateRadiance(IsEnabled, value);
+    }
+
+    private void UpdateRadiance() {
+        UpdateRadiance(IsEnabled, RadianceTier.Value);
     }
 
     private void UpdateRadiance(bool enabled, float value) {

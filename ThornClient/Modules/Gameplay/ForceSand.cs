@@ -35,6 +35,7 @@ public class ForceSand : Module {
         UpdateSand(true);
         CheatManager.UpdateCheatiness();
         SceneUtils.SafeSceneLoadedNoParam += AddInfoLine;
+        SceneUtils.SafeSceneLoadedDelayedNoParam += UpdateSand;
         AddInfoLine();
     }
 
@@ -44,12 +45,17 @@ public class ForceSand : Module {
     protected override void OnDisable() {
         UpdateSand(false);
         SceneUtils.SafeSceneLoadedNoParam -= AddInfoLine;
+        SceneUtils.SafeSceneLoadedDelayedNoParam -= UpdateSand;
         FinalRankHelper.RemoveInfoLine(InfoLine);
     }
 
     private static string InfoLine = "<color=#fff>+ <color=#fffaa1>DESERTED</color>";
     private void AddInfoLine() {
         FinalRankHelper.AddInfoLine(InfoLine);
+    }
+
+    private void UpdateSand() {
+        UpdateSand(IsEnabled);
     }
 
     private void UpdateSand(bool enabled) {

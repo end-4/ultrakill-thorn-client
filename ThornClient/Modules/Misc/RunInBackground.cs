@@ -16,7 +16,7 @@ public class RunInBackground : Module {
 
     /// <inheritdoc />
     public RunInBackground() : base("thorn.runInBackground", "Run in Background",
-        "Keeps the game running when the window is not focused. For beating Naruto.",
+        "Keeps the game running when the window is not focused",
         ModuleCategory.Misc) {
     }
 
