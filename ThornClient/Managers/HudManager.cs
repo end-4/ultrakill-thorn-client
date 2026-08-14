@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NukeLib.Game;
 using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Core;
+using ThornClient.HUD.HUDComponents;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
@@ -45,6 +47,15 @@ public static class HudManager {
     private const string GunCanvasName = "ThornGunCanvas";
     private const string StyleCanvasName = "ThornStyleCanvas";
 
+    private static void ForceEnableHudPanel(GameObject panel) {
+        // Plugin.Log.LogInfo($"Force enable hud panel {panel}");
+        if (panel == null) return;
+        var forceComp = panel.GetOrAddComponent<HudSidePanelUpdateForcer>();
+        if (forceComp == null) return;
+        forceComp.ForceActive = true;
+        forceComp.ForceUpdate();
+    }
+
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         try {
             var rootGameObjects = scene.GetRootGameObjects();
@@ -57,7 +68,11 @@ public static class HudManager {
                 if (thornGunCanvas == null && vanillaGunCanvas != null) {
                     thornGunCanvas = Object.Instantiate(vanillaGunCanvas, vanillaGunCanvas.transform.parent);
                     thornGunCanvas.name = GunCanvasName;
+                    foreach (Transform t in thornGunCanvas.transform) {
+                        Object.Destroy(t.gameObject);
+                    }
                     thornGunCanvas.transform.SetAsLastSibling();
+                    var hudPos = thornGunCanvas.GetComponent<HUDPos>();
                 }
 
                 _surfaces[HudSurface.Left] = thornGunCanvas ?? vanillaGunCanvas;
@@ -67,7 +82,12 @@ public static class HudManager {
                 if (thornStyleCanvas == null && vanillaStyleCanvas != null) {
                     thornStyleCanvas = Object.Instantiate(vanillaStyleCanvas, vanillaStyleCanvas.transform.parent);
                     thornStyleCanvas.name = StyleCanvasName;
+                    foreach (Transform t in thornStyleCanvas.transform) {
+                        Object.Destroy(t.gameObject);
+                    }
                     thornStyleCanvas.transform.SetAsLastSibling();
+                    Object.Destroy(thornStyleCanvas.GetComponent<StyleHUD>());
+                    Object.Destroy(thornStyleCanvas.GetComponent<StyleCalculator>());
                 }
 
                 _surfaces[HudSurface.Right] = thornStyleCanvas ?? vanillaStyleCanvas;
@@ -78,6 +98,9 @@ public static class HudManager {
 
             _surfaces[HudSurface.Overlay] = canvas?.FindRecursive("Crosshair Filler");
             if (_surfaces.Values.Any(g => g == null)) return;
+            foreach (GameObject? go in _surfaces.Values) {
+                ForceEnableHudPanel(go!);
+            }
             Plugin.Log.LogInfo("[HUD Manager] ReadyForScene...]");
             ReadyForScene?.Invoke();
         } catch (Exception e) {
