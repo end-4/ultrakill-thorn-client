@@ -8,7 +8,7 @@ using Module = ThornClient.Core.Module;
 
 namespace ThornClient.System.ClickGUIComponents;
 
-internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
+internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler {
     public Module? TargetModule;
     private Colorizer? _iconColorizer;
     private Colorizer? _textColorizer;
@@ -83,4 +83,14 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
     public void OnPointerExit(PointerEventData eventData) {
         _settingIcon?.SetActive(false);
     }
+
+    public void OnSelect(BaseEventData eventData) {
+        _settingIcon?.SetActive(true);
+    }
+
+    public void OnDeselect(BaseEventData eventData) {
+        _settingIcon?.SetActive(false);
+    }
+
+    // TODO handle focusing the setting button itself
 }
