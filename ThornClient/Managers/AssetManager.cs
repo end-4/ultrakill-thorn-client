@@ -60,8 +60,8 @@ public static class AssetManager {
             return (T)asset;
         }
 
-        throw new KeyNotFoundException(
-            $"[AssetManager] Asset '{assetName}' of type '{typeof(T).Name}' not found in bundle '{bundleKey}'.");
+        Plugin.Log.LogError($"[AssetManager] Asset '{assetName}' of type '{typeof(T).Name}' not found in bundle '{bundleKey}'.");
+        return null;
     }
 
     private static string BuildKey(string bundleKey, Type type, string assetName) {
