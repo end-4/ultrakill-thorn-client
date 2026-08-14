@@ -45,7 +45,7 @@ public static class ModuleManager {
                     Items.Add(moduleInstance);
                 }
             } catch (Exception ex) {
-                Plugin.Log.LogInfo($"Failed to instantiate module '{type.Name}': {ex.Message}");
+                Plugin.Log.LogError($"Failed to instantiate module '{type.Name}': {ex}");
             }
         }
 

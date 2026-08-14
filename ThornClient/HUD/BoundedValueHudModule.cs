@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using NukeLib.UI;
+using NukeLib.Utils;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.HUD.HUDComponents;
 using ThornClient.Managers;
 using UnityEngine;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace ThornClient.HUD;
@@ -164,6 +166,8 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound Color",
             "The color of the soft bound, for example HP hard damage",
             defaultSoftBoundColor ?? new Color(1f, 1f, 1f, 0.36f), ColorGroup);
+        ShowName.OnChanged += UnfuckLayouts;
+        SceneUtils.SafeSceneLoadedDelayedNoParam += UnfuckLayouts;
         Style.OnValueChanged += SwitchStyle;
         DisplayName = displayName.Length > 0 ? displayName : name;
         DisplayIcon = displayIcon ?? Icon;
@@ -217,6 +221,17 @@ public abstract class BoundedValueHudModule : FramedHudModule {
             pair.Value?.SetActive(style == pair.Key);
         }
 
-        if (_contentObject != null) _contentObject.UnfuckLayoutHack();
+        UnfuckLayouts();
+    }
+
+    private void UnfuckLayouts() {
+        if (!SceneUtils.IsSafe() || !IsEnabled) return;
+        if (_contentObject == null || _wrapper == null) return;
+        _contentObject.UnfuckLayoutHack();
+        var fitterComp = _wrapper.GetComponent<ContentSizeFitter>();
+        if (fitterComp != null) {
+            fitterComp.enabled = false;
+            ExecutionUtils.RunNextFrame(() => { fitterComp.enabled = true; });
+        }
     }
 }
