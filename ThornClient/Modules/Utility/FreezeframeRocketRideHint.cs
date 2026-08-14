@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace ThornClient.Modules.Utility;
 
-// TODO see if it's possible to draw on viewmodel camera so it doesn't get behind walls
 /// <summary>
 /// Module that draws lines to help with Freezeframe rocket riding.
 /// </summary>
