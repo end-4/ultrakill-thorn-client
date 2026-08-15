@@ -26,21 +26,24 @@ public static class ModuleManager {
     }
 
     /// <summary>
-    /// Scans the entire assembly via reflection, instantiates every class
-    /// that inherits from Module, and registers it
+    /// Scans for Modules via reflection, then instantiates and registers all of them
     /// </summary>
     public static void Initialize() {
         Plugin.Log.LogInfo($"[Module Manager] Starting...");
-
         var moduleType = typeof(Module);
+        List<Type> discoveredTypes = [];
 
-        // Scan the active executing assembly for any concrete class inheriting from Module
-        var discoveredTypes = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => moduleType.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+            if (IsSystemAssembly(assembly)) continue;
+            foreach (var type in SafeGetTypes(assembly)) {
+                if (SafeIsAssignableFrom(moduleType, type) && !type.IsInterface && !type.IsAbstract) {
+                    discoveredTypes.Add(type);
+                }
+            }
+        }
 
         foreach (var type in discoveredTypes) {
             try {
-                // Instantiate the module
                 if (Activator.CreateInstance(type) is Module moduleInstance) {
                     Items.Add(moduleInstance);
                 }
@@ -50,6 +53,51 @@ public static class ModuleManager {
         }
 
         Plugin.Log.LogInfo($"[Module Manager] Loaded {Items.Count} modules");
+    }
+
+    /// <summary>
+    /// Safely checks if targetType can be assigned from the candidate type,
+    /// suppressing exceptions caused by missing assembly references.
+    /// </summary>
+    /// <param name="targetType">The target type</param>
+    /// <param name="candidateType">The candidate type</param>
+    /// <returns>True if assignable, false otherwise</returns>
+    private static bool SafeIsAssignableFrom(Type targetType, Type candidateType) {
+        try {
+            return targetType.IsAssignableFrom(candidateType);
+        } catch (TypeLoadException) {
+            // Occurs when candidateType references fields/methods from an assembly that isn't loaded
+            return false;
+        } catch (Exception) {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Safely fetches types from an assembly, suppressing loading errors.
+    /// </summary>
+    /// <param name="assembly">The assembly</param>
+    /// <returns>Types from the given assembly</returns>
+    private static IEnumerable<Type> SafeGetTypes(Assembly assembly) {
+        try {
+            return assembly.GetTypes();
+        } catch (ReflectionTypeLoadException ex) {
+            // Return any successfully loaded types while ignoring missing ones
+            return ex.Types.Where(t => t != null)!;
+        } catch (Exception) {
+            return [];
+        }
+    }
+
+    /// <summary>
+    /// Filters out standard framework assemblies to avoid unnecessary scanning overhead.
+    /// </summary>
+    private static bool IsSystemAssembly(Assembly assembly) {
+        var name = assembly.FullName;
+        if (string.IsNullOrEmpty(name)) return true;
+
+        return name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib") ||
+               name.StartsWith("Unity") || name.StartsWith("UnityEngine");
     }
 
     /// <summary>
