@@ -324,6 +324,7 @@ public class ViewmodelTweaks : Module {
         UpdateCurrent();
     }
 
+    // TODO make it work for dual wield too
     private void UpdateCurrent() {
         if (!SceneUtils.IsInGame()) return;
         // Note currentSlotIndex is 1-based for some fucking reason

@@ -18,7 +18,7 @@ public class MultiplyEnemies : Module {
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "copy");
 
     /// <inheritdoc />
-    public override string[] Tags => ["buff", "mitosis", "duplicate", "many"];
+    public override string[] Tags => ["mitosis", "double", "triple", "quadruple", "buff", "duplicate", "many", "times"];
 
     /// <summary>
     /// Multiply to how many enemies
