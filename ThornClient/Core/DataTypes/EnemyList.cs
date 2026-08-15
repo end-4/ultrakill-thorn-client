@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -96,4 +97,26 @@ public class EnemyList : IEquatable<EnemyList> {
         if (ReferenceEquals(this, other)) return true;
         return Enemies.SetEquals(other.Enemies);
     }
+
+    // Type casts
+
+    /// <summary>
+    /// Implicitly converts a List of EnemyType to an EnemyList
+    /// </summary>
+    public static implicit operator EnemyList(List<EnemyType> list) => new(list);
+
+    /// <summary>
+    /// Implicitly converts an EnemyList to a List of EnemyType
+    /// </summary>
+    public static implicit operator List<EnemyType>(EnemyList enemyList) => enemyList.Enemies.ToList();
+
+    /// <summary>
+    /// Implicitly converts an array of EnemyType to an EnemyList
+    /// </summary>
+    public static implicit operator EnemyList(EnemyType[] array) => new(array);
+
+    /// <summary>
+    /// Implicitly converts a HashSet of EnemyType to an EnemyList
+    /// </summary>
+    public static implicit operator EnemyList(HashSet<EnemyType> set) => new(set);
 }
