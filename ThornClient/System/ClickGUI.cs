@@ -15,6 +15,9 @@ using Object = UnityEngine.Object;
 
 namespace ThornClient.System;
 
+/// <summary>
+/// The module for the Thorn menu
+/// </summary>
 public class ClickGUI : SystemModule {
     internal static ClickGUI? Instance;
     private const string PauseGameStateKey = "Thorn_ClickGUI";

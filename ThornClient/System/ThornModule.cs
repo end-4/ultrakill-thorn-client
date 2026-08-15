@@ -6,9 +6,12 @@ using UnityEngine;
 
 namespace ThornClient.System;
 
+/// <summary>
+/// The module that houses general settings of Thorn
+/// </summary>
 public class ThornModule : SystemModule {
-    internal static ThornModule? Instance;
-    internal static Color AccentColor => Instance?.Accent.Value ?? Color.white;
+    public static ThornModule? Instance;
+    public static Color AccentColor => Instance?.Accent.Value ?? Color.white;
 
     public Setting<Keybind> OpenClickGUI { get; }
     public Setting<Keybind> SwitchTabLeft { get; }

@@ -1,5 +1,8 @@
 ﻿namespace ThornClient.Core;
 
+/// <summary>
+/// Abstract class for Modules that are hidden and always enabled
+/// </summary>
 public abstract class SystemModule : Module {
     public sealed override string CheatReason => "";
 
