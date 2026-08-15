@@ -1,8 +1,3 @@
-
-# TODO BEFORE RELEASE
-
-- Remove or restrict test modules
-
 ## Utility mod for ULTRAKILL
 
 Thorn is a client, in the sense that it offers a menu like the Minecraft ones, think Meteor, Lunar, etc.
@@ -18,6 +13,5 @@ You are free to use and republish it as you wish, without further written permis
 ## Acknowledgements
 
 - Thank you [eternalUnion](https://github.com/eternalUnion) for showing how to handle keybind listening and other configuration-related stuff in [PluginConfigurator](https://github.com/eternalUnion/UKPluginConfigurator)
-[manifest.json](manifest.json)
 - Thank you [wafflethings](https://github.com/wafflethings) for inspiration and many implementation details from [UltraTweaker](https://github.com/wafflethings/UltraTweaker)
 
