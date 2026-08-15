@@ -13,7 +13,7 @@ public class Keybind : IEquatable<Keybind> {
     /// The main key
     /// </summary>
     public KeyCode Key { get; set; }
-    
+
     /// <summary>
     /// The modifier key
     /// </summary>
@@ -30,6 +30,24 @@ public class Keybind : IEquatable<Keybind> {
     ) {
         Key = key;
         Modifier = modifier;
+    }
+
+    /// <summary>
+    /// Get string representation
+    /// </summary>
+    /// <returns>The string representation as Modifier+Key</returns>
+    public override string ToString() {
+        if (Modifier == KeyCode.None) return $"{Key.ToString()}";
+        return $"{Modifier.ToString()}+{Key.ToString()}";
+    }
+
+    /// <summary>
+    /// Get string representation
+    /// </summary>
+    /// <param name="pretty">Whether to give it the orange color commonly used for keybinds</param>
+    /// <returns>The string representation as Modifier+Key</returns>
+    public string ToString(bool pretty) {
+        return !pretty ? ToString() : $"<color=#ff8000>{ToString()}</color>";
     }
 
     /// <summary>
