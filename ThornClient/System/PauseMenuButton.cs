@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 namespace ThornClient.System;
 
 internal static class PauseMenuButton {
-    private static string PauseNotifToggleButtonName = "ThornToggleClickGUI";
+    private const string PauseNotifToggleButtonName = "ThornToggleClickGUI";
     private static GameObject? _clickGuiToggleButton;
 
     public static void Initialize() {
