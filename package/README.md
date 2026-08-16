@@ -1,14 +1,29 @@
-## Utility mod for ULTRAKILL
+### Customize to your ❤️'s content
 
-Thorn is a client, in the sense that it offers a menu like the Minecraft ones, think Meteor, Lunar, etc.
+Freely draggable HUD elements. Key input overlay. Wireframe-style weapons & enemies
 
-It aims to offer miscellaneous enhancements and a modern, free (as in freedom) alternative to UltraTweaker.
+### Gameplay modifiers
+
+Submerged. Force-radiance. Enemy multiplication. Floor is Lava.
+
+### A comfy config system
+
+- Bring it up with a keybind (`RightShift` by default)
+- Has a modern NocturnalOS style, yet familiar UI to Minecraft client users
+- Use it for any mod, like PluginConfig and Configgy! See the [Wiki](https://github.com/end-4/ultrakill-thorn-client/wiki).
+[manifest.json](manifest.json)
+## It's extensible
+
+For developers, there's the [wiki]([README.md](../README.md)https://github.com/end-4/ultrakill-thorn-client/wiki) available.
+Classes and methods are also fully XML-documented.
 
 ## Thorn is open source
 
-The source code is available [on GitHub](https://github.com/end-4/ultrakill-thorn-client) and is licensed under LGPL 3.0.
+Source code available [on GitHub](https://github.com/end-4/ultrakill-thorn-client), under LGPL 3.0 license.
 
-You are free to use and republish it as you wish, without further written permission, under the condition that all changes to Thorn's source code must also be open sourced under the same terms.
+You are free to use and republish it as you wish,
+under the condition that all changes to Thorn's source code
+must also be open sourced under the same terms.
 
 ## Acknowledgements
 
