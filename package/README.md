@@ -14,7 +14,7 @@ Submerged. Force-radiance. Enemy multiplication. Floor is Lava.
 
 - Bring it up with a keybind (`RightShift` by default)
 - Has a modern NocturnalOS style, yet familiar UI to Minecraft client users
-- Use it for any mod, like PluginConfig and Configgy! See the [Wiki](https://github.com/end-4/ultrakill-thorn-client/wiki).
+- Use it for your mod, like PluginConfig and Configgy! See the [Wiki](https://github.com/end-4/ultrakill-thorn-client/wiki).
 
 ## It's extensible
 
