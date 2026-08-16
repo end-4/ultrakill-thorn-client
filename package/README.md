@@ -2,9 +2,13 @@
 
 Freely draggable HUD elements. Key input overlay. Wireframe-style weapons & enemies
 
-### Gameplay modifiers
+<img alt="image" src="https://github.com/user-attachments/assets/f80f75ba-f595-48fb-857d-a89a9236ced7" />
+
+### Gameplay modifiers & utilities
 
 Submerged. Force-radiance. Enemy multiplication. Floor is Lava.
+
+<img alt="image" src="https://github.com/user-attachments/assets/1ebd4269-a036-4af9-bbbd-3fe384741cca" />
 
 ### A comfy config system
 
