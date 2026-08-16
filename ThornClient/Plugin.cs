@@ -12,6 +12,7 @@ namespace ThornClient;
 
 [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
 [BepInDependency("com.github.end-4.nukeLib")]
+[BepInDependency("com.github.end-4.notiffy")]
 public class Plugin : BaseUnityPlugin {
     internal static ManualLogSource Log;
     public static Plugin Instance { get; private set; }
