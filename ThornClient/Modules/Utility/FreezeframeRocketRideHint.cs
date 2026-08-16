@@ -72,8 +72,6 @@ public class FreezeframeRocketRideHint : Module {
     /// <inheritdoc />
     public override string[] Tags => ["movement", "freezeframe"];
 
-    private static Material? _lineMaterial;
-
     /// <inheritdoc />
     public FreezeframeRocketRideHint() : base("thorn.freezeframeRocketRideHint", "Rocket Ride Hint",
         "Draws assist lines to help with Freezeframe rocket ride aiming", ModuleCategory.Utility) {
@@ -90,17 +88,6 @@ public class FreezeframeRocketRideHint : Module {
         LowerAngle = CreateSetting("lowerAngle", "Lower Angle", "The vertical angle of the lower line, in degrees.",
             34f);
         LowerAngle.Hints = new InterfaceHints { Range = Tuple.Create(-90f, 90f) };
-    }
-
-    private static void EnsureMaterial() {
-        if (_lineMaterial != null) return;
-
-        var shader = Shader.Find("Hidden/Internal-Colored");
-        if (shader != null) {
-            _lineMaterial = new Material(shader);
-            _lineMaterial.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Always);
-            _lineMaterial.SetInt("_ZWrite", 0); // Disable depth writing
-        }
     }
 
     private GunControl? gc => GunControl.Instance;
@@ -126,10 +113,9 @@ public class FreezeframeRocketRideHint : Module {
         var mainCam = Camera.main;
         if (mainCam == null) return;
 
-        EnsureMaterial();
-        if (_lineMaterial == null) return;
+        if (RenderManager.LineTop == null) return;
 
-        _lineMaterial.SetPass(0);
+        RenderManager.LineTop.SetPass(0);
 
         // Render in 3D space
         GL.PushMatrix();

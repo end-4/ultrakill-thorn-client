@@ -96,24 +96,6 @@ public class EnemyTracers : Module {
                enemy.gameObject.activeInHierarchy;
     }
 
-    private static Material? _lineMaterialStandard;
-    private static Material? _lineMaterialAlwaysOnTop;
-
-    private static void EnsureMaterials() {
-        var shader = Shader.Find("Hidden/Internal-Colored");
-        if (shader == null) return;
-
-        if (_lineMaterialStandard == null) {
-            _lineMaterialStandard = new Material(shader);
-        }
-
-        if (_lineMaterialAlwaysOnTop == null) {
-            _lineMaterialAlwaysOnTop = new Material(shader);
-            _lineMaterialAlwaysOnTop.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Always);
-            _lineMaterialAlwaysOnTop.SetInt("_ZWrite", 0);
-        }
-    }
-
     /// <summary>
     /// The rendering loop
     /// </summary>
@@ -124,9 +106,7 @@ public class EnemyTracers : Module {
         var mainCam = Camera.main;
         if (mainCam == null) return;
 
-        EnsureMaterials();
-
-        var activeMaterial = AlwaysOnTop.Value ? _lineMaterialAlwaysOnTop : _lineMaterialStandard;
+        var activeMaterial = AlwaysOnTop.Value ? RenderManager.LineTop : RenderManager.Line;
         if (activeMaterial == null) return;
 
         activeMaterial.SetPass(0);
