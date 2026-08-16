@@ -88,7 +88,8 @@ internal class CircularBoundedValueController : MonoBehaviour, IBoundedValueCont
 
     private void UpdateValue() {
         var normalizedValue = (TargetModule?.Value ?? 0) / (TargetModule?.Bound ?? 1);
-        var normalizedSoftBound = (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1); // normalized softbound segment width
+        // normalized softbound segment width
+        var normalizedSoftBound = (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1);
 
         if (_fillValue == null || _fillSoftBound == null) return;
         if (!Mathf.Approximately(_fillValue.fillAmount, normalizedValue)) {

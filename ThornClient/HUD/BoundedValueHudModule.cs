@@ -154,8 +154,9 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// <param name="bound">The max value</param>
     /// <param name="displayName">The name that shown on the HUD element</param>
     /// <param name="displayIcon">The icon shown on the HUD element</param>
+    /// <param name="decimalPlaces">The decimal places to show on the value text</param>
     public BoundedValueHudModule(string guid, string name, string description, float bound = 1, string displayName = "",
-        Sprite? displayIcon = null, Color? defaultValueColor = null, Color? defaultSoftBoundColor = null) : base(guid,
+        Sprite? displayIcon = null, int decimalPlaces = 1, Color? defaultValueColor = null, Color? defaultSoftBoundColor = null) : base(guid,
         name, description) {
         Style = CreateSetting("indicatorStyle", "Indicator Style", "The style to present the value",
             IndicatorStyle.Progress);
@@ -173,6 +174,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         DisplayIcon = displayIcon ?? Icon;
         Bound = bound;
         BoundReduction = 0;
+        DecimalPlaces = decimalPlaces;
         SwitchStyle(Style.Value);
     }
 
