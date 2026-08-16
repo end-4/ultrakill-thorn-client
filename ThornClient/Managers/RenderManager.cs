@@ -8,18 +8,34 @@ namespace ThornClient.Managers;
 /// </summary>
 public static class RenderManager {
     /// <summary>
+    /// The simple colored shader
+    /// </summary>
+    public static Shader Colored;
+
+    /// <summary>
     /// The material used for rendering lines and other flat graphics.
     /// </summary>
-    private static Material _lineMaterial;
+    public static Material Line;
+
+    /// <summary>
+    /// The line material that's always on top
+    /// </summary>
+    public static Material LineTop;
+
+    private static readonly int ZTest = Shader.PropertyToID("_ZTest");
+    private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
 
     /// <summary>
     /// Does initializations.
     /// </summary>
     public static void Initialize() {
         // Internal-Colored is a built-in flat shader perfect for lines/ESP
-        Shader shader = Shader.Find("Hidden/Internal-Colored");
-        if (shader != null) {
-            _lineMaterial = new Material(shader);
+        Colored = Shader.Find("Hidden/Internal-Colored");
+        if (Colored != null) {
+            Line = new Material(Colored);
+            LineTop = new Material(Colored);
+            LineTop.SetInt(ZTest, (int)UnityEngine.Rendering.CompareFunction.Always);
+            LineTop.SetInt(ZWrite, 0);
         } else {
             Plugin.Log.LogError("Failed to find native rendering shader for RenderManager.");
         }
@@ -29,9 +45,10 @@ public static class RenderManager {
     /// The rendering update loop. This is called from the main plugin class.
     /// </summary>
     public static void RenderPipeline() {
-        if (Camera.current != Camera.main || _lineMaterial == null) return;
+        if (Camera.current != Camera.main) return;
+        // if (Camera.current != Camera.main || _lineMaterial == null) return;
 
-        _lineMaterial.SetPass(0);
+        // Line.SetPass(0);
         GL.PushMatrix();
         GL.LoadPixelMatrix();
 
