@@ -1,5 +1,5 @@
 ---
-name: Issue
+name: 1. Issue
 about: Crashes, jankiness, unexpected behavior, etc.
 title: "[Issue] "
 labels: ''
