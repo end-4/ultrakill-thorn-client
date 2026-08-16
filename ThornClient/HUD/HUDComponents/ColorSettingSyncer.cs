@@ -5,7 +5,8 @@ using UnityEngine.UI;
 namespace ThornClient.HUD.HUDComponents;
 
 /// <summary>
-/// Component that syncs the same-GameObject Image component color to that of a setting
+/// Component that syncs the same-GameObject Image component color to that of a Thorn Setting.
+/// Just set the TargetSetting property right after creation
 /// </summary>
 public class ColorSettingSyncer : MonoBehaviour {
     /// <summary>
