@@ -1,5 +1,5 @@
 ---
-name: Request
+name: 2. Request
 about: A feature, improvement, or whatever you think would be nice
 title: "[Request] "
 labels: ''
