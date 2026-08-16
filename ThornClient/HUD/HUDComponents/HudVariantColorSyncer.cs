@@ -5,7 +5,8 @@ using UnityEngine.UI;
 namespace ThornClient.HUD.HUDComponents;
 
 /// <summary>
-/// Component to sync the color of the Image component in the same GameObject to the user configured variant color. Remember to set the Variation property.
+/// Component to sync the color of the Image component in the same GameObject to the user configured variant color.
+/// Just set (and update if needed) the Variation property.
 /// </summary>
 public class HudVariantColorSyncer : MonoBehaviour {
     /// <summary>

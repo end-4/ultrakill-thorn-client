@@ -6,11 +6,12 @@ using UnityEngine;
 namespace ThornClient.HUD.HUDComponents;
 
 /// <summary>
-/// A component that sets visibility for children of a GameObject, following a bool Setting
+/// A component that sets visibility for children of a GameObject, following bool Settings.
+/// Use the SyncPairs dictionary...
 /// </summary>
 public class BatchBoolSettingVisibilitySyncer : MonoBehaviour {
     /// <summary>
-    /// Pairs to sync visibility. the keys being the setting and the value being the paths to the target item relative to the GameObject this component is added to.
+    /// Pairs to sync visibility, the keys being the setting and the value being the paths to the target item relative to the GameObject this component is added to.
     /// </summary>
     public Dictionary<Setting<bool>, string> SyncPairs = [];
 
@@ -20,6 +21,7 @@ public class BatchBoolSettingVisibilitySyncer : MonoBehaviour {
         foreach (var pair in SyncPairs) {
             pair.Key.OnChanged += SyncVisibilities;
         }
+
         SyncVisibilities();
     }
 
@@ -37,6 +39,7 @@ public class BatchBoolSettingVisibilitySyncer : MonoBehaviour {
                 obj.SetActive(pair.Key.Value);
             }
         }
+
         gameObject.UnfuckLayoutHack();
     }
 
