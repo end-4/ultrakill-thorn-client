@@ -1,11 +1,8 @@
 ﻿using System;
 using ThornClient.Core.ConfigurableElements;
-using ThornClient.Managers;
-using ThornClient.System;
 using UnityEngine;
-using ThornClient.HUD;
 
-namespace ThornClient.Modules.HUD;
+namespace ThornClient.HUD;
 
 /// <summary>
 /// Module that shows a value collected continuously
