@@ -3,7 +3,7 @@
     "author": "end_4",
     "version_number": "0.1.0",
     "website_url": "https://github.com/end-4/ultrakill-thorn-client",
-    "description": "Utility mod for ULTRAKILL with a flexible HUD and comfy config system",
+    "description": "Extremely customizable HUD + Gameplay modifiers + Comfy config system = Thorn.",
     "dependencies": [
         "BepInEx-BepInExPack-5.4.2100",
         "end_4-NukeLib-0.6.0",
