@@ -17,6 +17,8 @@ Classes and methods are also fully XML-documented.
 
 ## License
 
-**LGPL 3.0.** This means you are free to use and republish it as you wish,
+**Code: LGPL 3.0.** This means you are free to use and republish it as you wish,
 under the condition that all changes to Thorn's source code
 must also be open sourced under the same terms.
+
+**Assets: CC BY-SA 4.0.** See [license file](https://github.com/end-4/ultrakill-thorn-client/blob/main/Rude%20Editor%20Files/LICENSE)
