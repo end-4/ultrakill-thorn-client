@@ -5,13 +5,13 @@ namespace ThornClient.Patches;
 
 [HarmonyPatch(typeof(CheatsManager))]
 internal static class CheatsManagerPatches {
-    private static bool AllowPauseActions => !Managers.InputManager.BlockInput && !(ClickGUI.Instance?.IsEnabled ?? false);
+    private static bool AllowCheatBinds => !Managers.InputManager.BlockInput && !(ClickGUI.Instance?.IsEnabled ?? false);
 
     [HarmonyPrefix]
     [HarmonyPatch("HandleCheatBind")]
-    internal static bool UnPause_Prefix(CheatsManager __instance, string identifier) {
+    internal static bool HandleCheatBind_Prefix(CheatsManager __instance, string identifier) {
         try {
-            return AllowPauseActions;
+            return AllowCheatBinds;
         } catch {
             return true;
         }

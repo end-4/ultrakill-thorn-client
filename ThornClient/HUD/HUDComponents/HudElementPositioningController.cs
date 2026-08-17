@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NukeLib.UI;
+using NukeLib.Utils;
 using ThornClient.Core;
 using ThornClient.System;
 using ThornClient.System.ClickGUIComponents;
@@ -19,6 +20,7 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IEndDragHa
     /// The HUD module that this controller is associated with.
     /// </summary>
     public HudModule? TargetModule;
+
     private GameObject? _dragOverlay;
 
     private struct PivotChoice {
@@ -45,6 +47,7 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IEndDragHa
     private Dictionary<string, PivotChoice> _pivotChoices = [];
 
     private void Start() {
+        if (TargetModule != null && TargetModule.UIElement == null) target = null;
         _dragOverlay = gameObject.FindRecursive("Overlay", warnings: false);
         var colorizer = _dragOverlay?.FindRecursive("Image").GetOrAddComponent<Colorizer>();
         if (colorizer != null) colorizer.Highlighted = true;
@@ -71,9 +74,27 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IEndDragHa
         if (TargetModule != null) {
             TargetModule.PivotX.OnValueChanged += UpdatePivotDisplay;
             TargetModule.PivotY.OnValueChanged += UpdatePivotDisplay;
+            TargetModule.OnToggleStateChanged += UpdateTargetNextFrame;
         }
 
         UpdatePivotDisplay();
+    }
+
+    private void OnDestroy() {
+        if (TargetModule != null) {
+            TargetModule.PivotX.OnValueChanged -= UpdatePivotDisplay;
+            TargetModule.PivotY.OnValueChanged -= UpdatePivotDisplay;
+            TargetModule.OnToggleStateChanged -= UpdateTargetNextFrame;
+        }
+    }
+
+    private void UpdateTargetNextFrame(bool _) {
+        ExecutionUtils.RunNextFrame(() => {
+            if (TargetModule is not { IsEnabled: true } || TargetModule.UIElement == null)
+                target = null;
+            else
+                target = TargetModule.UIElement.transform as RectTransform;
+        });
     }
 
     private void UpdatePivotDisplay(float _) {
