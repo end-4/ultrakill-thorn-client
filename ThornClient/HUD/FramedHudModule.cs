@@ -48,7 +48,7 @@ public abstract class FramedHudModule : HudModule {
     /// <summary>
     /// Creates the HUD object that's the frame to hold the content object.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The frame object</returns>
     protected sealed override GameObject CreateHudObject() {
         GameObject obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "Background"));
         var content = CreateContentObject();

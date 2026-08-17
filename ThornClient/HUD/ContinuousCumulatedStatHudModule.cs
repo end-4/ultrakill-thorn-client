@@ -89,7 +89,7 @@ public abstract class ContinuousCumulatedStatHudModule : TextHudModule {
     /// The method that should return the addition each frame.
     /// For FPS, this is always 1. For DPS, this is the damage cumulated the last frame.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The amount accumulated this frame</returns>
     protected abstract float CollectUpdate();
 
     /// <summary>

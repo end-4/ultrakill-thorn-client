@@ -131,7 +131,7 @@ public static class HudManager {
     /// </summary>
     /// <param name="hudSurface">The enum value</param>
     /// <param name="surface">The resulting GameObject</param>
-    /// <returns></returns>
+    /// <returns>True if it's found, false otherwise</returns>
     public static bool GetSurface(HudSurface hudSurface, out GameObject? surface) {
         return _surfaces.TryGetValue(hudSurface, out surface);
     }

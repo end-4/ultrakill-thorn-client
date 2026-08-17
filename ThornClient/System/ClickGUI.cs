@@ -345,7 +345,7 @@ public class ClickGUI : SystemModule {
     /// <summary>
     /// Spawns content on the currently active panel
     /// </summary>
-    /// <param name="content"></param>
+    /// <param name="content">The content GameObject</param>
     public static void SpawnContent(GameObject content) {
         if (Instance == null || content == null) return;
 
