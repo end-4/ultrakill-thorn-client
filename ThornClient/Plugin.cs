@@ -40,6 +40,7 @@ public class Plugin : BaseUnityPlugin {
 
         Harmony harmony = new Harmony(PluginGUID);
         harmony.PatchAll(typeof(OptionsManagerPatches));
+        harmony.PatchAll(typeof(CheatsManagerPatches));
         Log.LogInfo($"Thorn is loaded");
     }
 
