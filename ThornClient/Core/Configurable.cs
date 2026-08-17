@@ -148,7 +148,7 @@ public abstract class Configurable {
     /// <param name="name">The friendly name</param>
     /// <param name="description">The description</param>
     /// <param name="parent">The parent group to register the group under. If null, the group will be registered at the root level.</param>
-    /// <returns></returns>
+    /// <returns>The new SettingGroup</returns>
     protected SettingGroup CreateGroup(string guid, string name, string description, SettingGroup? parent = null) {
         var group = new SettingGroup(guid, name, description);
         RegisterElement(group, parent);
@@ -164,7 +164,7 @@ public abstract class Configurable {
     /// <param name="description">The description that will show when hovered</param>
     /// <param name="defaultValue">The default value</param>
     /// <param name="parent">The parent group to register the setting under. If null, the setting will be registered at the root level.</param>
-    /// <returns></returns>
+    /// <returns>The new Setting</returns>
     protected Setting<T> CreateSetting<T>(string guid, string name, string description, T defaultValue,
         SettingGroup? parent = null) {
         var setting = new Setting<T>(guid, name, description, defaultValue);
@@ -188,7 +188,7 @@ public abstract class Configurable {
     /// <param name="description">The description that will show when hovered</param>
     /// <param name="texts">The texts on the buttons</param>
     /// <param name="parent">The parent group to register the setting under. If null, the setting will be registered at the root level.</param>
-    /// <returns></returns>
+    /// <returns>The new ConfigButtonRow</returns>
     protected ConfigButtonRow CreateButtonRow(string guid, string name, string description, string[] texts, SettingGroup? parent = null) {
         var button = new ConfigButtonRow(guid, name, description, texts);
         RegisterElement(button, parent);
@@ -200,10 +200,10 @@ public abstract class Configurable {
     /// </summary>
     /// <param name="guid">The identifier, unimportant for header</param>
     /// <param name="name">The friendly display name</param>
-    /// <param name="description">The description that will show when hovered</param>
+    /// <param name="description">The description that will show below the name</param>
     /// <param name="headerType">The type, as in size, like H1 or H2</param>
     /// <param name="parent">The parent group to register the setting under. If null, the setting will be registered at the root level.</param>
-    /// <returns></returns>
+    /// <returns>The new ConfigHeader</returns>
     protected ConfigHeader CreateHeader(string guid, string name, string description = "", HeaderType headerType = HeaderType.H1, SettingGroup? parent = null) {
         var header = new ConfigHeader(guid, name, description) {
             FontSize = headerType switch {
