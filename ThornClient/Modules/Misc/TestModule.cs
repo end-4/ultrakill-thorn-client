@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Notiffy.API;
 using UnityEngine;
 using ThornClient.Core;
@@ -57,11 +58,27 @@ internal abstract class TestModule : Module {
         Carbonara = CreateSetting("colorField", "Some color!", "Color field description",
             new Color(0.86f, 0.82f, 0.71f, 1f));
         Cutie = CreateSetting("favouriteCutie", "Favorite cutie", "h", NonEmulatorYuzu.Mako);
+        Cutie.Hints = new InterfaceHints {
+            EnumSubstitutions = new Dictionary<string, string> {
+                ["Yoshino"] = "White haired mikosan",
+                ["Mako"] = "Very cool ninja",
+                ["Lena"] = "Yellow haired Gaijin",
+                ["Murasame"] = "500yo kiddy sword",
+                ["Roka"] = "Oneesan, I love frogs",
+                ["Koharu"] = "Actual rori",
+            }
+        };
 
         CreateHeader("beyondBasics", "Beyond basics");
         CreateHeader("subcat", "Subcategory", headerType: HeaderType.H2);
         NestedGroup = CreateGroup("nestedGroup", "Nested group", "Just a test");
         FavouriteBaka = CreateSetting("favouriteBaka", "Favourite baka", "popipo popipo", Baka.Miku, NestedGroup);
+        FavouriteBaka.Hints = new InterfaceHints {
+            EnumSubstitutions = new Dictionary<string, string> {
+                ["Teto"] = "Red one",
+                ["Neru"] = "Yello one",
+            }
+        };
         DoubleNestedGroup = CreateGroup("nestederGroup", "Nestier group", "Nesty testy", NestedGroup);
         CreateHeader("subcat2", "Subcategory 2", headerType: HeaderType.H2);
         Enemiez = CreateSetting("enemiez", "Funny monsters field", "spooky scary skeleton", new EnemyList(),

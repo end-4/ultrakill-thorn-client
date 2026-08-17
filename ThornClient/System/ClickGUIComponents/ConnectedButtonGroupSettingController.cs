@@ -43,13 +43,14 @@ internal class ConnectedButtonGroupSettingController : MonoBehaviour {
             _cachedButtons.Clear();
 
             for (int i = 0; i < _enumNames.Length; i++) {
-                var btn = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ConnectedChoiceButton"), _btnRow.transform);
+                var btn = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ConnectedChoiceButton"),
+                    _btnRow.transform);
 
                 // Note: Fixed text lookup consistency across Start and UpdateDisplay
-                var textComp = btn.FindRecursive("Text").GetComponent<TMP_Text>();
+                var textComp = btn.FindRecursive("Text")?.GetComponent<TMP_Text>();
                 var imgComp = btn.GetComponent<Image>();
 
-                textComp.text = _enumNames[i];
+                textComp?.SetText(Substitute(_enumNames[i]));
 
                 // Cache components
                 _cachedButtons.Add((imgComp, textComp));
@@ -62,6 +63,12 @@ internal class ConnectedButtonGroupSettingController : MonoBehaviour {
         }
 
         UpdateDisplay();
+    }
+
+    private string Substitute(string enumName) {
+        if (TargetSetting == null || TargetSetting.Hints == null || TargetSetting.Hints.EnumSubstitutions == null)
+            return enumName;
+        return TargetSetting.Hints.EnumSubstitutions.GetValueOrDefault(enumName, enumName);
     }
 
     private void UpdateDisplay() {
