@@ -110,9 +110,10 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     }
 
     private void UpdateValue() {
-        var normalizedValue = (TargetModule?.Value ?? 0) / (TargetModule?.Bound ?? 1);
-        var normalizedSoftBound =
-            (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1); // normalized softbound segment width
+        var normalizedValue = Math.Clamp((TargetModule?.Value ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f);
+        var normalizedSoftBound = Math.Clamp( // normalized softbound segment width
+            (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
+        );
         if (_transTrough == null || _transValue == null || _transSoftBound == null) return;
         var height = _transValue.sizeDelta.y;
         var width = _transValue.sizeDelta.x;

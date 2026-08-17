@@ -43,6 +43,12 @@ public abstract class Module : Configurable {
     }
 
     /// <summary>
+    /// Invoked periodically for physics-related updates, like MonoBehavior.FixedUpdate()
+    /// </summary>
+    public virtual void OnFixedUpdate() {
+    }
+
+    /// <summary>
     /// Invoked every frame during the late screen rendering pass.
     /// Place raw low-level vector drawings (GL code) inside this method block.
     /// </summary>

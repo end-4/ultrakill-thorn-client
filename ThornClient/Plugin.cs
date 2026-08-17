@@ -5,6 +5,7 @@ using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using Notiffy.API;
+using NukeLib.Utils;
 using ThornClient.Managers;
 using ThornClient.Patches;
 
@@ -51,10 +52,31 @@ public class Plugin : BaseUnityPlugin {
                     module.OnUpdate();
                 } catch (Exception e) {
                     NotificationSystem.NotifySend($"Thorn > {module.Name}",
-                        $"Error in update loop of {module.Name}, disabling to prevent further issues. Check the logs for further details.",
+                        $"Error in Update loop of {module.Name}, disabling to prevent further issues. Check BepInEx logs for further details.",
                         appName: "Thorn", iconFilePath: PluginIconPath);
                     Log.LogError(
-                        $"Error in module '{module.Name}' during Update! Disabling to prevent log spam/crashes");
+                        $"Error in module '{module.Name}' during Update! Disabling to prevent log spam");
+                    Log.LogError(e);
+                    module.Toggle();
+                }
+            }
+        }
+    }
+
+    private void FixedUpdate() {
+        // We assume physics are only ingame
+        // (also fixes that one null error i got out of nowhere)
+        if (!SceneUtils.IsInGame()) return;
+        foreach (var module in ModuleManager.Items) {
+            if (module.IsEnabled) {
+                try {
+                    module.OnFixedUpdate();
+                } catch (Exception e) {
+                    NotificationSystem.NotifySend($"Thorn > {module.Name}",
+                        $"Error in FixedUpdate loop of {module.Name}, disabling to prevent further issues. Check BepInEx logs for further details.",
+                        appName: "Thorn", iconFilePath: PluginIconPath);
+                    Log.LogError(
+                        $"Error in module '{module.Name}' during FixedUpdate! Disabling to prevent log spam");
                     Log.LogError(e);
                     module.Toggle();
                 }
