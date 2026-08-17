@@ -123,8 +123,8 @@ public class Edges : Module {
     /// <summary>
     /// Gets (cached) wireframe enemy material
     /// </summary>
-    /// <param name="enemyType"></param>
-    /// <returns></returns>
+    /// <param name="enemyType">The enemy type</param>
+    /// <returns>The material for the enemy</returns>
     public static Material? GetEnemyMat(EnemyType enemyType) {
         if (Instance == null) return null;
         if (_enemyMatCache.TryGetValue(enemyType, out var cached) && cached != null)

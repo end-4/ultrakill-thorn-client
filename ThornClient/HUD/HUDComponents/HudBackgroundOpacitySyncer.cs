@@ -43,7 +43,7 @@ public class HudBackgroundOpacitySyncer : MonoBehaviour {
     /// <summary>
     /// Updates opacity. Range = [0, 1]
     /// </summary>
-    /// <param name="opacity"></param>
+    /// <param name="opacity">The opacity</param>
     protected void UpdateOpacity(float opacity) {
         if (_bg != null) {
             _bg.color = new Color(0, 0, 0, ForceTransparent ? 0 : opacity);

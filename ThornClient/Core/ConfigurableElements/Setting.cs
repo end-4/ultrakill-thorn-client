@@ -75,13 +75,13 @@ public abstract class Setting : IConfigurableElement {
     /// <summary>
     /// Gets the value.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The value of the etting</returns>
     public abstract object GetValue();
 
     /// <summary>
     /// Sets the value.
     /// </summary>
-    /// <param name="value"></param>
+    /// <param name="value">The value</param>
     public abstract void SetValue(object value);
 
     /// <summary>
@@ -202,7 +202,7 @@ public class Setting<T> : Setting {
     /// <summary>
     /// Gets the current value
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The current value</returns>
     public override object GetValue() => Value!;
 
     /// <summary>
