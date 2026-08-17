@@ -34,10 +34,12 @@ public class FPSDisplay : ContinuousCumulatedStatHudModule {
             "Makes the indicator say \"FPS:60\" instead of \"60\"", true);
     }
 
+    /// <inheritdoc />
     protected override float CollectUpdate() {
         return 1f;
     }
 
+    /// <inheritdoc />
     protected override string FormatStat(float value) {
         string prefix = ShowFpsText.Value ? "FPS:" : "";
         return $"{prefix}{Math.Round(value)}";
