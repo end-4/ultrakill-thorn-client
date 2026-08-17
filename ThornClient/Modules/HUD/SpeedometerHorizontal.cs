@@ -34,6 +34,15 @@ public class SpeedometerHorizontal : TextHudModule {
             "Makes the indicator say \"H-Speed:100\" instead of \"100\"", true);
     }
 
+    protected override void OnHudModuleEnable() {
+        ShowSpeedText.OnChanged += OnFixedUpdate;
+        OnFixedUpdate();
+    }
+
+    protected override void OnHudModuleDisable() {
+        ShowSpeedText.OnChanged -= OnFixedUpdate;
+    }
+
     private NewMovement? nm => NewMovement.Instance;
     private PlayerTracker? ptrack => PlayerTracker.Instance;
 

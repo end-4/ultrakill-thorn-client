@@ -51,6 +51,15 @@ public abstract class TextHudModule : FramedHudModule {
     /// <param name="description">The description of the module</param>
     public TextHudModule(string guid, string name, string description) : base(guid, name, description) {
         ShowIcon = CreateSetting("showIcon", "Show icon", "Shows an icon next to the text (if available)", true);
+        OnToggleStateChanged += _OnEnableChange;
+    }
+
+    private void _OnEnableChange(bool enabled) {
+        if (enabled) {
+            ShowIcon.OnChanged += UpdateIcon;
+        } else {
+            ShowIcon.OnChanged -= UpdateIcon;
+        }
     }
 
     private GameObject? _textObj;
@@ -66,6 +75,10 @@ public abstract class TextHudModule : FramedHudModule {
             UnfuckAll();
         }
         if (newWidth) UnfuckAll();
+    }
+
+    private void UpdateIcon() {
+        UpdateIcon(DisplayIcon ?? Icon);
     }
 
     private void UpdateIcon(Sprite? icon) {
