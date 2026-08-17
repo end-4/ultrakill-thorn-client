@@ -38,7 +38,7 @@ internal class TabBarController : MonoBehaviour {
     }
 
     private void Update() {
-        // Don't update if menu not open
+        // Don't update if menu not open... hmm is this necessary
         if (!gameObject.activeInHierarchy) return;
         UpdateTimeDisplay();
         UpdateBattery();
@@ -66,7 +66,7 @@ internal class TabBarController : MonoBehaviour {
 
     private void UpdateBattery() {
         var status = SystemInfo.batteryStatus;
-        if (status == BatteryStatus.Unknown) { // No battery
+        if (status == BatteryStatus.Unknown || (SystemInfo.batteryLevel is < 0 or > 1) ) { // No battery
             if (_battObj != null && _battObj.activeSelf) _battObj.SetActive(false);
             return;
         }
