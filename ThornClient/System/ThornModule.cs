@@ -10,19 +10,61 @@ namespace ThornClient.System;
 /// The module that houses general settings of Thorn
 /// </summary>
 public class ThornModule : SystemModule {
+    /// <summary>
+    /// The instance of this module
+    /// </summary>
     public static ThornModule? Instance;
+
+    /// <summary>
+    /// Convenient getter for the accent color
+    /// </summary>
     public static Color AccentColor => Instance?.Accent.Value ?? Color.white;
 
+    /// <summary>
+    /// Keybind to open ClickGUI
+    /// </summary>
     public Setting<Keybind> OpenClickGUI { get; }
+
+    /// <summary>
+    /// Keybind to open the ClickGUI without pausing
+    /// </summary>
+    public Setting<Keybind> OpenClickGUIUnpaused { get; }
+
+    /// <summary>
+    /// Keybind to switch to the tab on the left
+    /// </summary>
     public Setting<Keybind> SwitchTabLeft { get; }
+
+    /// <summary>
+    /// Keybind to switch to the tab on the right
+    /// </summary>
     public Setting<Keybind> SwitchTabRight { get; }
+
+    /// <summary>
+    /// Setting for the accent color
+    /// </summary>
     public Setting<Color> Accent { get; }
+
+    /// <summary>
+    /// Whether opening the ClickGUI should pause the game
+    /// </summary>
     public Setting<bool> MenuPausesGame { get; }
+
+    /// <summary>
+    /// Whether to force the Configgy button to have proper spacing
+    /// </summary>
     public Setting<bool> MenuButtonPositionForceConfiggyNicePosition { get; }
+
+    /// <summary>
+    /// Last loaded version
+    /// </summary>
     public Setting<string> LastVersion { get; }
+
+    /// <inheritdoc />
     public override bool IsEnabled => true;
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "settings");
 
+    /// <inheritdoc />
     public ThornModule() : base("thorn.thorn", "Thorn", "General settings") {
         if (Instance != null) return;
         Instance = this;
@@ -32,9 +74,18 @@ public class ThornModule : SystemModule {
         OpenClickGUI = CreateSetting("openClickGui", "Open menu keybind", "Keybind to open Thorn's ClickGUI interface",
             new Keybind(KeyCode.RightShift));
         OpenClickGUI.OnPress += () => {
-            // Plugin.Log.LogInfo("Opening ClickGUI");
             if (ClickGUI.Instance == null) return;
             ClickGUI.Instance.Toggle();
+        };
+        OpenClickGUIUnpaused = CreateSetting("openClickGuiPaused", "Open menu (no pausing)",
+            "Keybind to open Thorn's ClickGUI interface without pausing the game",
+            new Keybind(KeyCode.None));
+        OpenClickGUIUnpaused.OnPress += () => {
+            if (ClickGUI.Instance == null) return;
+            var tmp = MenuPausesGame!.Value;
+            MenuPausesGame.Value = false;
+            ClickGUI.Instance.Toggle();
+            MenuPausesGame.Value = tmp;
         };
 
         var otherBinds = CreateGroup("otherBinds", "Other keybinds", "Less important keybinds are here");
@@ -60,7 +111,8 @@ public class ThornModule : SystemModule {
             new Color(0.65f, 0.95f, 0.89f));
 
         var devGroup = CreateGroup("devGroup", "Developer", "Developer options, not so interesting");
-        LastVersion = CreateSetting("lastVersion", "Last Thorn Version", "The version of Thorn run in the previous/current session", "0.0.0", devGroup);
+        LastVersion = CreateSetting("lastVersion", "Last Thorn Version",
+            "The version of Thorn run in the previous/current session", "0.0.0", devGroup);
 
         var about = CreateHeader(
             "about", "About",
