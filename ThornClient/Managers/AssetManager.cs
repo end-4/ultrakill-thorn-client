@@ -53,6 +53,10 @@ public static class AssetManager {
     /// <summary>
     /// Get a preloaded asset of type T
     /// </summary>
+    /// <param name="bundleKey">The bundle key</param>
+    /// <param name="assetName">The name of the asset in the bundle</param>
+    /// <typeparam name="T">The type of the asset</typeparam>
+    /// <returns>The asset</returns>
     public static T Get<T>(string bundleKey, string assetName) where T : Object {
         // Try exact type lookup first (e.g. "clickGui/Sprite/sun")
         string exactKey = BuildKey(bundleKey, typeof(T), assetName);
