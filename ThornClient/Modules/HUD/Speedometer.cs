@@ -33,6 +33,15 @@ public class Speedometer : TextHudModule {
             "Makes the indicator say \"Speed:100\" instead of \"100\"", true);
     }
 
+    protected override void OnHudModuleEnable() {
+        ShowSpeedText.OnChanged += OnFixedUpdate;
+        OnFixedUpdate();
+    }
+
+    protected override void OnHudModuleDisable() {
+        ShowSpeedText.OnChanged -= OnFixedUpdate;
+    }
+
     private PlayerTracker? ptrack => PlayerTracker.Instance;
 
     /// <inheritdoc />

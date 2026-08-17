@@ -38,11 +38,17 @@ public abstract class ContinuousCumulatedStatHudModule : TextHudModule {
     /// Constructor
     /// </summary>
     public ContinuousCumulatedStatHudModule(string guid, string name, string description,
-        DataSmoothing smoothing = DataSmoothing.None, float updateInterval = 0.5f, float ewmaAlpha = 0.5f) : base(guid, name, description) {
+        DataSmoothing smoothing = DataSmoothing.None, float updateInterval = 0.5f, float ewmaAlpha = 0.5f) : base(guid,
+        name, description) {
         MeasurementGroup = CreateGroup("measurementGroup", "Measurement", "How to measure the data");
-        UpdateInterval = CreateSetting("updateInterval", "Update interval", "How fast to update the text", updateInterval, MeasurementGroup);
-        ValueSmoothing = CreateSetting("valueSmoothing", "Value smoothing", "Whether to smooth out the value", smoothing, MeasurementGroup);
-        EwmaAlpha = CreateSetting("ewmaAlpha", "EWMA Alpha", "Smoothing coefficient for EWMA (0.01 to 1.0)", ewmaAlpha, MeasurementGroup);
+        UpdateInterval = CreateSetting("updateInterval", "Update interval", "How fast to update the text",
+            updateInterval, MeasurementGroup);
+        ValueSmoothing = CreateSetting("valueSmoothing", "Value smoothing", "Whether to smooth out the value",
+            smoothing, MeasurementGroup);
+        EwmaAlpha = CreateSetting("ewmaAlpha", "EWMA Alpha", "Smoothing coefficient for EWMA (0.01 to 1.0)", ewmaAlpha,
+            MeasurementGroup);
+
+        OnToggleStateChanged += _ => { Text = FormatStat(_collected); };
     }
 
     /// <summary>
@@ -66,6 +72,7 @@ public abstract class ContinuousCumulatedStatHudModule : TextHudModule {
                         float alpha = Mathf.Clamp01(EwmaAlpha.Value);
                         _smoothedValue = (alpha * currentRate) + ((1f - alpha) * _smoothedValue.Value);
                     }
+
                     finalValue = _smoothedValue.Value;
                     break;
 

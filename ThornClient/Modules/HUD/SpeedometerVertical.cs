@@ -28,10 +28,19 @@ public class SpeedometerVertical : TextHudModule {
     /// <summary>
     /// Constructor
     /// </summary>
-    public SpeedometerVertical() : base("thorn.speedometerHorizontal", "Speedometer (Vertical)",
+    public SpeedometerVertical() : base("thorn.speedometerVertical", "Speedometer (Vertical)",
         "Shows vertical speed (in units/sec)") {
         ShowSpeedText = CreateSetting("showSpeedText", "Show \"V-Speed\" text",
             "Makes the indicator say \"V-Speed:100\" instead of \"100\"", true);
+    }
+
+    protected override void OnHudModuleEnable() {
+        ShowSpeedText.OnChanged += OnFixedUpdate;
+        OnFixedUpdate();
+    }
+
+    protected override void OnHudModuleDisable() {
+        ShowSpeedText.OnChanged -= OnFixedUpdate;
     }
 
     private NewMovement? nm => NewMovement.Instance;
