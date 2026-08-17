@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NukeLib.UI;
 using ThornClient.Core.ConfigurableElements;
 using TMPro;
@@ -87,9 +88,10 @@ internal class CircularBoundedValueController : MonoBehaviour, IBoundedValueCont
     }
 
     private void UpdateValue() {
-        var normalizedValue = (TargetModule?.Value ?? 0) / (TargetModule?.Bound ?? 1);
-        // normalized softbound segment width
-        var normalizedSoftBound = (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1);
+        var normalizedValue = Math.Clamp((TargetModule?.Value ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f);
+        var normalizedSoftBound = Math.Clamp( // normalized softbound segment width
+            (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
+        );
 
         if (_fillValue == null || _fillSoftBound == null) return;
         if (!Mathf.Approximately(_fillValue.fillAmount, normalizedValue)) {
