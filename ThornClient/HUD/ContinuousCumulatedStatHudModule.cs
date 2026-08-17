@@ -16,11 +16,6 @@ public abstract class ContinuousCumulatedStatHudModule : TextHudModule {
     public SettingGroup MeasurementGroup;
 
     /// <summary>
-    /// Setting: whether to show the icon on the HUD element
-    /// </summary>
-    public Setting<bool> ShowIcon;
-
-    /// <summary>
     /// Setting: how fast to update the text (in seconds)
     /// </summary>
     public Setting<float> UpdateInterval;
@@ -44,14 +39,10 @@ public abstract class ContinuousCumulatedStatHudModule : TextHudModule {
     /// </summary>
     public ContinuousCumulatedStatHudModule(string guid, string name, string description,
         DataSmoothing smoothing = DataSmoothing.None, float updateInterval = 0.5f, float ewmaAlpha = 0.5f) : base(guid, name, description) {
-        ShowIcon = CreateSetting("showIcon", "Show icon", "Shows an icon next to the text (if available)", true);
         MeasurementGroup = CreateGroup("measurementGroup", "Measurement", "How to measure the data");
         UpdateInterval = CreateSetting("updateInterval", "Update interval", "How fast to update the text", updateInterval, MeasurementGroup);
         ValueSmoothing = CreateSetting("valueSmoothing", "Value smoothing", "Whether to smooth out the value", smoothing, MeasurementGroup);
         EwmaAlpha = CreateSetting("ewmaAlpha", "EWMA Alpha", "Smoothing coefficient for EWMA (0.01 to 1.0)", ewmaAlpha, MeasurementGroup);
-
-        UpdateDisplayIcon();
-        ShowIcon.OnChanged += UpdateDisplayIcon;
     }
 
     /// <summary>
@@ -108,9 +99,5 @@ public abstract class ContinuousCumulatedStatHudModule : TextHudModule {
     /// <returns>The string representation</returns>
     protected virtual string FormatStat(float value) {
         return $"{Math.Round(value)}";
-    }
-
-    private void UpdateDisplayIcon() {
-        DisplayIcon = ShowIcon.Value ? Icon : null;
     }
 }

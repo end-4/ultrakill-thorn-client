@@ -1,4 +1,5 @@
 ﻿using NukeLib.UI;
+using ThornClient.Core.ConfigurableElements;
 using ThornClient.Managers;
 using TMPro;
 using UnityEngine;
@@ -38,12 +39,18 @@ public abstract class TextHudModule : FramedHudModule {
     } = null;
 
     /// <summary>
+    /// Setting: whether to show the icon on the HUD element
+    /// </summary>
+    public Setting<bool> ShowIcon;
+
+    /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="guid">The unique identifier for the module</param>
     /// <param name="name">The name of the module</param>
     /// <param name="description">The description of the module</param>
     public TextHudModule(string guid, string name, string description) : base(guid, name, description) {
+        ShowIcon = CreateSetting("showIcon", "Show icon", "Shows an icon next to the text (if available)", true);
     }
 
     private GameObject? _textObj;
@@ -63,7 +70,7 @@ public abstract class TextHudModule : FramedHudModule {
 
     private void UpdateIcon(Sprite? icon) {
         if (_icon == null) return;
-        if (icon == null) {
+        if (icon == null || !ShowIcon.Value) {
             _icon.gameObject.SetActive(false);
         } else {
             _icon.gameObject.SetActive(true);
@@ -87,7 +94,7 @@ public abstract class TextHudModule : FramedHudModule {
         _icon = obj.FindRecursive("Icon")?.GetComponent<Image>();
         if (_textObj != null) _textComp = _textObj.GetComponent<TextMeshProUGUI>();
         UpdateText(Text);
-        UpdateIcon(DisplayIcon);
+        UpdateIcon(DisplayIcon ?? Icon);
         return obj;
     }
 }
