@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ThornClient.Core.ConfigurableElements;
 
@@ -30,4 +31,15 @@ public record InterfaceHints {
     /// When true, the setting is hidden from the config menu. Use this for internal persistent states that the user shouldn't care about.
     /// </summary>
     public bool? Hidden;
+
+    /// <summary>
+    /// For setting display name for enum values.
+    /// Keys must match the enum value names and values are the substitutions.
+    /// </summary>
+    public Dictionary<string, string>? EnumSubstitutions;
+
+    /// <summary>
+    /// For extra non-standard hints. To be used by custom UI elements when that becomes a thing
+    /// </summary>
+    public Dictionary<string, object>? ExtraHints;
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NukeLib.UI;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
@@ -29,15 +30,23 @@ internal class DropdownSettingController : MonoBehaviour {
             return;
         }
 
-        _dropdown = gameObject.FindRecursive("Dropdown").GetComponent<TMP_Dropdown>();
+        _dropdown = gameObject.FindRecursive("Dropdown")?.GetComponent<TMP_Dropdown>();
         if (_dropdown != null) {
-            var enumNames = Enum.GetNames(_enumType);
+            string[] enumNames = Enum.GetNames(_enumType);
+            var substitutedNames = enumNames.Select(Substitute).ToList();
+
             _dropdown.ClearOptions();
-            _dropdown.AddOptions([..enumNames]);
+            _dropdown.AddOptions(substitutedNames);
             _dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
         }
         UpdateDisplay();
         TargetSetting.OnChanged += UpdateDisplay;
+    }
+
+    private string Substitute(string enumName) {
+        if (TargetSetting == null || TargetSetting.Hints == null || TargetSetting.Hints.EnumSubstitutions == null)
+            return enumName;
+        return TargetSetting.Hints.EnumSubstitutions.GetValueOrDefault(enumName, enumName);
     }
 
     private void UpdateDisplay() {
