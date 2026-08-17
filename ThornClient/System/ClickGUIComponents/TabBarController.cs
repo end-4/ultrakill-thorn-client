@@ -66,7 +66,7 @@ internal class TabBarController : MonoBehaviour {
 
     private void UpdateBattery() {
         var status = SystemInfo.batteryStatus;
-        if (status == BatteryStatus.Unknown) { // No battery
+        if (status == BatteryStatus.Unknown || SystemInfo.batteryLevel < 0) { // No battery
             if (_battObj != null && _battObj.activeSelf) _battObj.SetActive(false);
             return;
         }
@@ -74,7 +74,7 @@ internal class TabBarController : MonoBehaviour {
         var perc = SystemInfo.batteryLevel * 100; // Raw value in [0, 1]
         var newPercStr = $"{perc}";
 
-        int iconIndex = (int)Math.Round(perc / 25f);
+        int iconIndex = Math.Clamp((int)Math.Round(perc / 25f), 0, 4);
         string iconLevel = iconIndex == 0 ? "low" : $"{iconIndex * 25}";
         string chargeStatTxt = charging ? "_charge" : "";
 
