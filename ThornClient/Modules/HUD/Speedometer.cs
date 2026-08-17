@@ -47,8 +47,11 @@ public class Speedometer : TextHudModule {
     /// <inheritdoc />
     public override void OnFixedUpdate() {
         if (ptrack == null) return;
+        var vel = ptrack.GetPlayerVelocity(trueVelocity: true);
+        if (vel == null) return;
+        var mag = vel.magnitude;
         var prefix = ShowSpeedText.Value ? "Speed:" : "";
-        var formattedVal = Math.Round(ptrack.GetPlayerVelocity(trueVelocity: true).magnitude, 1);
+        var formattedVal = Math.Round(mag, 1);
         Text = $"{prefix}{formattedVal}";
     }
 }

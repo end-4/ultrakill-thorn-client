@@ -5,6 +5,7 @@ using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using Notiffy.API;
+using NukeLib.Utils;
 using ThornClient.Managers;
 using ThornClient.Patches;
 
@@ -63,6 +64,9 @@ public class Plugin : BaseUnityPlugin {
     }
 
     private void FixedUpdate() {
+        // We assume physics are only ingame
+        // (also fixes that one null error i got out of nowhere)
+        if (!SceneUtils.IsInGame()) return;
         foreach (var module in ModuleManager.Items) {
             if (module.IsEnabled) {
                 try {
