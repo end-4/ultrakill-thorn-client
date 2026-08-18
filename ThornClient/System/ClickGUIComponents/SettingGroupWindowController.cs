@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
+// This is for the nested windows
 // Quite the same as ConfigurableWindowController, maybe give each configurable a SettingGroup for deduplication?
 internal class SettingGroupWindowController : MonoBehaviour {
     private bool _doneSetup = false;
@@ -33,7 +34,7 @@ internal class SettingGroupWindowController : MonoBehaviour {
 
         gameObject.FindRecursive("Header/TitleButton")!.GetComponent<Button>().interactable = true;
         gameObject.FindRecursive("Header/TitleButton/BackIcon")?.SetActive(true);
-        backBtn!.onClick.AddListener(() => Destroy(gameObject));
+        if (backBtn != null) backBtn.onClick.AddListener(() => Destroy(gameObject));
 
         // Body. Note we're reusing ModuleCategory prefab for this
         Transform listBody = gameObject.FindRecursive("Scroll View/Viewport/Content/Modules")!.transform;

@@ -13,6 +13,7 @@ namespace ThornClient.System.ClickGUIComponents;
 internal class WindowedGroupSettingController : MonoBehaviour {
     public SettingGroup? TargetGroup;
     private TextMeshProUGUI? text;
+    private GameObject? _panel;
 
     private void Start() {
         if (TargetGroup == null) return;
@@ -27,8 +28,9 @@ internal class WindowedGroupSettingController : MonoBehaviour {
     }
 
     private void OpenWindow() {
-        var panel = CreateConfigPanel(TargetGroup);
-        if (panel != null) ClickGUI.SpawnContent(panel);
+        if (_panel != null) return;
+        _panel = CreateConfigPanel(TargetGroup);
+        if (_panel != null) ClickGUI.SpawnContent(_panel);
         ClickGUI.SurrenderTooltipText(TargetGroup?.Description ?? "");
     }
 
