@@ -1,3 +1,9 @@
+## 0.1.3
+
+- Fixed weird bounded value hud module style selection
+- Use a new menu for big enums (tmp dropdown sucks)
+- Prevent setting group buttons from spawning many children window
+
 ## 0.1.2
 
 - ClickGUI: prevented cheat binds and esc pause from triggering
