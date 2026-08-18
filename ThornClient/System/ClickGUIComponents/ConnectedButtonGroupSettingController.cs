@@ -92,6 +92,8 @@ internal class ConnectedButtonGroupSettingController : MonoBehaviour {
             if (imgComp.color != targetColor) imgComp.color = targetColor;
             if (textComp.color != targetTextColor) textComp.color = targetTextColor;
         }
+
+        gameObject.UnfuckLayoutHack();
     }
 
     private void OnDestroy() {
