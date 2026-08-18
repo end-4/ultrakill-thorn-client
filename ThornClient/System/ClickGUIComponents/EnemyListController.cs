@@ -13,13 +13,12 @@ namespace ThornClient.System.ClickGUIComponents;
 
 internal class EnemyListController : MonoBehaviour {
     private bool _doneSetup = false;
-    public bool IsPopup = true;
     public Setting<EnemyList>? TargetList;
     private Transform? _falseList;
     private Transform? _trueList;
 
     private void Start() {
-        gameObject.FindRecursive("Header").AddComponent<TitlebarDragHandler>();
+        gameObject.FindRecursive("Header")?.AddComponent<TitlebarDragHandler>();
         SetupModules();
     }
 
@@ -30,16 +29,16 @@ internal class EnemyListController : MonoBehaviour {
         if (TargetList == null) return;
 
         // Header
-        var categoryText = gameObject.FindRecursive("Header/TitleName").GetComponent<TextMeshProUGUI>();
-        categoryText.text = TargetList.Name;
+        var categoryText = gameObject.FindRecursive("Header/TitleName")?.GetComponent<TextMeshProUGUI>();
+        categoryText?.SetText(TargetList.Name);
 
         // Back button
-        var backBtn = gameObject.FindRecursive("Header/TitleButton").GetComponent<Button>();
-        backBtn.onClick.AddListener(() => Destroy(gameObject));
+        var backBtn = gameObject.FindRecursive("Header/TitleButton")?.GetComponent<Button>();
+        backBtn?.onClick.AddListener(() => Destroy(gameObject));
 
         // Populate the lists
-        _falseList = gameObject.FindRecursive("Columns/FalseScrollView/Viewport/Content").transform;
-        _trueList = gameObject.FindRecursive("Columns/TrueScrollView/Viewport/Content").transform;
+        _falseList = gameObject.FindRecursive("Columns/FalseScrollView/Viewport/Content")?.transform;
+        _trueList = gameObject.FindRecursive("Columns/TrueScrollView/Viewport/Content")?.transform;
 
         PopulateLists();
         TargetList.OnValueChanged += _ => PopulateLists();
