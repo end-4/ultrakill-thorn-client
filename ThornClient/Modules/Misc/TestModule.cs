@@ -27,12 +27,12 @@ internal abstract class TestModule : Module {
         Neru
     }
 
-    public Setting<bool> Bulul { get; }
-    public Setting<bool> BululCheck { get; }
-    public Setting<int> Inoue { get; }
-    public Setting<float> Flatorte { get; }
-    public Setting<string> Tung { get; }
-    public Setting<Color> Carbonara { get; }
+    public Setting<bool> BoolSetting { get; }
+    public Setting<bool> BoolSettingCheck { get; }
+    public Setting<int> IntSetting { get; }
+    public Setting<float> FloatSetting { get; }
+    public Setting<string> StringSetting { get; }
+    public Setting<Color> ColorSetting { get; }
     public Setting<NonEmulatorYuzu> Cutie { get; }
     public Setting<Baka> FavouriteBaka { get; }
     public Setting<EnemyList> Enemiez { get; }
@@ -44,25 +44,24 @@ internal abstract class TestModule : Module {
 
     public TestModule() : base("thorn.test", "Test module", "For UI debugging. This should be removed before release.",
         ModuleCategory.Misc) {
-        Bulul = CreateSetting("boolField", "Bool setting",
+        BoolSetting = CreateSetting("boolField", "Bool setting",
             "Either \"Brother that is the fakest statement I've ever seen\" or \"holy SHIT\"", false);
-        BululCheck = CreateSetting("boolFieldCheck", "Checkmark bool setting",
+        BoolSettingCheck = CreateSetting("boolFieldCheck", "Checkmark bool setting",
             "Either \"Brother that is the fakest statement I've ever seen\" or \"holy SHIT\"", true);
-        BululCheck.Hints =
+        BoolSettingCheck.Hints =
             new InterfaceHints {
                 BoolPreferCheckmark = true
             };
-        Inoue = CreateSetting("intField", "Int", "int field!!", 2);
-        Flatorte = CreateSetting("floatField", "Floatie", "float field!!", 4f);
-        Tung = CreateSetting("textField", "Yap field", "Here bro have a tung tung", "sahur");
-        Carbonara = CreateSetting("colorField", "Some color!", "Color field description",
+        IntSetting = CreateSetting("intField", "Int", "int field!!", 2);
+        FloatSetting = CreateSetting("floatField", "Floatie", "float field!!", 4f);
+        StringSetting = CreateSetting("textField", "Yap field", "Here bro have a tung tung", "sahur");
+        ColorSetting = CreateSetting("colorField", "Some color!", "Color field description",
             new Color(0.86f, 0.82f, 0.71f, 1f));
         Cutie = CreateSetting("favouriteCutie", "Favorite cutie", "h", NonEmulatorYuzu.Mako);
         Cutie.Hints = new InterfaceHints {
             EnumSubstitutions = new Dictionary<string, string> {
                 ["Yoshino"] = "White haired mikosan",
                 ["Mako"] = "Very cool ninja",
-                ["Lena"] = "Yellow haired Gaijin",
                 ["Murasame"] = "500yo kiddy sword",
                 ["Roka"] = "Oneesan, I love frogs",
                 ["Koharu"] = "Actual rori",
