@@ -49,7 +49,8 @@ public static class ConfigurableElementUICreators {
                 return go;
             } else {
                 var go = Object.Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "DropdownSetting"), parent);
-                go.AddComponent<DropdownSettingController>().TargetSetting = setting;
+                // go.AddComponent<DropdownSettingController>().TargetSetting = setting;
+                go.AddComponent<WindowedEnumSettingController>().TargetSetting = setting;
                 return go;
             }
         },
