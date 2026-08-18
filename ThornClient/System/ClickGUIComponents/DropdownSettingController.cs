@@ -12,7 +12,6 @@ namespace ThornClient.System.ClickGUIComponents;
 
 /// <summary>
 /// For enums
-/// I might have an alternate Material 3-style button group for selection later, so I'm naming this one "dropdown"
 /// Keyword for pattern-mining code readers: EnumSettingController
 /// </summary>
 internal class DropdownSettingController : MonoBehaviour {

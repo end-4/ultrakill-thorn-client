@@ -10,18 +10,18 @@ namespace ThornClient.System.ClickGUIComponents;
 
 internal class EnemyListSettingController : MonoBehaviour {
     public Setting<EnemyList>? TargetSetting;
-    private TextMeshProUGUI? text;
-    
+    private TextMeshProUGUI? _text;
+
     private void Start() {
         if (TargetSetting == null) return;
         GetComponent<Button>().onClick.AddListener(OpenList);
-        text = gameObject.FindRecursive("Name").GetComponent<TextMeshProUGUI>();
+        _text = gameObject.FindRecursive("Name")?.GetComponent<TextMeshProUGUI>();
         TargetSetting.OnValueChanged += UpdateText;
         UpdateText(TargetSetting.Value);
     }
 
     private void UpdateText(EnemyList elist) {
-        if (text != null && TargetSetting != null) text.text = $"{TargetSetting.Name} ({elist.Count()})";
+        if (_text != null && TargetSetting != null) _text.text = $"{TargetSetting.Name} ({elist.Count()})";
     }
 
     private void OnDestroy() {
@@ -44,7 +44,6 @@ internal class EnemyListSettingController : MonoBehaviour {
         if (obj == null) return null;
 
         var ctl = obj.GetOrAddComponent<EnemyListController>();
-        ctl.IsPopup = true;
         ctl.TargetList = setting;
 
         return obj;
