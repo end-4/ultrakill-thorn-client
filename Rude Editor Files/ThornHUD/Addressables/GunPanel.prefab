@@ -50,9 +50,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: 46
+  m_MinWidth: 85
   m_MinHeight: 46
-  m_PreferredWidth: 46
+  m_PreferredWidth: 85
   m_PreferredHeight: 46
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 85bbe48c532659049a99948275f663c4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bfcb5f4d641f83d4b9c16b5640471e71, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
