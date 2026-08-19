@@ -1,4 +1,5 @@
-﻿using NukeLib.Utils;
+﻿using NukeLib.UI;
+using NukeLib.Utils;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.UI;
@@ -11,7 +12,7 @@ namespace ThornClient.HUD;
 
 /// <summary>
 /// HUD element with a background,
-/// dynamically sized based on content (you need min size/preferred size on your content element for that)
+/// dynamically sized based on content (you need a min size on your content element for that)
 /// </summary>
 public abstract class FramedHudModule : HudModule {
     /// <summary>
@@ -19,7 +20,17 @@ public abstract class FramedHudModule : HudModule {
     /// </summary>
     public Setting<bool> ShowBackground;
 
+    /// <summary>
+    /// Setting: the scale of the framed content
+    /// </summary>
     public Setting<float> Scale;
+
+    /// <summary>
+    /// The content that sits on the background.
+    /// </summary>
+    protected GameObject? FramedContent { get; private set; }
+
+    protected SingularScalableContentSizeFitter? Fitter { get; private set; }
 
     /// <summary>
     /// Constructor
@@ -47,11 +58,13 @@ public abstract class FramedHudModule : HudModule {
     }
 
     private void UpdatePivot() {
-        if (_content == null || _wrapper == null) return;
-        var wTrans = _wrapper.transform as RectTransform;
-        var cTrans = _content.transform as RectTransform;
-        if (wTrans == null || cTrans == null) return;
+        if (Content == null || Wrapper == null || FramedContent == null) return;
+        var wTrans = Wrapper.transform as RectTransform;
+        var cTrans = Content.transform as RectTransform;
+        var fcTrans = FramedContent.transform as RectTransform;
+        if (wTrans == null || cTrans == null || fcTrans == null) return;
         cTrans.pivot = wTrans.pivot;
+        fcTrans.pivot = new Vector2(0, 1);
     }
 
     private void SetShowBackground(bool value) {
@@ -67,7 +80,13 @@ public abstract class FramedHudModule : HudModule {
     }
 
     private void SetScale(float value) {
-        if (_content != null) _content.transform.localScale = Vector3.one * value;
+        if (FramedContent != null) {
+            FramedContent.transform.localScale = Vector3.one * value;
+            if (Fitter != null) Fitter.UpdateSize();
+        }
+
+        if (Wrapper != null) Wrapper.UnfuckLayoutHack();
+        ExecutionUtils.RunNextFrame(UpdateOverlay);
     }
 
     /// <summary>
@@ -81,7 +100,7 @@ public abstract class FramedHudModule : HudModule {
     protected HudBackgroundOpacitySyncer? _opacitySyncer;
 
     /// <summary>
-    /// The method to create a content object.
+    /// The method to create the framed content object.
     /// Make sure it contains a layout element, so the background can size itself appropriately
     /// </summary>
     /// <returns>The GameObject of the content item</returns>
@@ -93,17 +112,24 @@ public abstract class FramedHudModule : HudModule {
     /// <returns>The frame object</returns>
     protected sealed override GameObject CreateHudObject() {
         GameObject obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "Background"));
-        var content = CreateContentObject();
-        if (content != null) content.transform.SetParent(obj.transform);
-        if (_wrapper != null) {
-            _wrapper.AddComponent<HorizontalLayoutGroup>();
-            var confitNormal = _wrapper.GetOrAddComponent<ContentSizeFitter>();
-            if (confitNormal != null) Object.Destroy(confitNormal);
-            var confit = _wrapper.GetOrAddComponent<SingularScalableContentSizeFitter>();
-            confit.horizontalFit = ContentSizeFitter.FitMode.MinSize;
-            confit.verticalFit = ContentSizeFitter.FitMode.MinSize;
+        FramedContent = CreateContentObject();
+        if (FramedContent != null) FramedContent.transform.SetParent(obj.transform);
+
+        // Replace normal Content Size Fitter with the scalable one
+        if (obj != null) {
+            var hfit = ContentSizeFitter.FitMode.MinSize;
+            var vfit = ContentSizeFitter.FitMode.MinSize;
+            var confitNormal = obj.GetOrAddComponent<ContentSizeFitter>();
+            if (confitNormal != null) {
+                hfit = confitNormal.horizontalFit;
+                vfit = confitNormal.verticalFit;
+            }
+            Fitter = obj.GetOrAddComponent<SingularScalableContentSizeFitter>();
+            Fitter.horizontalFit = hfit;
+            Fitter.verticalFit = vfit;
         }
 
+        // Bg opacity
         Background = obj;
         _opacitySyncer = Background.GetOrAddComponent<HudBackgroundOpacitySyncer>();
         _opacitySyncer.ForceTransparent = !ShowBackground.Value;

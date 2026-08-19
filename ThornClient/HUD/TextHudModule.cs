@@ -93,8 +93,8 @@ public abstract class TextHudModule : FramedHudModule {
 
     private void UnfuckAll() {
         if (_textObj != null) _textObj.UnfuckLayoutHack();
-        if (_content != null) _content.UnfuckLayoutHack();
-        if (_wrapper != null) _wrapper.UnfuckLayoutHack();
+        if (Content != null) Content.UnfuckLayoutHack();
+        if (Wrapper != null) Wrapper.UnfuckLayoutHack();
     }
 
     /// <summary>
