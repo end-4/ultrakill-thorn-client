@@ -1,5 +1,7 @@
-﻿using ThornClient.Core;
+﻿using NukeLib.Utils;
+using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.UI;
 using ThornClient.HUD.HUDComponents;
 using ThornClient.Managers;
 using UnityEngine;
@@ -16,6 +18,9 @@ public abstract class FramedHudModule : HudModule {
     /// Setting: whether to show a frame behind the content
     /// </summary>
     public Setting<bool> ShowBackground;
+
+    public Setting<float> Scale;
+
     /// <summary>
     /// Constructor
     /// </summary>
@@ -23,16 +28,53 @@ public abstract class FramedHudModule : HudModule {
     /// <param name="name">The name of the module</param>
     /// <param name="description">The description of the module</param>
     public FramedHudModule(string guid, string name, string description) : base(guid, name, description) {
-        ShowBackground = CreateSetting("showBackground", "Show Background", "Whether to show a frame behind the content", true);
-        ShowBackground.OnValueChanged += (value) => {
-            if (_opacitySyncer != null) _opacitySyncer.ForceTransparent = !value;
+        ShowBackground = CreateSetting("showBackground", "Show Background",
+            "Whether to show a frame behind the content", true);
+        ShowBackground.OnValueChanged += SetShowBackground;
+        Scale = CreateSetting("scale", "Scale", "Makes the content bigger or smaller", 1f);
+        Scale.OnChanged += SetScaleNextFrame;
+        PivotX.OnChanged += UpdatePivotNextFrame;
+        PivotY.OnChanged += UpdatePivotNextFrame;
+        OnToggleStateChanged += _ => {
+            SetShowBackground(ShowBackground.Value);
+            SetScaleNextFrame();
+            UpdatePivotNextFrame();
         };
+    }
+
+    private void UpdatePivotNextFrame() {
+        ExecutionUtils.RunNextFrame(UpdatePivot);
+    }
+
+    private void UpdatePivot() {
+        if (_content == null || _wrapper == null) return;
+        var wTrans = _wrapper.transform as RectTransform;
+        var cTrans = _content.transform as RectTransform;
+        if (wTrans == null || cTrans == null) return;
+        cTrans.pivot = wTrans.pivot;
+    }
+
+    private void SetShowBackground(bool value) {
+        if (_opacitySyncer != null) _opacitySyncer.ForceTransparent = !value;
+    }
+
+    private void SetScaleNextFrame() {
+        ExecutionUtils.RunNextFrame(SetScale);
+    }
+
+    private void SetScale() {
+        SetScale(Scale.Value);
+    }
+
+    private void SetScale(float value) {
+        if (_content != null) _content.transform.localScale = Vector3.one * value;
     }
 
     /// <summary>
     /// The frame object that holds the content object.
     /// </summary>
     protected GameObject? Background;
+
     /// <summary>
     /// The component that syncs the background opacity with the base game's HUD opacity setting.
     /// </summary>
@@ -55,7 +97,9 @@ public abstract class FramedHudModule : HudModule {
         if (content != null) content.transform.SetParent(obj.transform);
         if (_wrapper != null) {
             _wrapper.AddComponent<HorizontalLayoutGroup>();
-            var confit = _wrapper.AddComponent<ContentSizeFitter>();
+            var confitNormal = _wrapper.GetOrAddComponent<ContentSizeFitter>();
+            if (confitNormal != null) Object.Destroy(confitNormal);
+            var confit = _wrapper.GetOrAddComponent<SingularScalableContentSizeFitter>();
             confit.horizontalFit = ContentSizeFitter.FitMode.MinSize;
             confit.verticalFit = ContentSizeFitter.FitMode.MinSize;
         }
@@ -63,6 +107,9 @@ public abstract class FramedHudModule : HudModule {
         Background = obj;
         _opacitySyncer = Background.GetOrAddComponent<HudBackgroundOpacitySyncer>();
         _opacitySyncer.ForceTransparent = !ShowBackground.Value;
+
+        UpdatePivotNextFrame();
+        SetScaleNextFrame();
 
         return obj;
     }
