@@ -7,6 +7,7 @@
     "dependencies": [
         "BepInEx-BepInExPack-5.4.2100",
         "end_4-NukeLib-0.6.0",
-        "end_4-Notiffy-0.1.4"
+        "end_4-Notiffy-0.1.4",
+        "averyocean65-FixPluginTypesSerialization-1.0.0"
     ]
 }
