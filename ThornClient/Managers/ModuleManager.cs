@@ -46,6 +46,7 @@ public static class ModuleManager {
             try {
                 if (Activator.CreateInstance(type) is Module moduleInstance) {
                     Items.Add(moduleInstance);
+                    Plugin.Log.LogInfo($"[Module Manager] + {moduleInstance.Name}");
                 }
             } catch (Exception ex) {
                 Plugin.Log.LogError($"Failed to instantiate module '{type.Name}': {ex}");
