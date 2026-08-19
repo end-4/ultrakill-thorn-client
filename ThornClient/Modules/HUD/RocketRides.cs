@@ -9,7 +9,7 @@ public class RocketRides : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "rocket_ride");
     public override string[] Tags => ["fly", "rocket", "travel", "fuel"];
 
-    private Setting<int> EffectiveRides;
+    public Setting<int> EffectiveRides;
 
     public RocketRides() : base("thorn.rocketRides", "Rocket Rides", "Shows number of remaining effective rocket rides",
         5, displayIcon: AssetManager.Get<Sprite>(HudManager.BundleKey, "rocket_ride"), displayName: "Rides",
@@ -17,6 +17,11 @@ public class RocketRides : BoundedValueHudModule {
         EffectiveRides = CreateSetting("effectiveRides", "Effective Rides",
             "Number of effective rocket rides. There is no strict value, but the 6th one droops immediately and noticeably.",
             5);
+        EffectiveRides.OnValueChanged += SetBound;
+    }
+
+    private void SetBound(int value) {
+        Bound = value;
     }
 
     protected override void OnHudModuleEnable() {
