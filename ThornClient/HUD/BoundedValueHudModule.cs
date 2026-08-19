@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.UI;
 using ThornClient.HUD.HUDComponents;
 using ThornClient.Managers;
 using UnityEngine;
@@ -156,7 +157,8 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// <param name="displayIcon">The icon shown on the HUD element</param>
     /// <param name="decimalPlaces">The decimal places to show on the value text</param>
     public BoundedValueHudModule(string guid, string name, string description, float bound = 1, string displayName = "",
-        Sprite? displayIcon = null, int decimalPlaces = 1, Color? defaultValueColor = null, Color? defaultSoftBoundColor = null) : base(guid,
+        Sprite? displayIcon = null, int decimalPlaces = 1, Color? defaultValueColor = null,
+        Color? defaultSoftBoundColor = null) : base(guid,
         name, description) {
         Style = CreateSetting("indicatorStyle", "Indicator Style", "The style to present the value",
             IndicatorStyle.Progress);
@@ -230,10 +232,12 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         if (!SceneUtils.IsSafe() || !IsEnabled) return;
         if (_contentObject == null || _wrapper == null) return;
         _contentObject.UnfuckLayoutHack();
-        var fitterComp = _wrapper.GetComponent<ContentSizeFitter>();
+        var fitterComp = _wrapper.GetComponent<SingularScalableContentSizeFitter>();
         if (fitterComp != null) {
             fitterComp.enabled = false;
-            ExecutionUtils.RunNextFrame(() => { fitterComp.enabled = true; });
+            ExecutionUtils.RunNextFrame(() => {
+                if (fitterComp != null) fitterComp.enabled = true;
+            });
         }
     }
 }
