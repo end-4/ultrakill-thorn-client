@@ -100,52 +100,56 @@ public abstract class HudModule : Module {
     /// <summary>
     /// The UI element
     /// </summary>
-    public GameObject? UIElement => _wrapper;
+    public GameObject? UIElement => Wrapper;
+
+    protected RectTransform? OverlayRect;
 
     /// <summary>
     /// The wrapper object
     /// </summary>
-    protected GameObject? _wrapper;
+    protected GameObject? Wrapper { get; private set; }
 
     /// <summary>
     /// The content object
     /// </summary>
-    protected GameObject? _content;
+    protected GameObject? Content;
 
     /// <summary>
     /// The wrapper rectangle
     /// </summary>
-    protected RectTransform? _wrapperRect;
+    protected RectTransform? WrapperRect;
 
     /// <summary>
     /// The content rectangle
     /// </summary>
-    protected RectTransform? _contentRect;
+    protected RectTransform? ContentRect;
 
     private void InitializeIfNeeded() {
         if (!IsEnabled || SceneHelper.CurrentScene == null)
             return; // Lazy loading and don't create stuff when not possible
-        if (_wrapper == null) {
-            _wrapper = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "Wrapper"));
-            _wrapperRect = _wrapper.transform as RectTransform;
-            var eleCon = _wrapper.GetOrAddComponent<HudElementController>();
+        if (Wrapper == null) {
+            Wrapper = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "Wrapper"));
+            WrapperRect = Wrapper.transform as RectTransform;
+            var eleCon = Wrapper.GetOrAddComponent<HudElementController>();
             eleCon.hudModule = this;
-            _wrapper.SetActive(IsEnabled);
+            Wrapper.SetActive(IsEnabled);
+            OverlayRect = Wrapper.FindRecursive("Overlay")?.transform as RectTransform;
         }
 
-        if (_content == null) {
-            _content = CreateHudObject();
-            _contentRect = _content.transform as RectTransform;
+        if (Content == null) {
+            Content = CreateHudObject();
+            ContentRect = Content.transform as RectTransform;
         }
 
-        if (_wrapperRect == null || _contentRect == null) {
+        if (WrapperRect == null || ContentRect == null) {
             return;
         }
 
-        _content.transform.SetParent(_wrapper.transform, false);
+        Content.transform.SetParent(Wrapper.transform, false);
         // Plugin.Log.LogInfo($"{this.GetType().Name} created stuff, parenting");
         Reparent(Surface.Value);
-        _wrapperRect.sizeDelta = new Vector2(_contentRect.sizeDelta.x, _contentRect.sizeDelta.y);
+        WrapperRect.sizeDelta = new Vector2(ContentRect.sizeDelta.x, ContentRect.sizeDelta.y);
+        UpdateOverlay();
     }
 
     private void ResetPositionIfNeeded(HudSurface surface) {
@@ -159,8 +163,11 @@ public abstract class HudModule : Module {
         PositionY.Value = DefaultLocalPosition[surface].y;
     }
 
-    protected virtual void OnHudModuleEnable() {}
-    protected virtual void OnHudModuleDisable() {}
+    protected virtual void OnHudModuleEnable() {
+    }
+
+    protected virtual void OnHudModuleDisable() {
+    }
 
     /// <summary>
     /// Stuff to run when the module is enabled. If you override, make sure to run base.OnEnable() for proper UI creation.
@@ -168,9 +175,10 @@ public abstract class HudModule : Module {
     protected sealed override void OnEnable() {
         HudManager.ReadyForScene += InitializeIfNeeded;
         InitializeIfNeeded();
-        if (_wrapper != null) {
-            _wrapper.SetActive(true);
+        if (Wrapper != null) {
+            Wrapper.SetActive(true);
         }
+
         OnHudModuleEnable();
     }
 
@@ -179,8 +187,8 @@ public abstract class HudModule : Module {
     /// </summary>
     protected sealed override void OnDisable() {
         OnHudModuleDisable();
-        if (_wrapper == null) return;
-        _wrapper.SetActive(false);
+        if (Wrapper == null) return;
+        Wrapper.SetActive(false);
         HudManager.ReadyForScene -= InitializeIfNeeded;
     }
 
@@ -189,19 +197,26 @@ public abstract class HudModule : Module {
     /// </summary>
     /// <param name="newSurface">The new surface</param>
     public void Reparent(HudSurface newSurface) {
-        if (_wrapperRect == null || !HudManager.GetSurface(newSurface, out var surfaceGo) || surfaceGo == null) return;
+        if (WrapperRect == null || !HudManager.GetSurface(newSurface, out var surfaceGo) || surfaceGo == null) return;
 
         // Plugin.Log.LogInfo($"{GetType().Name} reparenting to {newSurface}");
-        _wrapperRect.SetParent(surfaceGo.transform, false);
-        _wrapperRect.localScale = DefaultScale[newSurface];
+        WrapperRect.SetParent(surfaceGo.transform, false);
+        WrapperRect.localScale = DefaultScale[newSurface];
 
         // Allow showing over fist
-        _wrapperRect.gameObject.SetLayerRecursive(LayerMask.NameToLayer("AlwaysOnTop"));
+        WrapperRect.gameObject.SetLayerRecursive(LayerMask.NameToLayer("AlwaysOnTop"));
         var hudMaterial = Addressables.LoadAssetAsync<Material>("Assets/Materials/HUDMaterial.mat").WaitForCompletion();
-        _wrapperRect.gameObject.SetImageMaterialRecursive(hudMaterial);
+        WrapperRect.gameObject.SetImageMaterialRecursive(hudMaterial);
         var hudTextMaterial = Addressables.LoadAssetAsync<Material>("Assets/Fonts/VCR_OSD_MONO Overlay.mat")
             .WaitForCompletion();
-        _wrapperRect.gameObject.SetTextMaterialRecursive(hudTextMaterial);
+        WrapperRect.gameObject.SetTextMaterialRecursive(hudTextMaterial);
+    }
+
+    public void UpdateOverlay() {
+        if (OverlayRect == null || ContentRect == null || WrapperRect == null) return;
+        OverlayRect.pivot = ContentRect.pivot;
+        OverlayRect.sizeDelta = ContentRect.sizeDelta;
+        OverlayRect.localPosition = ContentRect.localPosition;
     }
 
     /// <summary>

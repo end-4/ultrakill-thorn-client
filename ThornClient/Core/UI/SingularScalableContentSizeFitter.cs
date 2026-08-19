@@ -28,13 +28,22 @@ public class SingularScalableContentSizeFitter : ContentSizeFitter {
         trans.SetSizeWithCurrentAnchors((RectTransform.Axis)axis, targetSize);
     }
 
+    /// <inheritdoc />
     public override void SetLayoutHorizontal() {
         base.SetLayoutHorizontal();
         HandleScalableFitting(0);
     }
 
+    /// <inheritdoc />
     public override void SetLayoutVertical() {
         base.SetLayoutVertical();
         HandleScalableFitting(1);
+    }
+
+    /// <summary>
+    /// Forces the size to update
+    /// </summary>
+    public void UpdateSize() {
+        SetDirty();
     }
 }
