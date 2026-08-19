@@ -15,7 +15,6 @@ public class SingularScalableContentSizeFitter : ContentSizeFitter {
     /// </summary>
     /// <param name="axis"></param>
     protected virtual void HandleScalableFitting(int axis) {
-        Plugin.Log.LogInfo($"handle scalable fit along axis {axis}");
         var fitMode = axis == 0 ? this.horizontalFit : this.verticalFit;
         if (fitMode == FitMode.Unconstrained) return;
         var trans = (RectTransform)transform;

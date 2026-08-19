@@ -3,6 +3,8 @@
 - Fixed weird bounded value hud module style selection
 - Use a new menu for big enums (tmp dropdown sucks)
 - Prevent setting group buttons from spawning many children window
+- Added FixPluginTypesSerialization to dependencies (basically makes dependent mods like Billion Nemesis load properly without Angry already installed)
+- Made UI elements scalable
 
 ## 0.1.2
 
