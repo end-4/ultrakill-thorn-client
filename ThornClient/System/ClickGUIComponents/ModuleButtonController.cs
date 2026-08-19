@@ -24,11 +24,13 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
 
         // Set icon
         var buttonIcon = gameObject.FindRecursive("Icon")?.GetComponent<Image>();
-        bool isIconMostlyWhite = true;
+        bool isIconNicelyColorizable = true;
         try {
             if (buttonIcon != null) {
                 buttonIcon.sprite = TargetModule.Icon;
-                isIconMostlyWhite = ImageUtils.GetDominantColor(buttonIcon.sprite.texture) == Color.white;
+                var col = ImageUtils.GetDominantColor(buttonIcon.sprite.texture);
+                // Seems to be the best we can get without an extra function. I'm lazy.
+                isIconNicelyColorizable = Mathf.Approximately(col.r, col.g) && Mathf.Approximately(col.g, col.b);
             }
         } catch (Exception e) {
             Plugin.Log.LogError($"Failed to load icon for module '{TargetModule.Name}': {e}");
@@ -55,7 +57,7 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
         // Setup visuals
         var settingIcon = gameObject.FindRecursive("ConfigButton/Icon");
         _iconColorizer = buttonIcon.GetOrAddComponent<Colorizer>();
-        if (!isIconMostlyWhite) _iconColorizer.HighlightColor = _iconColorizer.NormalColor;
+        if (!isIconNicelyColorizable) _iconColorizer.HighlightColor = _iconColorizer.NormalColor;
         _textColorizer = _nameText.GetOrAddComponent<Colorizer>();
 
         TargetModule.OnToggleStateChanged += UpdateVisualState;
