@@ -228,9 +228,9 @@ public abstract class BoundedValueHudModule : FramedHudModule {
 
     private void UnfuckLayouts() {
         if (!SceneUtils.IsSafe() || !IsEnabled) return;
-        if (_contentObject == null || _wrapper == null) return;
+        if (_contentObject == null || Wrapper == null) return;
         _contentObject.UnfuckLayoutHack();
-        var fitterComp = _wrapper.GetComponent<ContentSizeFitter>();
+        var fitterComp = Wrapper.GetComponent<SingularScalableContentSizeFitter>();
         if (fitterComp != null) {
             fitterComp.enabled = false;
             ExecutionUtils.RunNextFrame(() => { fitterComp.enabled = true; });

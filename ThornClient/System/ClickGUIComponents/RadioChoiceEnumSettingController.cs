@@ -20,7 +20,6 @@ public class RadioChoiceEnumSettingController : MonoBehaviour {
         _check = gameObject.FindRecursive("Radio/Check");
         _name = gameObject.FindRecursive("Name")?.GetComponent<TextMeshProUGUI>();
 
-        // TODO HOOKS
         if (TargetSetting != null) TargetSetting.OnChanged += UpdateSelected;
         if (_btn != null) _btn.onClick.AddListener(SelectThis);
 
