@@ -1,10 +1,11 @@
 ## 0.1.3
 
+- Added FixPluginTypesSerialization dependency (basically makes dependent mods like Billion Nemesis load properly without Angry already installed)
 - Fixed weird bounded value hud module style selection
 - Use a new menu for big enums (tmp dropdown sucks)
 - Prevent setting group buttons from spawning many children window
-- Added FixPluginTypesSerialization to dependencies (basically makes dependent mods like Billion Nemesis load properly without Angry already installed)
-- Made UI elements scalable
+- Made HUD elements scalable
+- UI: Only colorize monochrome icons, underline active modules
 
 ## 0.1.2
 
