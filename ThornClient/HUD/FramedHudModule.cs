@@ -65,6 +65,7 @@ public abstract class FramedHudModule : HudModule {
         if (wTrans == null || cTrans == null || fcTrans == null) return;
         cTrans.pivot = wTrans.pivot;
         fcTrans.pivot = new Vector2(0, 1);
+        UpdateOverlay();
     }
 
     private void SetShowBackground(bool value) {
