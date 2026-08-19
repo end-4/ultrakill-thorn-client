@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace ThornClient.Core;
+namespace ThornClient.Core.DataTypes;
 
 /// <summary>
 /// Json converter for Unity Color type
