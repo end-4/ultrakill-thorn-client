@@ -1,5 +1,6 @@
 ﻿using System;
 using NukeLib.UI;
+using NukeLib.Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,6 +14,7 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
     private Colorizer? _iconColorizer;
     private Colorizer? _textColorizer;
     private GameObject? _settingIcon;
+    private TextMeshProUGUI? _nameText;
 
     private void Start() {
         if (TargetModule == null) {
@@ -22,15 +24,19 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
 
         // Set icon
         var buttonIcon = gameObject.FindRecursive("Icon")?.GetComponent<Image>();
+        bool isIconMostlyWhite = true;
         try {
-            if (buttonIcon != null) buttonIcon.sprite = TargetModule.Icon;
+            if (buttonIcon != null) {
+                buttonIcon.sprite = TargetModule.Icon;
+                isIconMostlyWhite = ImageUtils.GetDominantColor(buttonIcon.sprite.texture) == Color.white;
+            }
         } catch (Exception e) {
             Plugin.Log.LogError($"Failed to load icon for module '{TargetModule.Name}': {e}");
         }
 
         // Set text
-        var buttonText = gameObject.FindRecursive("Name")?.GetComponent<TextMeshProUGUI>();
-        buttonText?.SetText(TargetModule.Name);
+        _nameText = gameObject.FindRecursive("Name")?.GetComponent<TextMeshProUGUI>();
+        _nameText?.SetText(TargetModule.Name);
 
         // Setup clicks
         var button = gameObject.GetComponent<Button>();
@@ -49,7 +55,8 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
         // Setup visuals
         var settingIcon = gameObject.FindRecursive("ConfigButton/Icon");
         _iconColorizer = buttonIcon.GetOrAddComponent<Colorizer>();
-        _textColorizer = buttonText.GetOrAddComponent<Colorizer>();
+        if (!isIconMostlyWhite) _iconColorizer.HighlightColor = _iconColorizer.NormalColor;
+        _textColorizer = _nameText.GetOrAddComponent<Colorizer>();
 
         TargetModule.OnToggleStateChanged += UpdateVisualState;
         UpdateVisualState(TargetModule.IsEnabled);
@@ -67,6 +74,7 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
     private void UpdateVisualState(bool isEnabled) {
         if (_iconColorizer != null) _iconColorizer.Highlighted = isEnabled;
         if (_textColorizer != null) _textColorizer.Highlighted = isEnabled;
+        if (_nameText != null) _nameText.fontStyle = isEnabled ? FontStyles.Underline : FontStyles.Normal;
     }
 
     public void OnPointerClick(PointerEventData eventData) {
