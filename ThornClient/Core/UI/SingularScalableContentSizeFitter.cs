@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace ThornClient.Core.UI;
 
 /// <summary>
-/// A content size fitter that takes children scaling into account
+/// A content size fitter that takes its single child's scaling into account
 /// </summary>
 [ExecuteAlways]
 [RequireComponent(typeof(LayoutElement))]
