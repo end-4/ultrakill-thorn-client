@@ -75,14 +75,14 @@ public class MultiplyEnemies : Module {
         }
     }
 
-    private const string MultipliedTag = "[ThornMultiplied]";
+    private const string MultipliedTagName = "ThornMultiplied";
 
     private void Dupe(EnemyIdentifier eid) {
-        if (eid.gameObject.name.Contains(MultipliedTag)) return;
+        if (eid.gameObject.name.HasTag(MultipliedTagName)) return;
 
         for (int i = 0; i < Multiplier.Value - 1; i++) {
             var dupe = Object.Instantiate(eid.gameObject, eid.transform.parent);
-            dupe.name = eid.gameObject.name + " " + MultipliedTag;
+            dupe.name = eid.gameObject.name.Tag(MultipliedTagName);
             dupe.transform.position = eid.transform.position;
         }
     }
