@@ -10,6 +10,7 @@ using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Managers;
 using TMPro;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -56,6 +57,24 @@ public class ClickGUI : SystemModule {
 
     private static OptionsManager? opts => OptionsManager.Instance;
 
+    private void Reposition() {
+        if (_canvas == null) return;
+        // _canvas.GetComponent<Canvas>().enabled = false;
+        var trans = _canvas.GetComponent<RectTransform>();
+        trans.anchorMin = new Vector2(0, 0);
+
+        // Set the maximum anchor to the top-right (1, 1)
+        trans.anchorMax = new Vector2(1, 1);
+
+        // Reset offsets/margins to make it stretch fully to the edges
+        trans.offsetMin = Vector2.zero; // Left and Bottom margins
+        trans.offsetMax = Vector2.zero; // Right and Top margins
+
+        // Optional: Reset scale and anchored position
+        trans.localScale = Vector3.one;
+        trans.anchoredPosition = Vector2.zero;
+    }
+
     private bool InitializeIfNeeded() {
         if (Instance != null || (_isInitialized && _canvas != null)) return true;
         Instance = this;
@@ -70,9 +89,18 @@ public class ClickGUI : SystemModule {
         var searchPrefab = AssetManager.Get<GameObject>(BundleKey, "SearchWindow");
 
         // Make the canvas
+        Plugin.Log.LogInfo($"making canvas");
+        var rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+        var vanillaCanvas = rootGameObjects.Where(obj => obj.name == "Canvas").FirstOrDefault();
+        Plugin.Log.LogInfo($"vanilla canvas {vanillaCanvas}");
+        var vanillaCanvasTrans = (RectTransform)vanillaCanvas.transform;
         _canvas = Object.Instantiate(basePrefab);
         _canvas.hideFlags = HideFlags.DontSave;
-        Object.DontDestroyOnLoad(_canvas);
+        _canvas.transform.SetParent(vanillaCanvas.transform);
+        Object.DontDestroyOnLoad(_canvas); // somehow this doesnt work although the thorn canvas is on a root one?
+        Plugin.Log.LogInfo($"set pos");
+        Reposition();
+        Plugin.Log.LogInfo($"past set pos");
         _canvas.SetActive(true); // For size updates to happen... will disable later down below, at least I think this should work
 
         // Tab bar
@@ -175,11 +203,12 @@ public class ClickGUI : SystemModule {
     protected override void OnEnable() {
         // Plugin.Log.LogInfo($"[ClickGUI] Enable");
         if (_canvas == null) return;
+        Reposition();
         _canvas.transform.SetAsLastSibling(); // Show on top of everything
         _canvas.SetActive(true);
         var canvasComp = _canvas.GetComponent<Canvas>();
         if (canvasComp != null) {
-            canvasComp.sortingOrder = 69; // On top of most things
+            canvasComp.sortingOrder = 999999999; // On top of most things
         }
 
         _canvas.UnfuckLayoutHack();

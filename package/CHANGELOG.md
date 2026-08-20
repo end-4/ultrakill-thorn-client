@@ -1,3 +1,7 @@
+## 0.1.4
+
+- More consistent monochrome icon colorization
+
 ## 0.1.3
 
 - Added FixPluginTypesSerialization dependency (basically makes dependent mods like Billion Nemesis load properly without Angry already installed)
