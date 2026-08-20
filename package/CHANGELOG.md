@@ -1,3 +1,10 @@
+## 0.1.4
+
+- New module: Force Enrage
+- Added 12h/24h option for ClickGUI top bar clock
+- Fixed tooltip positioning that made buttons unclickable on (it seems) ultrawide monitor
+- Fixed very inconsistent icon colorizing
+
 ## 0.1.3
 
 - Added FixPluginTypesSerialization dependency (basically makes dependent mods like Billion Nemesis load properly without Angry already installed)
