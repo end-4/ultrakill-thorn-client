@@ -168,7 +168,8 @@ public class ViewmodelTweaks : Module {
         CreateHeader("generalHeader", "General");
         Bobbing = CreateSetting("bobbing", "Bobbing", "Whether your hands wiggle when walking", true);
         WeaponEdges = CreateSetting("weaponEdges", "Edges skin",
-            "Similar to the popular ULTRAEDGES skin. Cleaner but also more detailed. NOTE: to un-apply, you need to restart the mission", false);
+            "Similar to the popular ULTRAEDGES skin. Cleaner but also more detailed. NOTE: to un-apply, you need to restart the mission",
+            false);
         WeaponEdgeThickness = CreateSetting("weaponEdgeThickness", "Edge thickness",
             "Thickness of the edges", 2f);
         WeaponFillColor = CreateSetting("weaponFillColor", "Edges: fill color",
@@ -211,10 +212,12 @@ public class ViewmodelTweaks : Module {
         }
 
         SceneUtils.SafeSceneLoadedNoParam += () => {
-            gc.OnWeaponChange -= UpdateCurrentNextFrame;
+            if (gc != null) gc.OnWeaponChange -= UpdateCurrentNextFrame;
+            if (fc != null) fc.FistIconUpdated -= UpdateCurrentNextFrame;
         };
     }
 
+    private static FistControl? fc => FistControl.Instance;
     private static GunControl? gc => GunControl.Instance;
     private static PrefsManager? prefs => PrefsManager.Instance;
 
@@ -253,6 +256,11 @@ public class ViewmodelTweaks : Module {
 
     private void SubscribeStuffWhenSafe() {
         if (!SceneUtils.IsInGame()) return;
+        if (fc != null) {
+            // Hooking icon update is weird, but it only exposes this. I hate patches...
+            fc.FistIconUpdated += UpdateCurrentNextFrame;
+        }
+
         if (gc != null) {
             gc.OnWeaponChange += UpdateCurrentNextFrame;
             UpdateBobbing();
@@ -308,6 +316,10 @@ public class ViewmodelTweaks : Module {
     }
 
     private void UpdateCurrentNextFrame(GameObject _) {
+        UpdateCurrentNextFrame();
+    }
+
+    private void UpdateCurrentNextFrame(int _) {
         UpdateCurrentNextFrame();
     }
 
@@ -392,10 +404,26 @@ public class ViewmodelTweaks : Module {
     }
 
     private void UpdateCurrentColor() {
-        if (!WeaponEdges.Value || gc == null) return;
-        int orderIndex = gc.currentVariationIndex;
-        var mat = GetVariantMat(GunHelper.GetVariation(gc.currentWeapon, gc.currentSlotIndex - 1));
-        var comps = gc.currentWeapon?.GetComponentsInChildren<Renderer>(true)
+        if (!WeaponEdges.Value || gc == null || fc == null || HookArm.Instance == null) return;
+
+        // Apply gun
+        var weaponVariantIndex = GunHelper.GetVariation(gc.currentWeapon, gc.currentSlotIndex - 1);
+        ApplyWireframe(gc.currentWeapon, weaponVariantIndex);
+
+        // Apply arm. Note (variant / 2) transforms 0 -> 0 and 1 -> 2, because 2nd fist is red but 2nd variant is green
+        var armVariantIndex = PlayerPrefs.GetInt("CurArm", 0);
+        ApplyWireframe(fc.currentArmObject, armVariantIndex * 2);
+
+        // Apply whiplash. It's green -> variant 1
+        ApplyWireframe(HookArm.Instance.gameObject, 1);
+
+        UpdateVariantColors();
+    }
+
+    private void ApplyWireframe(GameObject obj, int variantIndex) {
+        if (obj == null) return;
+        var mat = GetVariantMat(variantIndex);
+        var comps = obj.GetComponentsInChildren<Renderer>(true)
             ?.Where(r => r is (MeshRenderer or SkinnedMeshRenderer))?
             .ToArray() ?? [];
 
@@ -426,8 +454,6 @@ public class ViewmodelTweaks : Module {
                 comp.sharedMaterials = newMats;
             }
         }
-
-        UpdateVariantColors();
     }
 
     private void SetTransform(GameObject weapon, Vector3 targetPos, Vector3 targetAngle, Vector3 targetScale) {
