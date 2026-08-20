@@ -211,7 +211,8 @@ public class ClickGUI : SystemModule {
     private void UpdateTooltipPos() {
         if (_tooltip == null || !_tooltip.activeInHierarchy) return;
         RectTransform rt = (RectTransform)_tooltip.transform;
-        rt.position = Input.mousePosition + new Vector3(70f + rt.sizeDelta.x / 2, -40f - rt.sizeDelta.y / 2, 0f);
+        rt.pivot = new Vector2(0f, 0f);
+        rt.position = Input.mousePosition + new Vector3(10f, 10f, 0f);
         _tooltip.transform.SetAsLastSibling();
     }
 
