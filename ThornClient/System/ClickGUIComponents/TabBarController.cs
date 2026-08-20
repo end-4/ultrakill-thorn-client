@@ -1,5 +1,6 @@
 ﻿using System;
 using NukeLib.UI;
+using NukeLib.Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,21 +48,35 @@ internal class TabBarController : MonoBehaviour {
     private void UpdateTimeDisplay() {
 
         var now = DateTime.Now;
-        string newNumber = now.ToString("hh:mm");
-        string newAmPm = now.ToString("tt");
+        bool use24h = ThornModule.Instance?.TimeFormat.Value == ThornModule.TimeHourFormat.TwentyFour;
+
+        string format = use24h ? "HH:mm" : "hh:mm";
+        string newNumber = now.ToString(format);
+        string newAmPm = use24h ? string.Empty : now.ToString("tt");
+
         var newIcon = (now.Hour is >= 6 and < 18) ? _sunIcon : _moonIcon;
 
         if (_numberText != null && _numberText.text != newNumber) {
             _numberText.text = newNumber;
         }
 
-        if (_amPmText != null && _amPmText.text != newAmPm) {
-            _amPmText.text = newAmPm;
+        if (_amPmText != null) {
+            if (_amPmText.gameObject.activeSelf == use24h) {
+                _amPmText.gameObject.SetActive(!use24h);
+                gameObject.UnfuckLayoutHack();
+                ExecutionUtils.RunNextFrame(() => { if (gameObject != null) gameObject.UnfuckLayoutHack(); });
+            }
+
+            if (_amPmText.text != newAmPm) {
+                _amPmText.text = newAmPm;
+            }
         }
 
         if (_iconImage != null && _iconImage.sprite != newIcon) {
             _iconImage.sprite = newIcon;
         }
+
+
     }
 
     private void UpdateBattery() {

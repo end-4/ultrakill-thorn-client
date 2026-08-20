@@ -1,4 +1,6 @@
-﻿using ThornClient.Core;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
+using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
@@ -10,6 +12,10 @@ namespace ThornClient.System;
 /// The module that houses general settings of Thorn
 /// </summary>
 public class ThornModule : SystemModule {
+
+    public enum TimeHourFormat {
+        Twelve, TwentyFour
+    } 
     /// <summary>
     /// The instance of this module
     /// </summary>
@@ -24,6 +30,11 @@ public class ThornModule : SystemModule {
     /// Keybind to open ClickGUI
     /// </summary>
     public Setting<Keybind> OpenClickGUI { get; }
+
+    /// <summary>
+    /// Whether opening the ClickGUI should pause the game
+    /// </summary>
+    public Setting<bool> MenuPausesGame { get; }
 
     /// <summary>
     /// Keybind to open the ClickGUI without pausing
@@ -46,10 +57,10 @@ public class ThornModule : SystemModule {
     public Setting<Color> Accent { get; }
 
     /// <summary>
-    /// Whether opening the ClickGUI should pause the game
+    /// The time format in the ClickGUI, either 12h or 24h
     /// </summary>
-    public Setting<bool> MenuPausesGame { get; }
-
+    public Setting<TimeHourFormat> TimeFormat;
+    
     /// <summary>
     /// Whether to force the Configgy button to have proper spacing
     /// </summary>
@@ -62,6 +73,7 @@ public class ThornModule : SystemModule {
 
     /// <inheritdoc />
     public override bool IsEnabled => true;
+
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "settings");
 
     /// <inheritdoc />
@@ -71,15 +83,25 @@ public class ThornModule : SystemModule {
 
         UserHints.Initialize();
 
+        // -- KEYBINDS --
+        CreateHeader("binds", "Keybinds");
+
         OpenClickGUI = CreateSetting("openClickGui", "Open menu keybind", "Keybind to open Thorn's ClickGUI interface",
             new Keybind(KeyCode.RightShift));
         OpenClickGUI.OnPress += () => {
             if (ClickGUI.Instance == null) return;
             ClickGUI.Instance.Toggle();
         };
+
+        MenuPausesGame = CreateSetting(
+            "menuPausesGame", "Menu pauses game",
+            "Makes the game paused when you open the ClickGUI", true
+        );
+
+        var otherBinds = CreateGroup("otherBinds", "More keybinds", "Less important keybinds are here");
         OpenClickGUIUnpaused = CreateSetting("openClickGuiPaused", "Open menu (no pausing)",
             "Keybind to open Thorn's ClickGUI interface without pausing the game",
-            new Keybind(KeyCode.None));
+            new Keybind(KeyCode.None), otherBinds);
         OpenClickGUIUnpaused.OnPress += () => {
             if (ClickGUI.Instance == null) return;
             var tmp = MenuPausesGame!.Value;
@@ -87,8 +109,6 @@ public class ThornModule : SystemModule {
             ClickGUI.Instance.Toggle();
             MenuPausesGame.Value = tmp;
         };
-
-        var otherBinds = CreateGroup("otherBinds", "Other keybinds", "Less important keybinds are here");
         SwitchTabLeft = CreateSetting("switchTabLeft", "Switch to tab on the left", "Switch to tab on the left",
             new Keybind(KeyCode.PageUp, modifier: KeyCode.LeftControl), otherBinds);
         SwitchTabLeft.OnPress += () => ClickGUI.CycleTab(-1);
@@ -96,24 +116,29 @@ public class ThornModule : SystemModule {
             new Keybind(KeyCode.PageDown, modifier: KeyCode.LeftControl), otherBinds);
         SwitchTabRight.OnPress += () => ClickGUI.CycleTab(+1);
 
-        MenuPausesGame = CreateSetting(
-            "menuPausesGame", "Menu pauses game",
-            "Makes the game paused when you open the ClickGUI", true
-        );
-        MenuButtonPositionForceConfiggyNicePosition = CreateSetting(
-            "menuButtonPosition", "Force nice menu button position",
-            "Tries to move the Configgy button a bit so it has proper spacing",
-            false
-        );
-        MenuButtonPositionForceConfiggyNicePosition.OnChanged += PauseMenuButton.UpdateAppearance;
+
+        // -- INTERFACE --
+        CreateHeader("general", "Interface");
         Accent = CreateSetting("accentColor", "Accent Color",
             "Color used for highlighting certain elements, preferably a bright one",
             new Color(0.65f, 0.95f, 0.89f));
 
-        var devGroup = CreateGroup("devGroup", "Developer", "Developer options, not so interesting");
-        LastVersion = CreateSetting("lastVersion", "Last Thorn Version",
-            "The version of Thorn run in the previous/current session", "0.0.0", devGroup);
+        var uiGroup = CreateGroup("uiGroup", "More interface settings", "Stuff related to the user interface");
+        TimeFormat = CreateSetting("timeFormat", "Time format", "Used on the menu's top bar", TimeHourFormat.Twelve, uiGroup);
+        TimeFormat.Hints = new InterfaceHints {
+            EnumSubstitutions = new Dictionary<string, string> {
+                ["Twelve"] = "12h",
+                ["TwentyFour"] = "24h",
+            }
+        };
+        MenuButtonPositionForceConfiggyNicePosition = CreateSetting(
+            "menuButtonPosition", "Force nice spacing",
+            "Tries to move the Configgy button on the pause menu a bit so it has proper spacing",
+            false, uiGroup
+        );
+        MenuButtonPositionForceConfiggyNicePosition.OnChanged += PauseMenuButton.UpdateAppearance;
 
+        // -- ABOUT --
         var about = CreateHeader(
             "about", "About",
             "Thorn is an open-source, extensible utility mod for ULTRAKILL with a powerful configuration system."
@@ -121,7 +146,7 @@ public class ThornModule : SystemModule {
         var buttons = CreateButtonRow(
             "engagementButtons", "Links",
             "Links to Thorn stuff",
-            ["GitHub", "Docs 4 mod devs", "Donations"]
+            ["GitHub", "API Docs", "Donations"]
         );
         buttons.OnClick += (i) => {
             switch (i) {
@@ -136,6 +161,10 @@ public class ThornModule : SystemModule {
                     break;
             }
         };
+
+        var devGroup = CreateGroup("devGroup", "Developer", "Developer options, not so interesting");
+        LastVersion = CreateSetting("lastVersion", "Last Thorn Version",
+            "The version of Thorn run in the previous/current session", "0.0.0", devGroup);
 
         PauseMenuButton.Initialize();
     }
