@@ -29,9 +29,7 @@ public class ForceEnrage : Module {
     /// <inheritdoc />
     public override string CheatReason => IsEnabled ? "Enables non-standard gameplay" : "";
 
-    /// <summary>
-    /// Run when enabled
-    /// </summary>
+    /// <inheritdoc />
     protected override void OnEnable() {
         UpdateRage(true);
         CheatManager.UpdateCheatiness();
@@ -41,9 +39,7 @@ public class ForceEnrage : Module {
         AddInfoLine();
     }
 
-    /// <summary>
-    /// RUn when disabled
-    /// </summary>
+    /// <inheritdoc />
     protected override void OnDisable() {
         UpdateRage(false);
         EnemyEvents.OnSpawn -= Enrage;
@@ -52,7 +48,7 @@ public class ForceEnrage : Module {
         FinalRankHelper.RemoveInfoLine(InfoLine);
     }
 
-    private static string InfoLine = "<color=#fff>+ <color=#ff0000>RAGEBAIT</color>";
+    private const string InfoLine = "<color=#fff>+ <color=#ff0000>RAGEBAITED</color>";
 
     private void AddInfoLine() {
         FinalRankHelper.AddInfoLine(InfoLine);
