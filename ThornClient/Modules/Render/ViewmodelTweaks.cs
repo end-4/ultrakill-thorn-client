@@ -154,7 +154,7 @@ public class ViewmodelTweaks : Module {
         }
     }
 
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "axes");
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "gun");
 
     public ViewmodelTweaks() : base(
         "thorn.viewmodelTweaks",

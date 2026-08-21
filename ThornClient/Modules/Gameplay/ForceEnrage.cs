@@ -4,6 +4,7 @@ using NukeLib.Utils;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Managers;
+using ThornClient.System;
 using Object = UnityEngine.Object;
 
 namespace ThornClient.Modules.Gameplay;
@@ -15,8 +16,7 @@ public class ForceEnrage : Module {
     // /// <summary>
     // /// Icon of the module
     // /// </summary>
-    // public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "angry"); // TODO add this icon to bundle and use it
-
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "angry");
     /// <inheritdoc />
     public override string[] Tags => ["buff", "angry", "pissed"];
 
