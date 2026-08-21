@@ -39,7 +39,7 @@ public class WindowedEnumSettingController : MonoBehaviour {
         if (_selected == null || TargetSetting == null) return;
         var currSel = TargetSetting.GetValue();
         var str = currSel.ToString();
-        var displayText = TargetSetting?.Hints?.EnumSubstitutions.GetValueOrDefault(str, str);
+        var displayText = TargetSetting?.Hints?.EnumSubstitutions.GetValueOrDefault(str, str) ?? str;
         _selected.SetText($"{displayText}");
     }
 

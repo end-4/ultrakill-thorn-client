@@ -36,7 +36,7 @@ public class RadioChoiceEnumSettingController : MonoBehaviour {
         if (TargetValue == null) return;
         if (_name != null) {
             var str = TargetValue.ToString();
-            var displayText = TargetSetting?.Hints?.EnumSubstitutions.GetValueOrDefault(str, str);
+            var displayText = TargetSetting?.Hints?.EnumSubstitutions.GetValueOrDefault(str, str) ?? str;
             _name.SetText(displayText);
         }
     }

@@ -5,6 +5,7 @@
 - Added 12h/24h option for ClickGUI top bar clock
 - Fixed tooltip positioning that made buttons unclickable on (it seems) ultrawide monitor
 - Fixed very inconsistent icon colorizing
+- Fixed dropdown texts being empty
 
 ## 0.1.3
 
