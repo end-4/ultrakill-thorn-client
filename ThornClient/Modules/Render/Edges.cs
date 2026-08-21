@@ -12,7 +12,7 @@ using ThornClient.System;
 namespace ThornClient.Modules.Render;
 
 /// <summary>
-/// Module that makes enemies edges.
+/// Module that applies an "edges" look to enemies
 /// </summary>
 public class Edges : Module {
     /// <summary>
@@ -20,7 +20,11 @@ public class Edges : Module {
     /// </summary>
     public static Edges? Instance;
 
+    /// <inheritdoc />
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "icosahedron");
+
+    /// <inheritdoc />
+    public override string[] Tags => ["wireframe", "world"];
 
     public Setting<float> EdgeThickness;
     public Setting<Color> FillColor;
@@ -76,7 +80,7 @@ public class Edges : Module {
     /// <summary>
     /// Constructor
     /// </summary>
-    public Edges() : base("thorn.edges", "Edges", "Applies wireframe shader to stuff", ModuleCategory.Render) {
+    public Edges() : base("thorn.edges", "Edges (Enemies)", "Applies wireframe shader to enemies", ModuleCategory.Render) {
         if (Instance != null) return;
         Instance = this;
         CreateHeader("enemies", "Enemies", "Changes applied to newly spawned enemies");
