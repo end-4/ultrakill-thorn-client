@@ -18,7 +18,7 @@ Submerged. Force-radiance. Enemy multiplication. Floor is Lava.
 
 ## It's extensible
 
-For developers, there's the [wiki]([README.md](../README.md)https://github.com/end-4/ultrakill-thorn-client/wiki) available.
+For developers, there's the [wiki](https://github.com/end-4/ultrakill-thorn-client/wiki) available.
 Classes and methods are also fully XML-documented.
 
 ## Fair play statement
