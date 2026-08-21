@@ -13,7 +13,7 @@ namespace ThornClient.Modules.Render;
 /// <summary>
 /// Module that applies an "edges" look to the world
 /// </summary>
-public class WorldEdges : Module {
+public class EdgesWorld : Module {
     /// <inheritdoc />
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "icosahedron");
 
@@ -25,7 +25,7 @@ public class WorldEdges : Module {
     /// <summary>
     /// Constructor
     /// </summary>
-    public WorldEdges() : base("thorn.worldEdges", "Edges (World)", "Applies wireframe shader to the world",
+    public EdgesWorld() : base("thorn.edgesWorld", "Edges (World)", "Applies wireframe shader to the world",
         ModuleCategory.Render) {
         FillColor = CreateSetting("fillColor", "Fill color", "The color that fills in the surfaces", Color.black);
     }
