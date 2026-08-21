@@ -28,9 +28,9 @@ public class HammerStats : FramedHudModule {
     public HammerStats() : base("thorn.hammerStats", "Hammer Stats", "Shows Jackhammer heat for individual variants and global cooldown") {
         ShowYellowHeatBar = CreateSetting("showYellowHeatBar", "Show global heat bar",
             "Shows the number of hits before the next one overheats any hammer", true);
-        YellowHeatBarColor = CreateSetting("yellowHeatBarColor", "Heat Bar Color",
+        YellowHeatBarColor = CreateSetting("yellowHeatBarColor", "Heat bar color",
             "The color of the heat bar in its normal state", new Color(1f, 0.9f, 0.3f));
-        OverheatBarColor = CreateSetting("overheatBarColor", "Overheat Color",
+        OverheatBarColor = CreateSetting("overheatBarColor", "Overheat color",
             "The color of the heat bar in its normal state", new Color(1f, 0f, 0f));
     }
 
