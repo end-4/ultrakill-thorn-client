@@ -1,6 +1,6 @@
 ## 0.1.4
 
-- New modules: Force Enrage, Resize Enemies
+- New modules: Force Enrage, Resize Enemies, Edges (World)
 - Made viewmodel tweaks work with arms
 - Added 12h/24h option for ClickGUI top bar clock
 - Fixed tooltip positioning that made buttons unclickable on (it seems) ultrawide monitor

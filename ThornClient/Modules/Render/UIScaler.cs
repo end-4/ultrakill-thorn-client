@@ -20,14 +20,10 @@ public class UIScaler : Module {
     /// </summary>
     public Setting<float> Scale { get; }
 
-    /// <summary>
-    /// Icon of the module
-    /// </summary>
+    /// <inheritdoc />
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "screen_scale");
 
-    /// <summary>
-    /// Tags for search
-    /// </summary>
+    /// <inheritdoc />
     public override string[] Tags => ["interface", "scale"];
 
     /// <summary>
@@ -38,9 +34,7 @@ public class UIScaler : Module {
         Scale = CreateSetting("scale", "Scale", "Smaller = smaller UI elements", 1.0f);
     }
 
-    /// <summary>
-    /// Stuff that run when enabled
-    /// </summary>
+    /// <inheritdoc />
     protected override void OnEnable() {
         UpdateScale(Scale.Value);
         SceneUtils.SafeSceneLoaded += UpdateScale;
@@ -78,9 +72,7 @@ public class UIScaler : Module {
         UpdateScale(Scale.Value);
     }
 
-    /// <summary>
-    /// Stuff that run when disabled
-    /// </summary>
+    /// <inheritdoc />
     protected override void OnDisable() {
         Scale.OnValueChanged -= UpdateScale;
         SceneUtils.SafeSceneLoaded -= UpdateScale;
