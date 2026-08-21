@@ -45,7 +45,7 @@ public abstract class ContinuousCumulatedStatHudModule : TextHudModule {
             updateInterval, MeasurementGroup);
         ValueSmoothing = CreateSetting("valueSmoothing", "Value smoothing", "Whether to smooth out the value",
             smoothing, MeasurementGroup);
-        EwmaAlpha = CreateSetting("ewmaAlpha", "EWMA Alpha", "Smoothing coefficient for EWMA (0.01 to 1.0)", ewmaAlpha,
+        EwmaAlpha = CreateSetting("ewmaAlpha", "EWMA alpha", "Smoothing coefficient for EWMA (0.01 to 1.0)", ewmaAlpha,
             MeasurementGroup);
 
         OnToggleStateChanged += _ => { Text = FormatStat(_collected); };

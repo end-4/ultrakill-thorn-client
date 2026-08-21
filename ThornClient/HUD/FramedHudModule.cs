@@ -39,7 +39,7 @@ public abstract class FramedHudModule : HudModule {
     /// <param name="name">The name of the module</param>
     /// <param name="description">The description of the module</param>
     public FramedHudModule(string guid, string name, string description) : base(guid, name, description) {
-        ShowBackground = CreateSetting("showBackground", "Show Background",
+        ShowBackground = CreateSetting("showBackground", "Show background",
             "Whether to show a frame behind the content", true);
         ShowBackground.OnValueChanged += SetShowBackground;
         Scale = CreateSetting("scale", "Scale", "Makes the content bigger or smaller", 1f);

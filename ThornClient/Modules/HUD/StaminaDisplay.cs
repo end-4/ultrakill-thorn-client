@@ -14,7 +14,7 @@ public class StaminaDisplay : BoundedValueHudModule {
 
     public StaminaDisplay() : base("thorn.staminaHud", "Stamina", "Shows stamina", 3,
         defaultValueColor: new Color(0, 0.77f, 1)) {
-        Continuous = CreateSetting("continuousDisplay", "Continuous Display",
+        Continuous = CreateSetting("continuousDisplay", "Continuous display",
             "Whether to show the value as continuous or discrete (dash count)", false);
     }
 

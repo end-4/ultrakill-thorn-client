@@ -77,15 +77,15 @@ public class FreezeframeRocketRideHint : Module {
         "Draws assist lines to help with Freezeframe rocket ride aiming", ModuleCategory.Utility) {
         ShowWhen = CreateSetting("showWhen", "Show when holding", "When to show the hint lines",
             RocketHintShowWhen.Freezeframe);
-        LineColor = CreateSetting("lineColor", "Line Color", "Color used for the hint line.",
+        LineColor = CreateSetting("lineColor", "Line color", "Color used for the hint line.",
             new Color(64f / 255f, 232f / 255f, 1f));
-        LineThickness = CreateSetting("lineThickness", "Line Thickness", "How thicc the line is", 2f);
-        LineWidth = CreateSetting("lineWidth", "Line Width", "How long the line is", 1f);
+        LineThickness = CreateSetting("lineThickness", "Line thickness", "How thicc the line is", 2f);
+        LineWidth = CreateSetting("lineWidth", "Line width", "How long the line is", 1f);
         Distance = CreateSetting("distance", "Distance", "How far away from the camera to show the lines", 3f);
-        UpperAngle = CreateSetting("upperAngle", "Upper Angle", "The vertical angle of the upper line, in degrees.",
+        UpperAngle = CreateSetting("upperAngle", "Upper angle", "The vertical angle of the upper line, in degrees.",
             7f);
         UpperAngle.Hints = new InterfaceHints { Range = Tuple.Create(-90f, 90f) };
-        LowerAngle = CreateSetting("lowerAngle", "Lower Angle", "The vertical angle of the lower line, in degrees.",
+        LowerAngle = CreateSetting("lowerAngle", "Lower angle", "The vertical angle of the lower line, in degrees.",
             34f);
         LowerAngle.Hints = new InterfaceHints { Range = Tuple.Create(-90f, 90f) };
     }

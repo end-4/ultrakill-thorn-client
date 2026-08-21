@@ -116,7 +116,7 @@ public class ThornModule : SystemModule {
 
         // -- INTERFACE --
         CreateHeader("general", "Interface");
-        Accent = CreateSetting("accentColor", "Accent Color",
+        Accent = CreateSetting("accentColor", "Accent color",
             "Color used for highlighting certain elements, preferably a bright one",
             new Color(0.65f, 0.95f, 0.89f));
 
@@ -160,7 +160,7 @@ public class ThornModule : SystemModule {
         };
 
         var devGroup = CreateGroup("devGroup", "Developer", "Developer options, not so interesting");
-        LastVersion = CreateSetting("lastVersion", "Last Thorn Version",
+        LastVersion = CreateSetting("lastVersion", "Last Thorn version",
             "The version of Thorn run in the previous/current session", "0.0.0", devGroup);
 
         PauseMenuButton.Initialize();

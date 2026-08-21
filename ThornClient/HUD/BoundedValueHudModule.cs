@@ -160,13 +160,13 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         Sprite? displayIcon = null, int decimalPlaces = 1, Color? defaultValueColor = null,
         Color? defaultSoftBoundColor = null) : base(guid,
         name, description) {
-        Style = CreateSetting("indicatorStyle", "Indicator Style", "The style to present the value",
+        Style = CreateSetting("indicatorStyle", "Indicator style", "The style to present the value",
             IndicatorStyle.Progress);
-        ShowName = CreateSetting("showName", "Show Name", "The name of the value", true);
+        ShowName = CreateSetting("showName", "Show name", "The name of the value", true);
         ColorGroup = CreateGroup("colorGroup", "Colors", "Colors used on the indicator");
-        ValueColor = CreateSetting("valueColor", "Value Color", "The color of the value",
+        ValueColor = CreateSetting("valueColor", "Value color", "The color of the value",
             defaultValueColor ?? new Color(0.098f, 0.624f, 0.525f), ColorGroup);
-        SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound Color",
+        SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound color",
             "The color of the soft bound, for example HP hard damage",
             defaultSoftBoundColor ?? new Color(1f, 1f, 1f, 0.36f), ColorGroup);
         ShowName.OnChanged += UnfuckLayouts;

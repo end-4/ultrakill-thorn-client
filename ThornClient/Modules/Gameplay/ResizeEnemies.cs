@@ -17,9 +17,12 @@ public class ResizeEnemies : Module {
     public override Sprite Icon =>
         AssetManager.Get<Sprite>(ClickGUI.BundleKey, "small_large");
 
-    /// <inheritdoc />ac
-    public override string[] Tags => ["scale", "oops all size 2"];
+    /// <inheritdoc />
+    public override string[] Tags => ["scale", "oops all size 2", "big", "small"];
 
+    /// <summary>
+    /// Scale of the enemies
+    /// </summary>
     public Setting<float> EnemyScale;
 
     /// <summary>

@@ -32,7 +32,7 @@ public class Submerged : Module {
         "Makes the world full of water",
         ModuleCategory.Gameplay
     ) {
-        WaterColor = CreateSetting("waterColor", "Water color (re-enable after changing)", "Color of the water",
+        WaterColor = CreateSetting("waterColor", "Water color (requires re-enabling)", "Color of the water",
             new Color(0f, 0.5f, 1f));
     }
 

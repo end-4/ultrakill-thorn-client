@@ -33,11 +33,12 @@ public class InputGeneral : FramedHudModule {
     /// </summary>
     public InputGeneral() : base("thorn.inputGeneral", "Input - General",
         "Shows movement-related, fist, and variant cycle inputs") {
-        ShowDashSlam = CreateSetting("showDashSlam", "Show Dash/Slam",
+        CreateHeader("showWhat", "Show these things:");
+        ShowDashSlam = CreateSetting("showDashSlam", "Dash/Slam",
             "Shows the keys for dashing and slamming on the left", true);
-        ShowMovement = CreateSetting("showMovement", "Show Movement Keys",
+        ShowMovement = CreateSetting("showMovement", "Movement",
             "Shows directional movement (WASD) and jump input", true);
-        ShowArms = CreateSetting("showArms", "Show Arms", "Shows Feedbacker/Knuckleblaster/Whiplash", true);
+        ShowArms = CreateSetting("showArms", "Arms", "Shows Feedbacker/Knuckleblaster/Whiplash", true);
     }
 
     private BatchBoolSettingVisibilitySyncer? _visibilitySyncer;

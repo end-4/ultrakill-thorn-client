@@ -20,7 +20,8 @@ public abstract class Configurable {
     /// <summary>
     /// Whether this configurable item supports being toggled on and off.
     /// </summary>
-    [JsonIgnore] public bool HasToggling { get; }
+    [JsonIgnore]
+    public bool HasToggling { get; }
 
     /// <summary>
     /// The friendly name
@@ -107,17 +108,21 @@ public abstract class Configurable {
 
         if (HasToggling) {
             var defaultBind = new Keybind(defaultKey, modifier: defaultModifier);
-            ToggleKeybind = CreateSetting("toggleKeybind", "Toggle Keybind",
-                "The key combo used to turn this feature on and off", defaultBind);
+            var toggleBindGroup = CreateGroup("toggleBindGroup", "Toggle keybind", "The key to toggle this module");
+
+            ToggleKeybind = CreateSetting("toggleKeybind", "Keybind",
+                "The key combo used to turn this feature on and off", defaultBind, toggleBindGroup);
 
             ToggleOnRelease = CreateSetting(
                 "toggleOnRelease",
-                "Toggle On Release",
+                "Toggle on release",
                 "Acts as a temporary hold-to-(de)activate when enabled",
-                defaultToggleOnRelease
+                defaultToggleOnRelease,
+                toggleBindGroup
             );
-            ToggleOnRelease.InternalOnValueChanged += UpdateToggleCallbacks;
-            ToggleKeybind.InternalOnValueChanged += UpdateToggleCallbacks;
+
+            ToggleOnRelease.OnChanged += UpdateToggleCallbacks;
+            ToggleKeybind.OnChanged += UpdateToggleCallbacks;
         }
 
         if (!HasToggling) {
@@ -207,7 +212,8 @@ public abstract class Configurable {
     /// <param name="texts">The texts on the buttons</param>
     /// <param name="parent">The parent group to register the setting under. If null, the setting will be registered at the root level.</param>
     /// <returns>The new ConfigButtonRow</returns>
-    protected ConfigButtonRow CreateButtonRow(string guid, string name, string description, string[] texts, SettingGroup? parent = null) {
+    protected ConfigButtonRow CreateButtonRow(string guid, string name, string description, string[] texts,
+        SettingGroup? parent = null) {
         var button = new ConfigButtonRow(guid, name, description, texts);
         RegisterElement(button, parent);
         return button;
@@ -222,7 +228,8 @@ public abstract class Configurable {
     /// <param name="headerType">The type, as in size, like H1 or H2</param>
     /// <param name="parent">The parent group to register the setting under. If null, the setting will be registered at the root level.</param>
     /// <returns>The new ConfigHeader</returns>
-    protected ConfigHeader CreateHeader(string guid, string name, string description = "", HeaderType headerType = HeaderType.H1, SettingGroup? parent = null) {
+    protected ConfigHeader CreateHeader(string guid, string name, string description = "",
+        HeaderType headerType = HeaderType.H1, SettingGroup? parent = null) {
         var header = new ConfigHeader(guid, name, description) {
             FontSize = headerType switch {
                 HeaderType.H1 => 16,
