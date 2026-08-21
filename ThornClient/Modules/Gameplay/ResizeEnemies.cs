@@ -38,6 +38,7 @@ public class ResizeEnemies : Module {
         UpdateAllEnemies();
         EnemyScale.OnChanged += UpdateAllEnemies;
         EnemyEvents.OnSpawn += ApplyScale;
+        CheatManager.UpdateCheatiness();
     }
 
     /// <inheritdoc />
