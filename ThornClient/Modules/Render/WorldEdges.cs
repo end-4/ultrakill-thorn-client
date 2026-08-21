@@ -6,6 +6,10 @@ using ThornClient.System;
 
 namespace ThornClient.Modules.Render;
 
+// ------------------
+// Thank you Bryan :3
+// ------------------
+
 /// <summary>
 /// Module that applies an "edges" look to the world
 /// </summary>
