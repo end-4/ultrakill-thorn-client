@@ -45,7 +45,7 @@ internal class ConfigurableWindowController : MonoBehaviour {
         var desc = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleDescription"), listBody);
         desc.FindRecursive("DescText").GetComponent<TextMeshProUGUI>().text = TargetConfigurable.Description;
 
-        if (TargetConfigurable is not SystemModule) {
+        if (TargetConfigurable.HasToggling) {
             var enabledButton = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "EnabledButton"), listBody);
             var enabledButtonComp = enabledButton.AddComponent<EnabledButtonController>();
             enabledButtonComp.Configurable = TargetConfigurable;

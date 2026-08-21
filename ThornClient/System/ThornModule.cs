@@ -71,9 +71,6 @@ public class ThornModule : SystemModule {
     /// </summary>
     public Setting<string> LastVersion { get; }
 
-    /// <inheritdoc />
-    public override bool IsEnabled => true;
-
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "settings");
 
     /// <inheritdoc />

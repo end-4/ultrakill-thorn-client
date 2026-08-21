@@ -18,6 +18,11 @@ public abstract class Configurable {
     [JsonIgnore] public string GUID;
 
     /// <summary>
+    /// Whether this configurable item supports being toggled on and off.
+    /// </summary>
+    [JsonIgnore] public bool HasToggling { get; }
+
+    /// <summary>
     /// The friendly name
     /// </summary>
     [JsonIgnore]
@@ -52,18 +57,25 @@ public abstract class Configurable {
     /// </summary>
     public event Action<bool>? OnToggleStateChanged;
 
+    private bool _isEnabled;
+
     /// <summary>
     /// Whether this configurable item is enabled
     /// </summary>
     public virtual bool IsEnabled {
-        get;
+        get => _isEnabled;
         set {
-            if (field == value) return;
-            field = value;
+            if (!HasToggling) {
+                _isEnabled = true;
+                return;
+            }
 
-            OnToggleStateChanged?.Invoke(field);
+            if (_isEnabled == value) return;
+            _isEnabled = value;
 
-            if (field) OnEnable();
+            OnToggleStateChanged?.Invoke(_isEnabled);
+
+            if (_isEnabled) OnEnable();
             else OnDisable();
 
             // Plugin.Log.LogInfo($"[ConfigManager] Toggled {Name} to {value}, saving");
@@ -91,8 +103,9 @@ public abstract class Configurable {
         GUID = guid;
         Name = name;
         Description = description;
+        HasToggling = hasToggling;
 
-        if (hasToggling) {
+        if (HasToggling) {
             var defaultBind = new Keybind(defaultKey, modifier: defaultModifier);
             ToggleKeybind = CreateSetting("toggleKeybind", "Toggle Keybind",
                 "The key combo used to turn this feature on and off", defaultBind);
@@ -105,6 +118,11 @@ public abstract class Configurable {
             );
             ToggleOnRelease.InternalOnValueChanged += UpdateToggleCallbacks;
             ToggleKeybind.InternalOnValueChanged += UpdateToggleCallbacks;
+        }
+
+        if (!HasToggling) {
+            _isEnabled = true;
+            return;
         }
 
         UpdateToggleCallbacks();

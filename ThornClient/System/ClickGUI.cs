@@ -26,7 +26,7 @@ public class ClickGUI : SystemModule {
 
     private static GameObject? _layoutedPagePrefab;
 
-    public ClickGUI() : base("thorn.clickGui", "ClickGUI", "The main interaction panel") {
+    public ClickGUI() : base("thorn.clickGui", "ClickGUI", "The main interaction panel", hasToggling: true) {
         AssetManager.LoadBundle(BundleKey, BundlePath);
         // Note Keybind is registered in ThornModule
         SceneUtils.SafeSceneLoaded += (_, __) => {
