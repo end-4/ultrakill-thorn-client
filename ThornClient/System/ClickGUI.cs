@@ -224,6 +224,7 @@ public class ClickGUI : SystemModule {
     }
 
     public static void SetTooltipText(string text) {
+        if (text.Length == 0) return;
         var wrappedText = text.WrapText(30);
         if (Instance == null || Instance._tooltip == null) return;
         var textObj = Instance._tooltip.FindRecursive("Text");
