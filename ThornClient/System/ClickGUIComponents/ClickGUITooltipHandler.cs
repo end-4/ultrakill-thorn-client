@@ -10,6 +10,7 @@ internal class ClickGUITooltipHandler : MonoBehaviour, IPointerEnterHandler, IPo
     /// Fired natively by Unity when the mouse pointer begins hovering over this GameObject's RectTransform boundary.
     /// </summary>
     public void OnPointerEnter(PointerEventData eventData) {
+        if (Text.Length == 0) return;
         ClickGUI.SetTooltipText(Text);
     }
 
