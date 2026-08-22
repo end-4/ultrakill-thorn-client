@@ -16,7 +16,7 @@ namespace ThornClient.Managers;
 /// Handles saving and loading of configurable settings to and from disk, as well as hot-reloading when configuration files are changed externally.
 /// </summary>
 public static class ConfigManager {
-    private static readonly string ConfigFolder = Path.Combine(Paths.ConfigPath, "ThornClient", "Default");
+    private static string ConfigFolder => ProfileManager.CurrentProfileFolder;
     private static FileSystemWatcher? _watcher;
     private static DateTime _lastRead = DateTime.MinValue;
 
