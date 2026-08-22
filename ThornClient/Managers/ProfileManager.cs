@@ -65,6 +65,11 @@ public static class ProfileManager {
         return directories.OrderBy(name => name, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
+    public static bool HasProfile(string profileName) {
+        if (string.IsNullOrWhiteSpace(profileName)) return false;
+        return Directory.Exists(GetProfileFolder(profileName));
+    }
+
     public static void SetActiveProfile(string profileName) {
         if (string.IsNullOrWhiteSpace(profileName)) {
             profileName = DefaultProfileName;
@@ -75,9 +80,70 @@ public static class ProfileManager {
         SaveManifest();
     }
 
+    public static void RenameProfile(string currentProfileName, string newProfileName) {
+        if (string.IsNullOrWhiteSpace(currentProfileName)) {
+            throw new ArgumentException("Current profile name cannot be empty.", nameof(currentProfileName));
+        }
+
+        if (string.IsNullOrWhiteSpace(newProfileName)) {
+            throw new ArgumentException("New profile name cannot be empty.", nameof(newProfileName));
+        }
+
+        if (string.Equals(currentProfileName, newProfileName, StringComparison.OrdinalIgnoreCase)) {
+            return;
+        }
+
+        var sourceFolder = GetProfileFolder(currentProfileName);
+        if (!Directory.Exists(sourceFolder)) {
+            throw new DirectoryNotFoundException($"Profile '{currentProfileName}' does not exist.");
+        }
+
+        var targetFolder = GetProfileFolder(newProfileName);
+        if (Directory.Exists(targetFolder)) {
+            throw new InvalidOperationException($"Profile '{newProfileName}' already exists.");
+        }
+
+        Directory.Move(sourceFolder, targetFolder);
+
+        if (string.Equals(ActiveProfile, currentProfileName, StringComparison.OrdinalIgnoreCase)) {
+            ActiveProfile = newProfileName;
+            SaveManifest();
+        }
+    }
+
+    public static void DeleteProfile(string profileName, bool switchToDefaultIfActive = true) {
+        if (string.IsNullOrWhiteSpace(profileName)) {
+            throw new ArgumentException("Profile name cannot be empty.", nameof(profileName));
+        }
+
+        if (string.Equals(profileName, DefaultProfileName, StringComparison.OrdinalIgnoreCase)) {
+            throw new InvalidOperationException("The default profile cannot be deleted.");
+        }
+
+        var folder = GetProfileFolder(profileName);
+        if (!Directory.Exists(folder)) {
+            throw new DirectoryNotFoundException($"Profile '{profileName}' does not exist.");
+        }
+
+        if (string.Equals(ActiveProfile, profileName, StringComparison.OrdinalIgnoreCase)) {
+            if (switchToDefaultIfActive) {
+                ActiveProfile = DefaultProfileName;
+                SaveManifest();
+            } else {
+                throw new InvalidOperationException("The active profile cannot be deleted without switching away from it.");
+            }
+        }
+
+        Directory.Delete(folder, recursive: true);
+    }
+
     public static void CreateProfile(string profileName, string? copyFromProfile = null) {
         if (string.IsNullOrWhiteSpace(profileName)) {
             throw new ArgumentException("Profile name cannot be empty.", nameof(profileName));
+        }
+
+        if (string.Equals(profileName, copyFromProfile, StringComparison.OrdinalIgnoreCase)) {
+            throw new InvalidOperationException("A profile cannot be cloned onto itself.");
         }
 
         var targetFolder = GetProfileFolder(profileName);

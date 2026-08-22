@@ -211,12 +211,36 @@ public static class ConfigManager {
         }
     }
 
+    public static void SwitchProfile(string profileName) {
+        if (string.IsNullOrWhiteSpace(profileName)) {
+            profileName = ProfileManager.DefaultProfileName;
+        }
+
+        if (string.Equals(ProfileManager.ActiveProfile, profileName, StringComparison.OrdinalIgnoreCase)) {
+            return;
+        }
+
+        ProfileManager.SetActiveProfile(profileName);
+        RefreshFileWatcher();
+        LoadAll();
+    }
+
     /// <summary>
     /// Initializes a background listener that updates variables on text save events
     /// </summary>
     public static void SetupFileWatcher() {
+        RefreshFileWatcher();
+    }
+
+    public static void RefreshFileWatcher() {
+        if (_watcher != null) {
+            _watcher.EnableRaisingEvents = false;
+            _watcher.Changed -= OnConfigFileChanged;
+            _watcher.Dispose();
+            _watcher = null;
+        }
+
         if (!Directory.Exists(ConfigFolder)) Directory.CreateDirectory(ConfigFolder);
-        if (_watcher != null) return;
 
         _watcher = new FileSystemWatcher {
             Path = ConfigFolder,
@@ -227,7 +251,7 @@ public static class ConfigManager {
         _watcher.Changed += OnConfigFileChanged;
         _watcher.EnableRaisingEvents = true;
 
-        Plugin.Log.LogInfo("[ConfigManager] Background configuration hot-reload watcher is active");
+        Plugin.Log.LogInfo($"[ConfigManager] Background configuration hot-reload watcher is active for profile '{ProfileManager.ActiveProfile}'");
     }
 
     private static void OnConfigFileChanged(object sender, FileSystemEventArgs e) {
