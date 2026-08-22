@@ -117,16 +117,36 @@ public static class ConfigManager {
     /// <summary>
     /// Loads a Configurable's settings from disk
     /// </summary>
+    private static void ResetConfigurableToDefaults(Configurable configurable) {
+        var allSettings = new List<Setting>();
+        CollectSettings(configurable.Elements, allSettings);
+
+        foreach (var setting in allSettings) {
+            setting.Reset();
+        }
+
+        if (configurable.HasToggling) {
+            configurable.IsEnabled = false;
+        }
+    }
+
     public static void LoadConfig(Configurable configurable) {
         lock (SyncLock) {
             if (ActiveSyncs.Contains(configurable)) return;
             ActiveSyncs.Add(configurable);
         }
+        // Plugin.Log.LogInfo($"Loading {configurable.Name}");
 
         string filePath = GetConfigPath(configurable);
         if (!File.Exists(filePath)) {
-            lock (SyncLock) {
-                ActiveSyncs.Remove(configurable);
+            try {
+                ResetConfigurableToDefaults(configurable);
+            } catch (Exception e) {
+                Plugin.Log.LogError($"[ConfigManager] Failed to reset defaults for {configurable.Name}: {e}");
+            } finally {
+                lock (SyncLock) {
+                    ActiveSyncs.Remove(configurable);
+                }
             }
             return;
         }
@@ -219,6 +239,9 @@ public static class ConfigManager {
         if (string.Equals(ProfileManager.ActiveProfile, profileName, StringComparison.OrdinalIgnoreCase)) {
             return;
         }
+
+        while (MainThreadQueue.TryDequeue(out _)) { }
+        _lastRead = DateTime.MinValue;
 
         ProfileManager.SetActiveProfile(profileName);
         RefreshFileWatcher();

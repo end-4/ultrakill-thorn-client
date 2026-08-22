@@ -70,7 +70,7 @@ public static class ProfileManager {
         return Directory.Exists(GetProfileFolder(profileName));
     }
 
-    public static void SetActiveProfile(string profileName) {
+    internal static void SetActiveProfile(string profileName) {
         if (string.IsNullOrWhiteSpace(profileName)) {
             profileName = DefaultProfileName;
         }
