@@ -120,13 +120,11 @@ public class WeaponVariantBinds : Module {
     private GunControl? gcon => GunControl.Instance;
 
     private void Switch(int weaponIndex, int variantIndex) {
-        if (!IsEnabled || Time.timeScale == 0) return;
+        if (!IsEnabled || (ClickGUI.Instance?.IsEnabled ?? false)) return;
         if ((weaponIndex is >= NumWeapons or < 0) || (variantIndex is >= NumVariants or < 0) || gcon == null || gcon.slots.Count <= weaponIndex) return;
         var slotList = gcon.slots[weaponIndex];
         if (slotList == null) return;
 
-        // This is not very clean, but the game gives us no choice
-        // Reference + "I've seen worse": https://github.com/daemon251/Ultrakill-WeaponVariantBinds/blob/580ecf6f0e150495639bcaec6ee5f48193b76bed/PluginConfig.cs#L219
         for (int i = 0; i < slotList.Count; i++) {
             var weapon = slotList[i];
             int currVariant = GunHelper.GetVariation(weapon, weaponIndex);
