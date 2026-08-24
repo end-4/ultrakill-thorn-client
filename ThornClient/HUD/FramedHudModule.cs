@@ -63,7 +63,8 @@ public abstract class FramedHudModule : HudModule {
         var cTrans = Content.transform as RectTransform;
         var fcTrans = FramedContent.transform as RectTransform;
         if (wTrans == null || cTrans == null || fcTrans == null) return;
-        cTrans.pivot = wTrans.pivot;
+        // cTrans.pivot = wTrans.pivot;
+        cTrans.pivot = new Vector2(0, 1);
         fcTrans.pivot = new Vector2(0, 1);
         UpdateOverlay();
     }
