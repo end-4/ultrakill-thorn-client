@@ -1,5 +1,6 @@
 ﻿using System;
 using NukeLib.UI;
+using NukeLib.Utils;
 using ThornClient.Managers;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,10 +16,13 @@ public class ProfileWindowController : MonoBehaviour {
     private Button? _newBtn;
     private GameObject? _profileButtonPrefab;
 
+    bool _repopulating = false;
+
     private void Start() {
         // Find targets
         _profileList = gameObject.FindRecursive("Scroll View/Viewport/Content/Modules/Profiles")?.transform;
         _newBtn = gameObject.FindRecursive("Scroll View/Viewport/Content/Modules/NewActions/NewEmpty")?.GetComponent<Button>();
+        var titlebar = gameObject.FindRecursive("Header");
 
         // Get assets
         _profileButtonPrefab = AssetManager.Get<GameObject>(
@@ -26,16 +30,23 @@ public class ProfileWindowController : MonoBehaviour {
         );
 
         // Set up stuff
+        titlebar?.GetOrAddComponent<TitlebarDragHandler>();
         if (_newBtn != null) _newBtn.onClick.AddListener(ProfileManager.CreateProfile);
-        ProfileManager.ProfilesChanged += Repopulate;
+        ProfileManager.ProfilesChanged += RepopulateNextFrame; // Somehow delaying a frame prevents crashes
         Repopulate();
     }
 
     private void OnDestroy() {
-        ProfileManager.ProfilesChanged += Repopulate;
+        ProfileManager.ProfilesChanged -= RepopulateNextFrame;
+    }
+
+    private void RepopulateNextFrame() {
+        ExecutionUtils.RunNextFrame(Repopulate);
     }
 
     private void Repopulate() {
+        if (_repopulating) return;
+        _repopulating = true;
         if (_profileList == null) return;
         foreach (Transform child in _profileList) {
             Object.Destroy(child.gameObject);
@@ -46,6 +57,9 @@ public class ProfileWindowController : MonoBehaviour {
             if (profileName == ProfileManager.DefaultProfileName) continue;
             AddProfileButton(profileName);
         }
+        gameObject.UnfuckLayoutHack();
+        ExecutionUtils.RunNextFrame(gameObject.UnfuckLayoutHack);
+        _repopulating = false;
     }
 
     private void AddProfileButton(string profileName) {

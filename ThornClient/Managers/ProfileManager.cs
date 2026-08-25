@@ -116,17 +116,10 @@ public static class ProfileManager {
     }
 
     public static void RenameProfile(string currentProfileName, string newProfileName) {
-        if (string.IsNullOrWhiteSpace(currentProfileName)) {
-            throw new ArgumentException("Current profile name cannot be empty.", nameof(currentProfileName));
-        }
-
-        if (string.IsNullOrWhiteSpace(newProfileName)) {
-            throw new ArgumentException("New profile name cannot be empty.", nameof(newProfileName));
-        }
-
-        if (string.Equals(currentProfileName, newProfileName, StringComparison.OrdinalIgnoreCase)) {
-            return;
-        }
+        if (string.IsNullOrWhiteSpace(currentProfileName))
+            throw new ArgumentException("Curr profile name can't be empty");
+        if (string.IsNullOrWhiteSpace(newProfileName)) throw new ArgumentException("New profile name cannot be empty.");
+        if (string.Equals(currentProfileName, newProfileName, StringComparison.OrdinalIgnoreCase)) return;
 
         var sourceFolder = GetProfileFolder(currentProfileName);
         if (!Directory.Exists(sourceFolder)) {
@@ -175,7 +168,7 @@ public static class ProfileManager {
     }
 
     public static void CreateProfile() {
-        var profileName = GetSafeProfileName(DefaultProfileName);
+        var profileName = GetSafeProfileName("New");
         CreateProfile(profileName);
     }
 
@@ -256,7 +249,8 @@ public static class ProfileManager {
             if (ProfileWatcher != null) return;
 
             ProfileWatcher = new FileSystemWatcher(RootConfigFolder) {
-                NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite | NotifyFilters.CreationTime,
+                NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite |
+                               NotifyFilters.CreationTime,
                 IncludeSubdirectories = false,
                 EnableRaisingEvents = true,
             };
@@ -269,16 +263,20 @@ public static class ProfileManager {
         }
     }
 
-    private static void OnConfigurationChanged(object sender, FileSystemEventArgs e) {
+    private static void OnConfigurationChanged(object sender, FileSystemEventArgs args) {
         if (_isWritingManifest) {
             return;
         }
 
-        if (string.Equals(Path.GetFileName(e.FullPath), MetadataFileName, StringComparison.OrdinalIgnoreCase)) {
+        if (string.Equals(Path.GetFileName(args.FullPath), MetadataFileName, StringComparison.OrdinalIgnoreCase)) {
             TryApplyManifestProfile();
         }
 
-        ProfilesChanged?.Invoke();
+        try {
+            ProfilesChanged?.Invoke();
+        } catch (Exception e) {
+            Plugin.Log.LogError($"[ProfileManager] Failed to invoke ProfilesChanged : {e}");
+        }
     }
 
     private static void TryApplyManifestProfile() {
