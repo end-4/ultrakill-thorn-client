@@ -1,19 +1,31 @@
-﻿using ThornClient.Core.ConfigurableElements;
+﻿using NukeLib.Utils;
+using ThornClient.Core.ConfigurableElements;
 using ThornClient.HUD;
 using ThornClient.Managers;
+using ThornClient.System;
 using UnityEngine;
 
 namespace ThornClient.Modules.HUD;
 
+/// <summary>
+/// The number of remaining rocket rides
+/// </summary>
 public class RocketRides : BoundedValueHudModule {
-    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "rocket_ride");
+    /// <inheritdoc />
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "rocket_ride");
+
+    /// <inheritdoc />
     public override string[] Tags => ["fly", "rocket", "travel", "fuel"];
 
+    /// <summary>
+    /// The total number of rides practically available
+    /// </summary>
     public Setting<int> EffectiveRides;
 
+    /// <inheritdoc />
     public RocketRides() : base("thorn.rocketRides", "Rocket Rides", "Shows number of remaining effective rocket rides",
-        5, displayIcon: AssetManager.Get<Sprite>(HudManager.BundleKey, "rocket_ride"), displayName: "Rides",
-        defaultValueColor: new Color(1, 0.5f, 0.23f)) {
+        5, displayIcon: AssetManager.Get<Sprite>(ClickGUI.BundleKey, "rocket_ride"), displayName: "Rides",
+        defaultValueColor: 0xFF5900.ToColor(), decimalPlaces: 0) {
         EffectiveRides = CreateSetting("effectiveRides", "Effective rides",
             "Number of effective rocket rides. There is no strict value, but the 6th one droops immediately and noticeably.",
             5);
@@ -24,14 +36,10 @@ public class RocketRides : BoundedValueHudModule {
         Bound = value;
     }
 
-    protected override void OnHudModuleEnable() {
-        DecimalPlaces = 0;
-    }
-
+    /// <inheritdoc />
     public override void OnUpdate() {
         var nm = NewMovement.Instance;
-        if (nm != null) {
-            Value = EffectiveRides.Value - nm.rocketRides;
-        }
+        if (nm == null) return;
+        Value = EffectiveRides.Value - nm.rocketRides;
     }
 }

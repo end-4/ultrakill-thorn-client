@@ -1,8 +1,9 @@
 ## 0.1.5
 
 - Added config profiles
+- New HUD modules: rocket fuel, clock
 - Fixed Weapon Variant Binds not working during hitstops
-- Made horizontal progress bar HUD elements have customizable length
+- Made horizontal progress bar HUD elements have customizable length and can have icon/numbers hidden. You can now have clean horizontal crosshair indicators!
 
 ## 0.1.4
 
