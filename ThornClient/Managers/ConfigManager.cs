@@ -16,7 +16,7 @@ namespace ThornClient.Managers;
 /// Handles saving and loading of configurable settings to and from disk, as well as hot-reloading when configuration files are changed externally.
 /// </summary>
 public static class ConfigManager {
-    private static readonly string ConfigFolder = Path.Combine(Paths.ConfigPath, "ThornClient", "Default");
+    private static string ConfigFolder => ProfileManager.CurrentProfileFolder;
     private static FileSystemWatcher? _watcher;
     private static DateTime _lastRead = DateTime.MinValue;
 
@@ -117,16 +117,36 @@ public static class ConfigManager {
     /// <summary>
     /// Loads a Configurable's settings from disk
     /// </summary>
+    private static void ResetConfigurableToDefaults(Configurable configurable) {
+        var allSettings = new List<Setting>();
+        CollectSettings(configurable.Elements, allSettings);
+
+        foreach (var setting in allSettings) {
+            setting.Reset();
+        }
+
+        if (configurable.HasToggling) {
+            configurable.IsEnabled = false;
+        }
+    }
+
     public static void LoadConfig(Configurable configurable) {
         lock (SyncLock) {
             if (ActiveSyncs.Contains(configurable)) return;
             ActiveSyncs.Add(configurable);
         }
+        // Plugin.Log.LogInfo($"Loading {configurable.Name}");
 
         string filePath = GetConfigPath(configurable);
         if (!File.Exists(filePath)) {
-            lock (SyncLock) {
-                ActiveSyncs.Remove(configurable);
+            try {
+                ResetConfigurableToDefaults(configurable);
+            } catch (Exception e) {
+                Plugin.Log.LogError($"[ConfigManager] Failed to reset defaults for {configurable.Name}: {e}");
+            } finally {
+                lock (SyncLock) {
+                    ActiveSyncs.Remove(configurable);
+                }
             }
             return;
         }
@@ -211,12 +231,36 @@ public static class ConfigManager {
         }
     }
 
+    static ConfigManager() {
+        ProfileManager.ProfileSwitched += OnProfileSwitched;
+    }
+
+    private static void OnProfileSwitched(string oldProfile, string newProfile) {
+        if (string.Equals(oldProfile, newProfile, StringComparison.OrdinalIgnoreCase)) return;
+
+        while (MainThreadQueue.TryDequeue(out _)) { }
+        _lastRead = DateTime.MinValue;
+
+        RefreshFileWatcher();
+        LoadAll();
+    }
+
     /// <summary>
     /// Initializes a background listener that updates variables on text save events
     /// </summary>
     public static void SetupFileWatcher() {
+        RefreshFileWatcher();
+    }
+
+    public static void RefreshFileWatcher() {
+        if (_watcher != null) {
+            _watcher.EnableRaisingEvents = false;
+            _watcher.Changed -= OnConfigFileChanged;
+            _watcher.Dispose();
+            _watcher = null;
+        }
+
         if (!Directory.Exists(ConfigFolder)) Directory.CreateDirectory(ConfigFolder);
-        if (_watcher != null) return;
 
         _watcher = new FileSystemWatcher {
             Path = ConfigFolder,
@@ -227,7 +271,7 @@ public static class ConfigManager {
         _watcher.Changed += OnConfigFileChanged;
         _watcher.EnableRaisingEvents = true;
 
-        Plugin.Log.LogInfo("[ConfigManager] Background configuration hot-reload watcher is active");
+        Plugin.Log.LogInfo($"[ConfigManager] Background configuration hot-reload watcher is active for profile '{ProfileManager.ActiveProfile}'");
     }
 
     private static void OnConfigFileChanged(object sender, FileSystemEventArgs e) {

@@ -30,6 +30,7 @@ public class Plugin : BaseUnityPlugin {
         if (Instance != null) return;
         Instance = this;
 
+        ProfileManager.Initialize();
         AssetManager.Initialize();
         HudManager.Initialize();
         EffectManager.Initialize();
