@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NukeLib.UI;
 using NukeLib.Utils;
+using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.UI;
 using ThornClient.HUD.HUDComponents;
@@ -139,6 +140,10 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     public Setting<bool> ShowName;
     public Setting<Color> ValueColor;
 
+    public Setting<float> ProgressLength;
+    public Setting<bool> ProgressShowIcon;
+    public Setting<bool> ProgressShowNumbers;
+
     /// <summary>
     /// The color of the soft bound fill element of the indicator.
     /// </summary>
@@ -159,7 +164,9 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     public BoundedValueHudModule(string guid, string name, string description, float bound = 1, string displayName = "",
         Sprite? displayIcon = null, int decimalPlaces = 1, Color? defaultValueColor = null,
         Color? defaultSoftBoundColor = null) : base(guid,
-        name, description) {
+        name, description
+    ) {
+        // Settings
         Style = CreateSetting("indicatorStyle", "Indicator style", "The style to present the value",
             IndicatorStyle.Progress);
         ShowName = CreateSetting("showName", "Show name", "The name of the value", true);
@@ -169,6 +176,21 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound color",
             "The color of the soft bound, for example HP hard damage",
             defaultSoftBoundColor ?? new Color(1f, 1f, 1f, 0.36f), ColorGroup);
+        var progressGroup = CreateGroup("styleProgress", "Style: Progress", "Settings specific to the Progress style");
+        ProgressLength = CreateSetting(
+            "progressLength", "Length", "How long the bar should be",
+            194f, progressGroup
+        ); // 194 to avoid breaking change
+        ProgressShowIcon = CreateSetting(
+            "progressShowIcon", "Show icon", "Whether to show the icon",
+            true, progressGroup
+        );
+        ProgressShowNumbers = CreateSetting(
+            "progressShowNumbers", "Show numbers", "Whether to show numbers",
+            true, progressGroup
+        );
+
+        // Hooks/setups
         ShowName.OnChanged += UnfuckLayouts;
         SceneUtils.SafeSceneLoadedDelayedNoParam += UnfuckLayouts;
         Style.OnValueChanged += SwitchStyle;

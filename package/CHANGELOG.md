@@ -2,6 +2,7 @@
 
 - Added config profiles
 - Fixed Weapon Variant Binds not working during hitstops
+- Made horizontal progress bar HUD elements have customizable length
 
 ## 0.1.4
 
