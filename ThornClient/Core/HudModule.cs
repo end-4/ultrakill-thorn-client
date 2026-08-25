@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using NukeLib.UI;
+using NukeLib.Utils;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.HUD.HUDComponents;
 using ThornClient.Managers;
@@ -13,6 +14,8 @@ namespace ThornClient.Core;
 /// The base class for HUD modules
 /// </summary>
 public abstract class HudModule : Module {
+    internal bool PositionResetFlag = false;
+
     /// <summary>
     /// X position of the module
     /// </summary>
@@ -46,7 +49,7 @@ public abstract class HudModule : Module {
     /// <summary>
     /// Default local position for each surface
     /// </summary>
-    public static Dictionary<HudSurface, Vector3> DefaultLocalPosition = new Dictionary<HudSurface, Vector3> {
+    public static Dictionary<HudSurface, Vector3> BaseLocalPosition = new Dictionary<HudSurface, Vector3> {
         { HudSurface.Left, new Vector3(-484f, 344f, 45f) },
         { HudSurface.Right, new Vector3(-232f, -288, 1.0f) },
         { HudSurface.Overlay, new Vector3(0, 0, 0) }
@@ -74,19 +77,25 @@ public abstract class HudModule : Module {
     protected HudModule(string guid, string name, string description, float defaultPositionX = 0,
         float defaultPositionY = 0, float defaultPivotX = 0, float defaultPivotY = 1)
         : base(guid, name, description, ModuleCategory.Hud, hasToggling: true) {
-        PositionX = CreateSetting("positionX", "Position X", "Horizontal position relative to the origin",
+        PositionX = CreateSetting("positionX", "Position X", "Horizontal position",
             defaultPositionX);
-        PositionY = CreateSetting("positionY", "Position Y", "Vertical position relative to the origin",
+        PositionY = CreateSetting("positionY", "Position Y", "Vertical position",
             defaultPositionY);
         Surface = CreateSetting("surface", "Surface",
             "The surface this component is on. Left is gun panel, Right is style panel, Overlay is normal HUD",
             HudSurface.Overlay);
+        var resetPosButton = CreateButtonRow("resetPos", "Reset position", "Resets the position to the origin",
+            ["Reset position"]);
+        resetPosButton.OnClick += _ => {
+            ResetPosition(Surface.Value);
+        };
+        CreateHeader("resetTip", "", "You might want to reset position after changing the surface if it's not visible");
         PivotX = CreateSetting("pivotX", "Pivot X", "X (0-1) of origin point that the element expands around",
             defaultPivotX);
         PivotY = CreateSetting("pivotY", "Pivot Y", "Y (0-1) of origin point that the element expands around",
             defaultPivotY);
 
-        Surface.OnValueChanged += ResetPositionIfNeeded;
+        // Surface.OnValueChanged += ResetPositionIfNeeded;
         var hideHint = new InterfaceHints {
             Hidden = true,
         };
@@ -125,8 +134,8 @@ public abstract class HudModule : Module {
     protected RectTransform? ContentRect;
 
     private void InitializeIfNeeded() {
-        if (!IsEnabled || SceneHelper.CurrentScene == null)
-            return; // Lazy loading and don't create stuff when not possible
+        // Lazy loading and don't create stuff when not possible
+        if (!IsEnabled || !SceneUtils.IsSafe()) return;
         if (Wrapper == null) {
             Wrapper = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "Wrapper"));
             WrapperRect = Wrapper.transform as RectTransform;
@@ -152,15 +161,10 @@ public abstract class HudModule : Module {
         UpdateOverlay();
     }
 
-    private void ResetPositionIfNeeded(HudSurface surface) {
-        // If it's initial config load don't reset.
-        // Hack(-ish): undefined scene name = first config load
-        // It *is* true, it's just weird
-        // Plugin.Log.LogInfo($"hud module might reset pos in scene {SceneHelper.CurrentScene}");
+    public void ResetPosition(HudSurface surface) {
         if (string.IsNullOrEmpty(SceneHelper.CurrentScene)) return;
-        // Plugin.Log.LogInfo($"indeed");
-        PositionX.Value = DefaultLocalPosition[surface].x;
-        PositionY.Value = DefaultLocalPosition[surface].y;
+        PositionX.Value = BaseLocalPosition[surface].x;
+        PositionY.Value = BaseLocalPosition[surface].y;
     }
 
     protected virtual void OnHudModuleEnable() {
@@ -198,6 +202,10 @@ public abstract class HudModule : Module {
     /// <param name="newSurface">The new surface</param>
     public void Reparent(HudSurface newSurface) {
         if (WrapperRect == null || !HudManager.GetSurface(newSurface, out var surfaceGo) || surfaceGo == null) return;
+        if (PositionResetFlag) {
+            PositionResetFlag = false;
+            ResetPosition(newSurface);
+        }
 
         // Plugin.Log.LogInfo($"{GetType().Name} reparenting to {newSurface}");
         WrapperRect.SetParent(surfaceGo.transform, false);

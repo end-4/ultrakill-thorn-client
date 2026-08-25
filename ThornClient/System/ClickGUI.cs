@@ -43,7 +43,7 @@ public class ClickGUI : SystemModule {
     private GameObject? _modulePage;
     private GameObject? _hudPage;
     private GameObject? _settingsPage;
-    private GameObject? _configPopupPage;
+    private GameObject? _profilesPage;
     private readonly Stack<GameObject> _panelStack = new();
     private GameObject? _tooltip;
     private GameObject? _tabBarButtonRow;
@@ -68,6 +68,7 @@ public class ClickGUI : SystemModule {
         var tabButtonPrefab = AssetManager.Get<GameObject>(BundleKey, "TabButton");
         var moduleCategoryPrefab = AssetManager.Get<GameObject>(BundleKey, "ModuleCategory");
         var searchPrefab = AssetManager.Get<GameObject>(BundleKey, "SearchWindow");
+        var profilesPrefab = AssetManager.Get<GameObject>(BundleKey, "ProfileWindow");
 
         // Make the canvas
         _canvas = Object.Instantiate(basePrefab);
@@ -84,11 +85,13 @@ public class ClickGUI : SystemModule {
         _modulePage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
         _hudPage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
         _settingsPage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
+        _profilesPage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
 
         _tabPages.Add(Tuple.Create(ModuleTabName, _modulePage));
         _tabPages.Add(Tuple.Create(HudTabName, _hudPage));
         _tabPages.Add(Tuple.Create("Settings", _settingsPage));
-        _lastTabName = "Modules";
+        _tabPages.Add(Tuple.Create("Profiles", _profilesPage));
+        _lastTabName = ModuleTabName;
 
         // Populate page: Module
         for (int i = 0; i < Enum.GetValues(typeof(ModuleCategory)).Length; i++) {
@@ -131,13 +134,19 @@ public class ClickGUI : SystemModule {
         // Populate page: Settings
         var settingsObj = Object.Instantiate(moduleCategoryPrefab);
         AddToLayoutedPage(_settingsPage, settingsObj);
-        var settingRect = (RectTransform)settingsObj.transform;
-        settingRect.pivot = new Vector2(0.5f, 0.5f);
-        settingRect.localPosition = new Vector3(0f, 0f, 0f);
+        // var settingRect = (RectTransform)settingsObj.transform;
+        // settingRect.pivot = new Vector2(0.5f, 0.5f);
+        // settingRect.localPosition = new Vector3(0f, 0f, 0f);
         var configController = settingsObj.GetOrAddComponent<ConfigurableWindowController>();
         configController.TargetConfigurable = ThornModule.Instance;
-        // settingsObj.UnfuckLayoutHack();
         _settingsPage.UnfuckLayoutHack();
+
+        // Populate page: Profiles
+        var profilesObj = Object.Instantiate(profilesPrefab);
+        AddToLayoutedPage(_profilesPage, profilesObj);
+        var profilesController = profilesObj.GetOrAddComponent<ProfileWindowController>();
+
+        _profilesPage.UnfuckLayoutHack();
 
         // Add buttons to tab bar
         _tabBarButtonRow = _tabBar.FindRecursive("Tabs");

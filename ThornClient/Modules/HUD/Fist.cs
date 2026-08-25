@@ -19,7 +19,7 @@ namespace ThornClient.Modules.HUD;
 /// </summary>
 public class Fist : FramedHudModule {
     /// <inheritdoc />
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "feedbacker");
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "hand");
 
     /// <inheritdoc />
     public override string[] Tags => ["hand", "punch", "feedbacker", "knuckleblaster"];
