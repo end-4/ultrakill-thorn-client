@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using NukeLib.Utils;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
@@ -12,10 +13,11 @@ namespace ThornClient.System;
 /// The module that houses general settings of Thorn
 /// </summary>
 public class ThornModule : SystemModule {
-
     public enum TimeHourFormat {
-        Twelve, TwentyFour
-    } 
+        Twelve,
+        TwentyFour
+    }
+
     /// <summary>
     /// The instance of this module
     /// </summary>
@@ -60,7 +62,7 @@ public class ThornModule : SystemModule {
     /// The time format in the ClickGUI, either 12h or 24h
     /// </summary>
     public Setting<TimeHourFormat> TimeFormat;
-    
+
     /// <summary>
     /// Whether to force the Configgy button to have proper spacing
     /// </summary>
@@ -88,6 +90,7 @@ public class ThornModule : SystemModule {
         OpenClickGUI.OnPress += () => {
             if (ClickGUI.Instance == null) return;
             ClickGUI.Instance.Toggle();
+            PreventSoftlock();
         };
 
         MenuPausesGame = CreateSetting(
@@ -105,6 +108,7 @@ public class ThornModule : SystemModule {
             MenuPausesGame.Value = false;
             ClickGUI.Instance.Toggle();
             MenuPausesGame.Value = tmp;
+            PreventSoftlock();
         };
         SwitchTabLeft = CreateSetting("switchTabLeft", "Switch to tab on the left", "Switch to tab on the left",
             new Keybind(KeyCode.PageUp, modifier: KeyCode.LeftControl), otherBinds);
@@ -121,7 +125,8 @@ public class ThornModule : SystemModule {
             new Color(0.65f, 0.95f, 0.89f));
 
         var uiGroup = CreateGroup("uiGroup", "More interface settings", "Stuff related to the user interface");
-        TimeFormat = CreateSetting("timeFormat", "Time format", "Used on the menu's top bar", TimeHourFormat.Twelve, uiGroup);
+        TimeFormat = CreateSetting("timeFormat", "Time format", "Used on the menu's top bar", TimeHourFormat.Twelve,
+            uiGroup);
         TimeFormat.Hints = new InterfaceHints {
             EnumSubstitutions = new Dictionary<string, string> {
                 ["Twelve"] = "12h",
@@ -164,6 +169,16 @@ public class ThornModule : SystemModule {
             "The version of Thorn run in the previous/current session", "0.0.0", devGroup);
 
         PauseMenuButton.Initialize();
+    }
+
+    private void PreventSoftlock() {
+        ExecutionUtils.RunNextFrame(() => {
+            if (OpenClickGUI.Value.Key == KeyCode.Mouse0 || OpenClickGUI.Value.Modifier == KeyCode.Mouse0)
+                OpenClickGUI.Reset();
+            if (OpenClickGUIUnpaused.Value.Key == KeyCode.Mouse0 ||
+                OpenClickGUIUnpaused.Value.Modifier == KeyCode.Mouse0)
+                OpenClickGUIUnpaused.Reset();
+        });
     }
 
     public override void OnUpdate() {
