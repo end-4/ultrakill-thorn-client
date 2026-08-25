@@ -80,6 +80,36 @@ public static class ProfileManager {
         SaveManifest();
     }
 
+    /// <summary>
+    /// The event fired when the profile changes.
+    /// The first argument is the old profile name, and the second is the new profile name.
+    /// </summary>
+    public static event Action<string, string>? ProfileSwitched;
+
+    /// <summary>
+    /// Switches the active profile and notifies listeners if the profile actually changed.
+    /// Returns true if a switch occurred, false if the requested profile was already active.
+    /// </summary>
+    public static bool SwitchProfile(string profileName) {
+        if (string.IsNullOrWhiteSpace(profileName)) {
+            profileName = DefaultProfileName;
+        }
+
+        if (string.Equals(ActiveProfile, profileName, StringComparison.OrdinalIgnoreCase)) {
+            return false;
+        }
+
+        var old = ActiveProfile;
+        SetActiveProfile(profileName);
+        try {
+            ProfileSwitched?.Invoke(old, ActiveProfile);
+        } catch (Exception) {
+            // Listener exceptions should not break profile switching
+        }
+
+        return true;
+    }
+
     public static void RenameProfile(string currentProfileName, string newProfileName) {
         if (string.IsNullOrWhiteSpace(currentProfileName)) {
             throw new ArgumentException("Current profile name cannot be empty.", nameof(currentProfileName));
@@ -130,7 +160,9 @@ public static class ProfileManager {
                 ActiveProfile = DefaultProfileName;
                 SaveManifest();
             } else {
-                throw new InvalidOperationException("The active profile cannot be deleted without switching away from it.");
+                throw new InvalidOperationException(
+                    "The active profile cannot be deleted without switching away from it."
+                );
             }
         }
 

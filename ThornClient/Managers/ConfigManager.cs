@@ -231,19 +231,16 @@ public static class ConfigManager {
         }
     }
 
-    public static void SwitchProfile(string profileName) {
-        if (string.IsNullOrWhiteSpace(profileName)) {
-            profileName = ProfileManager.DefaultProfileName;
-        }
+    static ConfigManager() {
+        ProfileManager.ProfileSwitched += OnProfileSwitched;
+    }
 
-        if (string.Equals(ProfileManager.ActiveProfile, profileName, StringComparison.OrdinalIgnoreCase)) {
-            return;
-        }
+    private static void OnProfileSwitched(string oldProfile, string newProfile) {
+        if (string.Equals(oldProfile, newProfile, StringComparison.OrdinalIgnoreCase)) return;
 
         while (MainThreadQueue.TryDequeue(out _)) { }
         _lastRead = DateTime.MinValue;
 
-        ProfileManager.SetActiveProfile(profileName);
         RefreshFileWatcher();
         LoadAll();
     }
