@@ -57,7 +57,7 @@ public static class AssetManager {
     /// <param name="assetName">The name of the asset in the bundle</param>
     /// <typeparam name="T">The type of the asset</typeparam>
     /// <returns>The asset</returns>
-    public static T Get<T>(string bundleKey, string assetName) where T : Object {
+    public static T? Get<T>(string bundleKey, string assetName) where T : Object {
         // Try exact type lookup first (e.g. "clickGui/Sprite/sun")
         string exactKey = BuildKey(bundleKey, typeof(T), assetName);
         if (Objects.TryGetValue(exactKey, out var asset)) {

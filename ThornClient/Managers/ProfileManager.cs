@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ThornClient.Managers;
 
@@ -17,11 +16,16 @@ public static class ProfileManager {
     public static string RootConfigFolder { get; } = Path.Combine(BepInEx.Paths.ConfigPath, "ThornClient");
     public static string ActiveProfile { get; private set; } = DefaultProfileName;
     public static string CurrentProfileFolder => GetProfileFolder(ActiveProfile);
+    public static event Action? ProfilesChanged;
 
     private static readonly JsonSerializerSettings ManifestSerializerSettings = new() {
         Formatting = Formatting.Indented,
         NullValueHandling = NullValueHandling.Ignore,
     };
+
+    private static FileSystemWatcher? ProfileWatcher;
+    private static readonly object ProfileWatcherSync = new();
+    private static bool _isWritingManifest;
 
     private sealed class ProfileManifest {
         public string ActiveProfile { get; set; } = DefaultProfileName;
@@ -32,6 +36,7 @@ public static class ProfileManager {
 
         EnsureProfileDirectory(DefaultProfileName);
         EnsureManifest();
+        EnsureWatcher();
 
         if (!TryLoadActiveProfileFromManifest()) {
             ActiveProfile = DefaultProfileName;
@@ -169,6 +174,11 @@ public static class ProfileManager {
         Directory.Delete(folder, recursive: true);
     }
 
+    public static void CreateProfile() {
+        var profileName = GetSafeProfileName(DefaultProfileName);
+        CreateProfile(profileName);
+    }
+
     public static void CreateProfile(string profileName, string? copyFromProfile = null) {
         if (string.IsNullOrWhiteSpace(profileName)) {
             throw new ArgumentException("Profile name cannot be empty.", nameof(profileName));
@@ -196,6 +206,34 @@ public static class ProfileManager {
         Directory.CreateDirectory(targetFolder);
     }
 
+    public static string GetSafeProfileName(string baseName) {
+        if (string.IsNullOrWhiteSpace(baseName)) {
+            baseName = "New";
+        }
+
+        var candidateName = baseName;
+        var index = 1;
+
+        while (Directory.Exists(GetProfileFolder(candidateName))) {
+            candidateName = $"{baseName} ({index++})";
+        }
+
+        return candidateName;
+    }
+
+    public static void CloneProfile(string sourceProfileName) {
+        if (string.IsNullOrWhiteSpace(sourceProfileName)) {
+            throw new ArgumentException("Source profile name cannot be empty.", nameof(sourceProfileName));
+        }
+
+        var sourceFolder = GetProfileFolder(sourceProfileName);
+        if (!Directory.Exists(sourceFolder)) {
+            throw new DirectoryNotFoundException($"Source profile '{sourceProfileName}' does not exist.");
+        }
+
+        CloneProfile(sourceProfileName, GetSafeProfileName(sourceProfileName));
+    }
+
     public static void CloneProfile(string sourceProfileName, string newProfileName) {
         CreateProfile(newProfileName, sourceProfileName);
     }
@@ -213,13 +251,86 @@ public static class ProfileManager {
         File.WriteAllText(manifestPath, JsonConvert.SerializeObject(manifest, ManifestSerializerSettings));
     }
 
+    private static void EnsureWatcher() {
+        lock (ProfileWatcherSync) {
+            if (ProfileWatcher != null) return;
+
+            ProfileWatcher = new FileSystemWatcher(RootConfigFolder) {
+                NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite | NotifyFilters.CreationTime,
+                IncludeSubdirectories = false,
+                EnableRaisingEvents = true,
+            };
+
+            ProfileWatcher.Changed += OnConfigurationChanged;
+            ProfileWatcher.Created += OnConfigurationChanged;
+            ProfileWatcher.Deleted += OnConfigurationChanged;
+            ProfileWatcher.Renamed += OnConfigurationChanged;
+            ProfileWatcher.Error += (_, _) => { };
+        }
+    }
+
+    private static void OnConfigurationChanged(object sender, FileSystemEventArgs e) {
+        if (_isWritingManifest) {
+            return;
+        }
+
+        if (string.Equals(Path.GetFileName(e.FullPath), MetadataFileName, StringComparison.OrdinalIgnoreCase)) {
+            TryApplyManifestProfile();
+        }
+
+        ProfilesChanged?.Invoke();
+    }
+
+    private static void TryApplyManifestProfile() {
+        if (!TryGetManifestActiveProfile(out var desiredProfile)) {
+            return;
+        }
+
+        if (!Directory.Exists(GetProfileFolder(desiredProfile))) {
+            return;
+        }
+
+        if (string.Equals(ActiveProfile, desiredProfile, StringComparison.OrdinalIgnoreCase)) {
+            return;
+        }
+
+        var oldProfile = ActiveProfile;
+        ActiveProfile = desiredProfile;
+        try {
+            ProfileSwitched?.Invoke(oldProfile, ActiveProfile);
+        } catch (Exception) {
+            // Listener exceptions should not break profile switching
+        }
+    }
+
     private static void SaveManifest() {
         var manifestPath = Path.Combine(RootConfigFolder, MetadataFileName);
         var manifest = new ProfileManifest { ActiveProfile = ActiveProfile };
-        File.WriteAllText(manifestPath, JsonConvert.SerializeObject(manifest, ManifestSerializerSettings));
+
+        _isWritingManifest = true;
+        try {
+            File.WriteAllText(manifestPath, JsonConvert.SerializeObject(manifest, ManifestSerializerSettings));
+        } finally {
+            _isWritingManifest = false;
+        }
     }
 
     private static bool TryLoadActiveProfileFromManifest() {
+        if (!TryGetManifestActiveProfile(out var profileName)) {
+            return false;
+        }
+
+        if (!Directory.Exists(GetProfileFolder(profileName))) {
+            return false;
+        }
+
+        ActiveProfile = profileName;
+        return true;
+    }
+
+    private static bool TryGetManifestActiveProfile(out string profileName) {
+        profileName = string.Empty;
+
         var manifestPath = Path.Combine(RootConfigFolder, MetadataFileName);
         if (!File.Exists(manifestPath)) return false;
 
@@ -230,7 +341,7 @@ public static class ProfileManager {
                 return false;
             }
 
-            ActiveProfile = manifest.ActiveProfile;
+            profileName = manifest.ActiveProfile;
             return true;
         } catch (Exception) {
             return false;
