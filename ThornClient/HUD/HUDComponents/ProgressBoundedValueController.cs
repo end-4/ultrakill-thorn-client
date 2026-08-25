@@ -52,6 +52,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
 
         UpdateName();
         UpdateIcon();
+        UpdateNumbersVisibility();
         UpdateValue();
         UpdateSoftBound();
         gameObject.UnfuckLayoutHack();
@@ -66,6 +67,9 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         TargetModule.SoftBoundChanged += UpdateSoftBound;
         TargetModule.DecimalPlacesChanged += UpdateValue;
         TargetModule.DecimalPlacesChanged += UpdateSoftBound;
+        TargetModule.ProgressLength.OnChanged += UpdateValue;
+        TargetModule.ProgressShowIcon.OnChanged += UpdateIcon;
+        TargetModule.ProgressShowNumbers.OnChanged += UpdateNumbersVisibility;
     }
 
     private void OnDestroy() {
@@ -79,6 +83,9 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         TargetModule.SoftBoundChanged -= UpdateSoftBound;
         TargetModule.DecimalPlacesChanged -= UpdateValue;
         TargetModule.DecimalPlacesChanged -= UpdateSoftBound;
+        TargetModule.ProgressLength.OnChanged -= UpdateValue;
+        TargetModule.ProgressShowIcon.OnChanged -= UpdateIcon;
+        TargetModule.ProgressShowNumbers.OnChanged -= UpdateNumbersVisibility;
     }
 
     private void UpdateName() {
@@ -95,10 +102,13 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     }
 
     private void UpdateIcon(Sprite? value) {
-        if (_icon == null || _icon.sprite == value) return;
+        if (_icon == null || TargetModule == null) return;
         // Plugin.Log.LogInfo($"Set icon to {value}");
-        _icon.sprite = value;
-        if (_icon.gameObject.activeSelf != (value == null)) _icon.gameObject.SetActive(value != null);
+        var actualValue = value;
+        if (!TargetModule.ProgressShowIcon.Value) actualValue = null;
+        if (_icon.sprite == actualValue) return;
+        _icon.sprite = actualValue;
+        if (_icon.gameObject.activeSelf != (_icon.sprite != null)) _icon.gameObject.SetActive(_icon.sprite != null);
     }
 
     private void UpdateValue(float _) {
@@ -114,7 +124,8 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         var normalizedSoftBound = Math.Clamp( // normalized softbound segment width
             (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
         );
-        if (_transTrough == null || _transValue == null || _transSoftBound == null) return;
+        if (TargetModule == null || _transTrough == null || _transValue == null || _transSoftBound == null) return;
+        _transTrough.sizeDelta = new Vector2(TargetModule.ProgressLength.Value, _transTrough.sizeDelta.y);
         var height = _transValue.sizeDelta.y;
         var width = _transValue.sizeDelta.x;
         var softWidth = _transSoftBound.sizeDelta.x;
@@ -129,7 +140,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
             _transSoftBound.sizeDelta = new Vector2(availableWidth * normalizedSoftBound, height);
         }
 
-        _textValue?.SetText($"{Math.Round(TargetModule?.Value ?? 0, TargetModule?.DecimalPlaces ?? 1)}");
+        if (_textValue != null) _textValue.SetText($"{Math.Round(TargetModule?.Value ?? 0, TargetModule?.DecimalPlaces ?? 1)}");
     }
 
     private void UpdateSoftBound(int _) {
@@ -143,5 +154,12 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     private void UpdateSoftBound() {
         var value = (TargetModule?.Bound ?? 1) - (TargetModule?.BoundReduction ?? 0);
         _textCap?.SetText($"/{Math.Round(value, TargetModule?.DecimalPlaces ?? 1)}");
+    }
+
+    private void UpdateNumbersVisibility() {
+        if (TargetModule == null || _textValue == null || _textCap == null) return;
+        bool visible = TargetModule.ProgressShowNumbers.Value;
+        if (visible != _textValue.gameObject.activeSelf) _textValue.gameObject.SetActive(visible);
+        if (visible != _textCap.gameObject.activeSelf) _textCap.gameObject.SetActive(visible);
     }
 }

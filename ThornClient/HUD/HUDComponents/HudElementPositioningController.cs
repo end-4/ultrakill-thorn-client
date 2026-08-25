@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Core;
+using ThornClient.Managers;
 using ThornClient.System;
 using ThornClient.System.ClickGUIComponents;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace ThornClient.HUD.HUDComponents;
 /// <summary>
 /// Component to add to the GameObject that controls the positioning of a HUD element.
 /// </summary>
-internal class HudElementPositioningController : FreeMoveDragHandler, IEndDragHandler, IPointerEnterHandler,
+internal class HudElementPositioningController : FreeMoveDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler,
     IPointerExitHandler, IPointerClickHandler {
     /// <summary>
     /// The HUD module that this controller is associated with.
@@ -22,6 +23,10 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IEndDragHa
     public HudModule? TargetModule;
 
     private GameObject? _dragOverlay;
+
+    private Vector2 _hotspot = new Vector2(48, 48);
+    private bool _dragging = false;
+    private bool _hovering = false;
 
     private struct PivotChoice {
         public string Path;
@@ -80,6 +85,10 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IEndDragHa
         UpdatePivotDisplay();
     }
 
+    private void OnDisable() {
+        UpdateCursor();
+    }
+
     private void OnDestroy() {
         if (TargetModule != null) {
             TargetModule.PivotX.OnValueChanged -= UpdatePivotDisplay;
@@ -117,7 +126,13 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IEndDragHa
         }
     }
 
+    public void OnBeginDrag(PointerEventData eventData) {
+        _dragging = true;
+    }
+
     public void OnEndDrag(PointerEventData eventData) {
+        _dragging = false;
+        UpdateCursor();
         if (TargetModule == null || target == null) return;
         // Use the target's position, as it's the element being moved.
         TargetModule.PositionX.Value = (float)Math.Round(target.localPosition.x, 1);
@@ -132,12 +147,16 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IEndDragHa
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
+        _hovering = true;
+        UpdateCursor();
         if (_dragOverlay == null) return;
         _dragOverlay.SetActive(true);
         _dragOverlay.transform.SetAsLastSibling();
     }
 
     public void OnPointerExit(PointerEventData eventData) {
+        _hovering = false;
+        UpdateCursor();
         if (_dragOverlay == null) return;
         _dragOverlay.SetActive(false);
     }
@@ -145,6 +164,15 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IEndDragHa
     public void OnPointerClick(PointerEventData eventData) {
         if (eventData.button == PointerEventData.InputButton.Right && _dragOverlay != null) {
             ClickGUI.NestConfigPanel(TargetModule);
+        }
+    }
+
+    private void UpdateCursor() {
+        if (_hovering || _dragging) {
+            Cursor.SetCursor(AssetManager.Get<Texture2D>(ClickGUI.BundleKey, "move_cursor"), _hotspot,
+                CursorMode.Auto);
+        } else {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         }
     }
 }
