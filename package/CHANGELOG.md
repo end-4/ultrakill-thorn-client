@@ -1,7 +1,7 @@
 ## 0.1.4
 
 - New modules: Force Enrage, Resize Enemies, Edges (World)
-- Made viewmodel tweaks work with arms
+- Made viewmodel tweaks edges work with arms
 - Added 12h/24h option for ClickGUI top bar clock
 - Fixed hasToggling constructor param for Modules not working
 - Fixed tooltip positioning that made buttons unclickable in certain cases
