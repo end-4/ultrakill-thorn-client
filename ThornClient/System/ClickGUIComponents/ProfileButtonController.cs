@@ -49,8 +49,10 @@ public class ProfileButtonController : MonoBehaviour {
         if (_delete != null) {
             if (ProfileName != ProfileManager.DefaultProfileName)
                 _delete.onClick.AddListener(() => { ProfileManager.DeleteProfile(ProfileName); });
-            else
+            else {
                 _delete.interactable = false;
+                if (_inputBorder != null) _inputBorder.color = Color.clear;
+            }
         }
 
         ProfileManager.ProfileSwitched += UpdateActive;
