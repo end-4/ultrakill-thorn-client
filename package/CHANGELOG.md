@@ -1,3 +1,7 @@
+## 0.1.5
+
+- Added config profiles
+
 ## 0.1.4
 
 - New modules: Force Enrage, Resize Enemies, Edges (World)

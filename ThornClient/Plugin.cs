@@ -22,7 +22,7 @@ public class Plugin : BaseUnityPlugin {
     public static string workingDir = Path.GetDirectoryName(workingPath);
     public const string PluginGUID = "com.github.end-4.thornClient";
     public const string PluginName = "Thorn";
-    public const string PluginVersion = "0.1.4";
+    public const string PluginVersion = "0.1.5";
     public static string PluginIconPath = Path.Combine(workingDir, "icon.png");
 
     private void Awake() {

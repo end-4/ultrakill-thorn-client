@@ -271,7 +271,7 @@ public static class ConfigManager {
         _watcher.Changed += OnConfigFileChanged;
         _watcher.EnableRaisingEvents = true;
 
-        Plugin.Log.LogInfo($"[ConfigManager] Background configuration hot-reload watcher is active for profile '{ProfileManager.ActiveProfile}'");
+        // Plugin.Log.LogInfo($"[ConfigManager] Background configuration hot-reload watcher is active for profile '{ProfileManager.ActiveProfile}'");
     }
 
     private static void OnConfigFileChanged(object sender, FileSystemEventArgs e) {

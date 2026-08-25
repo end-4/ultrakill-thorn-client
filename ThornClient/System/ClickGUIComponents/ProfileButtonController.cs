@@ -20,7 +20,7 @@ public class ProfileButtonController : MonoBehaviour {
     private Button? _delete;
     private Image? _icon;
     private TextMeshProUGUI? _nameText;
-    private TMP_InputField? _name;
+    private TMP_InputField? _nameInput;
     private Image? _inputBorder;
 
     private void Start() {
@@ -28,7 +28,7 @@ public class ProfileButtonController : MonoBehaviour {
         if (ProfileName == string.Empty) return;
 
         // Find targets
-        _name = gameObject.FindRecursive("Input")?.GetComponent<TMP_InputField>();
+        _nameInput = gameObject.FindRecursive("Input")?.GetComponent<TMP_InputField>();
         _inputBorder = gameObject.FindRecursive("Input")?.GetComponent<Image>();
         _nameText = gameObject.FindRecursive("Input/Text Area/Text")?.GetComponent<TextMeshProUGUI>();
         _icon = gameObject.FindRecursive("Icon")?.GetComponent<Image>();
@@ -37,10 +37,10 @@ public class ProfileButtonController : MonoBehaviour {
         _delete = gameObject.FindRecursive("Actions/Delete")?.GetComponent<Button>();
 
         // Update stuff
-        if (_name != null) {
-            _name.text = ProfileName;
-            if (ProfileName == ProfileManager.DefaultProfileName) _name.interactable = false;
-            _name.onEndEdit.AddListener(TryRename);
+        if (_nameInput != null) {
+            _nameInput.text = ProfileName;
+            if (ProfileName == ProfileManager.DefaultProfileName) _nameInput.interactable = false;
+            _nameInput.onEndEdit.AddListener(TryRename);
         }
 
         if (_icon != null) _icon.sprite = GetIconForName(ProfileName);
@@ -51,7 +51,10 @@ public class ProfileButtonController : MonoBehaviour {
                 _delete.onClick.AddListener(() => { ProfileManager.DeleteProfile(ProfileName); });
             else {
                 _delete.interactable = false;
-                if (_inputBorder != null) _inputBorder.color = Color.clear;
+                if (_inputBorder != null) {
+                    _inputBorder.color = Color.clear;
+                    _inputBorder.raycastTarget = false;
+                }
             }
         }
 
@@ -83,7 +86,7 @@ public class ProfileButtonController : MonoBehaviour {
     }
 
     private void RevertRename() {
-        if (_name != null) _name.text = ProfileName;
+        if (_nameInput != null) _nameInput.text = ProfileName;
     }
 
     private void UpdateActive(string _, string newProfileName) {
