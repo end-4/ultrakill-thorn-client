@@ -1,6 +1,7 @@
 ## 0.1.5
 
 - Added config profiles
+- Fixed Weapon Variant Binds not working during hitstops
 
 ## 0.1.4
 
