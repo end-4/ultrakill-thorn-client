@@ -23,7 +23,7 @@ public record InterfaceHints {
     public bool? EnumPreferButtonGroup;
 
     /// <summary>
-    /// When true forces bool settings to use a checkmark instead of a switch: [x] <- ( o)
+    /// When true forces bool settings to use a checkmark instead of a switch like [x] instead of ( o)
     /// </summary>
     public bool? BoolPreferCheckmark;
 
@@ -42,4 +42,16 @@ public record InterfaceHints {
     /// For extra non-standard hints. To be used by custom UI elements when that becomes a thing
     /// </summary>
     public Dictionary<string, object>? ExtraHints;
+
+    /// <summary>
+    /// Construct a range hint
+    /// </summary>
+    /// <param name="from">From what</param>
+    /// <param name="to">To what</param>
+    /// <returns>The interface hint with (only) the range</returns>
+    public static InterfaceHints RangeHint(float from = 0, float to = 1) {
+        return new InterfaceHints {
+            Range = Tuple.Create(0f, 1f)
+        };
+    }
 }
