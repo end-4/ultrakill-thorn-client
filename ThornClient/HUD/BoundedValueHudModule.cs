@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using NukeLib.UI;
 using NukeLib.Utils;
-using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.UI;
 using ThornClient.HUD.HUDComponents;
 using ThornClient.Managers;
 using UnityEngine;
-using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace ThornClient.HUD;
@@ -31,6 +29,16 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         /// The circular style, like Taberry's cybergrind wave progress indicator
         /// </summary>
         Circular = 1,
+
+        /// <summary>
+        /// The straight line style but vertical
+        /// </summary>
+        VerticalProgress = 2,
+
+        /// <summary>
+        /// Circle like vanilla crosshair HUD
+        /// </summary>
+        CrosshairCircle = 3,
     };
 
     /// <summary>
@@ -144,6 +152,13 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     public Setting<bool> ProgressShowIcon;
     public Setting<bool> ProgressShowNumbers;
 
+    public Setting<float> VerticalProgressLength;
+    public Setting<bool> VerticalProgressShowIcon;
+
+    public Setting<float> CrosshairCircleAngleFillPercentage;
+    public Setting<float> CrosshairCircleStartAnglePercentage;
+    // public Setting<float> CrosshairCircleDiameter;
+
     /// <summary>
     /// The color of the soft bound fill element of the indicator.
     /// </summary>
@@ -169,6 +184,12 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         // Settings
         Style = CreateSetting("indicatorStyle", "Indicator style", "The style to present the value",
             IndicatorStyle.Progress);
+        Style.Hints = new InterfaceHints {
+            EnumSubstitutions = new Dictionary<string, string> {
+                ["VerticalProgress"] = "Vertical Progress",
+                ["CrosshairCircle"] = "Crosshair Circle",
+            }
+        };
         ShowName = CreateSetting("showName", "Show name", "The name of the value", true);
         ColorGroup = CreateGroup("colorGroup", "Colors", "Colors used on the indicator");
         ValueColor = CreateSetting("valueColor", "Value color", "The color of the value",
@@ -176,7 +197,8 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound color",
             "The color of the soft bound, for example HP hard damage",
             defaultSoftBoundColor ?? new Color(1f, 1f, 1f, 0.36f), ColorGroup);
-        var progressGroup = CreateGroup("styleProgress", "Style: Progress", "Settings specific to the Progress style");
+        CreateHeader("stylesHeader", "Style-specific settings");
+        var progressGroup = CreateGroup("styleProgress", "Progress", "Settings specific to the Progress style");
         ProgressLength = CreateSetting(
             "progressLength", "Length", "How long the bar should be",
             194f, progressGroup
@@ -189,6 +211,37 @@ public abstract class BoundedValueHudModule : FramedHudModule {
             "progressShowNumbers", "Show numbers", "Whether to show numbers",
             true, progressGroup
         );
+        var verticalProgressGroup = CreateGroup("styleVerticalProgress", "Vertical Progress",
+            "Settings specific to the Vertical Progress style");
+        VerticalProgressLength = CreateSetting(
+            "verticalProgressLength", "Length", "How tall the bar should be",
+            194f, verticalProgressGroup
+        );
+        VerticalProgressShowIcon = CreateSetting(
+            "verticalProgressShowIcon", "Show icon", "Whether to show the icon",
+            true, verticalProgressGroup
+        );
+
+        var crosshairCircleGroup = CreateGroup("styleCrosshairCircle", "Crosshair Circle",
+            "Settings specific to the Vertical Progress style");
+        CrosshairCircleAngleFillPercentage = CreateSetting(
+            "crosshairCircleAngleFillPercentage",
+            "Angle fill percentage (0-1)", "How much of the circle to circle around. Value in range [0, 1]",
+            1f, crosshairCircleGroup
+        );
+        CrosshairCircleAngleFillPercentage.Hints = InterfaceHints.RangeHint();
+        CrosshairCircleStartAnglePercentage = CreateSetting(
+            "crosshairCircleStartAnglePercentage",
+            "Start angle (0-1)", "From where to circle around. Value in range [0, 1]",
+            0f, crosshairCircleGroup
+        );
+        CrosshairCircleStartAnglePercentage.Hints = InterfaceHints.RangeHint();
+        // CrosshairCircleDiameter = CreateSetting(
+        //     "crosshairCircleDiameter",
+        //     "Diameter", "How big the circle is",
+        //     42f, crosshairCircleGroup
+        // );
+        CreateHeader("others", "Other settings");
 
         // Hooks/setups
         ShowName.OnChanged += UnfuckLayouts;
@@ -205,7 +258,17 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     private static Dictionary<IndicatorStyle, string> _stylePaths = new() {
         [IndicatorStyle.Progress] = "ProgressStyle",
         [IndicatorStyle.Circular] = "CircularStyle",
+        [IndicatorStyle.VerticalProgress] = "VerticalProgressStyle",
+        [IndicatorStyle.CrosshairCircle] = "CrosshairCircleStyle",
     };
+
+    private static Dictionary<IndicatorStyle, Func<GameObject, IBoundedValueController?>> _styleComponentFactories =
+        new() {
+            [IndicatorStyle.Progress] = obj => obj?.AddComponent<ProgressBoundedValueController>(),
+            [IndicatorStyle.Circular] = obj => obj?.AddComponent<CircularBoundedValueController>(),
+            [IndicatorStyle.VerticalProgress] = obj => obj?.AddComponent<VerticalProgressBoundedValueController>(),
+            [IndicatorStyle.CrosshairCircle] = obj => obj?.AddComponent<CrosshairCircleBoundedValueController>(),
+        };
 
     private readonly Dictionary<IndicatorStyle, IBoundedValueController?> _styleComps = new();
     private readonly Dictionary<IndicatorStyle, GameObject?> _styleGameObjects = new();
@@ -222,15 +285,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
             var targetObj = _contentObject.FindRecursive(pair.Value);
             // Plugin.Log.LogInfo($"Found {targetObj} for {pair.Key.ToString()}");
             _styleGameObjects[pair.Key] = targetObj;
-            IBoundedValueController? comp = null;
-            switch (pair.Key) {
-                case IndicatorStyle.Progress:
-                    comp = targetObj?.AddComponent<ProgressBoundedValueController>();
-                    break;
-                case IndicatorStyle.Circular:
-                    comp = targetObj?.AddComponent<CircularBoundedValueController>();
-                    break;
-            }
+            var comp = _styleComponentFactories[pair.Key](targetObj);
 
             _styleComps[pair.Key] = comp;
             if (comp != null) comp.TargetModule = this;

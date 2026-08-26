@@ -21,6 +21,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     private RectTransform? _transTrough;
     private RectTransform? _transValue;
     private RectTransform? _transSoftBound;
+    private RectTransform? _transSoftMask;
     private Image? _icon;
     private TextMeshProUGUI? _textValue;
     private TextMeshProUGUI? _textCap;
@@ -32,6 +33,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         _icon = gameObject.FindRecursive("Trough/ValueLayout/Icon")?.GetComponent<Image>();
         _transTrough = gameObject.FindRecursive("Trough")?.GetComponent<RectTransform>();
         _transValue = gameObject.FindRecursive("Trough/Value")?.GetComponent<RectTransform>();
+        _transSoftMask = gameObject.FindRecursive("Trough/SoftBoundMask")?.GetComponent<RectTransform>();
         _transSoftBound = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound")?.GetComponent<RectTransform>();
         _textValue = gameObject.FindRecursive("Trough/ValueLayout/Value")?.GetComponent<TextMeshProUGUI>();
         _textCap = gameObject.FindRecursive("Trough/ValueLayout/Cap")?.GetComponent<TextMeshProUGUI>();
@@ -47,7 +49,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
 
         _visibilitySyncer = gameObject.GetOrAddComponent<BatchBoolSettingVisibilitySyncer>();
         _visibilitySyncer.SyncPairs = new Dictionary<Setting<bool>, string> {
-            { TargetModule.ShowName, "NameLayout" }
+            { TargetModule.ShowName, "NameLayout" },
         };
 
         UpdateName();
@@ -124,8 +126,9 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         var normalizedSoftBound = Math.Clamp( // normalized softbound segment width
             (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
         );
-        if (TargetModule == null || _transTrough == null || _transValue == null || _transSoftBound == null) return;
+        if (TargetModule == null || _transTrough == null || _transValue == null || _transSoftBound == null || _transSoftMask == null) return;
         _transTrough.sizeDelta = new Vector2(TargetModule.ProgressLength.Value, _transTrough.sizeDelta.y);
+        _transSoftMask.sizeDelta = new Vector2(_transTrough.sizeDelta.x, _transSoftMask.sizeDelta.y);
         var height = _transValue.sizeDelta.y;
         var width = _transValue.sizeDelta.x;
         var softWidth = _transSoftBound.sizeDelta.x;
