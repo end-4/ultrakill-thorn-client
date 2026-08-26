@@ -97,10 +97,13 @@ public class ProfileButtonController : MonoBehaviour {
     private void UpdateActive() {
         bool active = ProfileName == ProfileManager.ActiveProfile;
         if (_icon != null) _icon.color = active ? ThornModule.AccentColor : Color.white;
-        if (_nameText != null) _nameText.color = active ? ThornModule.AccentColor : Color.white;
+        if (_nameText != null) {
+            _nameText.color = active ? ThornModule.AccentColor : Color.white;
+            _nameText.fontStyle = active ? FontStyles.Underline : FontStyles.Normal;
+        }
     }
 
-    private static string[] _iconNamePool = ["square", "circle", "triangle"];
+    private static string[] _iconNamePool = ["square", "circle", "triangle", "heart"];
 
     private Sprite? GetIconForName(string name) {
         string iconName = "";
