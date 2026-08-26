@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NukeLib.UI;
 using ThornClient.Core.ConfigurableElements;
@@ -11,7 +11,7 @@ namespace ThornClient.HUD.HUDComponents;
 /// <summary>
 /// The controller for a BoundedValueHudModule.
 /// </summary>
-public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueController {
+public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedValueController {
     /// <summary>
     /// The BoundedValueHudModule that this controller works with. This must be set immediately after creation.
     /// </summary>
@@ -20,23 +20,19 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     private TextMeshProUGUI? _textName;
     private RectTransform? _transTrough;
     private RectTransform? _transValue;
-    private RectTransform? _transSoftBound;
     private RectTransform? _transSoftMask;
+    private RectTransform? _transSoftBound;
     private Image? _icon;
-    private TextMeshProUGUI? _textValue;
-    private TextMeshProUGUI? _textCap;
     private BatchBoolSettingVisibilitySyncer? _visibilitySyncer;
 
     private void Start() {
         if (TargetModule == null) return;
-        _textName = gameObject.FindRecursive("NameLayout/Name")?.GetComponent<TextMeshProUGUI>();
-        _icon = gameObject.FindRecursive("Trough/ValueLayout/Icon")?.GetComponent<Image>();
+        _textName = gameObject.FindRecursive("Name")?.GetComponent<TextMeshProUGUI>();
+        _icon = gameObject.FindRecursive("Trough/Icon")?.GetComponent<Image>();
         _transTrough = gameObject.FindRecursive("Trough")?.GetComponent<RectTransform>();
         _transValue = gameObject.FindRecursive("Trough/Value")?.GetComponent<RectTransform>();
         _transSoftMask = gameObject.FindRecursive("Trough/SoftBoundMask")?.GetComponent<RectTransform>();
         _transSoftBound = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound")?.GetComponent<RectTransform>();
-        _textValue = gameObject.FindRecursive("Trough/ValueLayout/Value")?.GetComponent<TextMeshProUGUI>();
-        _textCap = gameObject.FindRecursive("Trough/ValueLayout/Cap")?.GetComponent<TextMeshProUGUI>();
         var valObj = gameObject.FindRecursive("Trough/Value");
         if (valObj != null) {
             valObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
@@ -49,14 +45,12 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
 
         _visibilitySyncer = gameObject.GetOrAddComponent<BatchBoolSettingVisibilitySyncer>();
         _visibilitySyncer.SyncPairs = new Dictionary<Setting<bool>, string> {
-            { TargetModule.ShowName, "NameLayout" },
+            { TargetModule.ShowName, "Name" }
         };
 
         UpdateName();
         UpdateIcon();
-        UpdateNumbersVisibility();
         UpdateValue();
-        UpdateSoftBound();
         gameObject.UnfuckLayoutHack();
 
         // Hook
@@ -64,14 +58,10 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         TargetModule.IconChanged += UpdateIcon;
         TargetModule.ValueChanged += UpdateValue;
         TargetModule.BoundChanged += UpdateValue;
-        TargetModule.BoundChanged += UpdateSoftBound;
         TargetModule.SoftBoundChanged += UpdateValue;
-        TargetModule.SoftBoundChanged += UpdateSoftBound;
         TargetModule.DecimalPlacesChanged += UpdateValue;
-        TargetModule.DecimalPlacesChanged += UpdateSoftBound;
-        TargetModule.ProgressLength.OnChanged += UpdateValue;
-        TargetModule.ProgressShowIcon.OnChanged += UpdateIcon;
-        TargetModule.ProgressShowNumbers.OnChanged += UpdateNumbersVisibility;
+        TargetModule.VerticalProgressLength.OnChanged += UpdateValue;
+        TargetModule.VerticalProgressShowIcon.OnChanged += UpdateIcon;
     }
 
     private void OnDestroy() {
@@ -80,14 +70,10 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         TargetModule.IconChanged -= UpdateIcon;
         TargetModule.ValueChanged -= UpdateValue;
         TargetModule.BoundChanged -= UpdateValue;
-        TargetModule.BoundChanged -= UpdateSoftBound;
         TargetModule.SoftBoundChanged -= UpdateValue;
-        TargetModule.SoftBoundChanged -= UpdateSoftBound;
         TargetModule.DecimalPlacesChanged -= UpdateValue;
-        TargetModule.DecimalPlacesChanged -= UpdateSoftBound;
-        TargetModule.ProgressLength.OnChanged -= UpdateValue;
-        TargetModule.ProgressShowIcon.OnChanged -= UpdateIcon;
-        TargetModule.ProgressShowNumbers.OnChanged -= UpdateNumbersVisibility;
+        TargetModule.VerticalProgressLength.OnChanged -= UpdateValue;
+        TargetModule.VerticalProgressShowIcon.OnChanged -= UpdateIcon;
     }
 
     private void UpdateName() {
@@ -107,7 +93,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         if (_icon == null || TargetModule == null) return;
         // Plugin.Log.LogInfo($"Set icon to {value}");
         var actualValue = value;
-        if (!TargetModule.ProgressShowIcon.Value) actualValue = null;
+        if (!TargetModule.VerticalProgressShowIcon.Value) actualValue = null;
         if (_icon.sprite == actualValue) return;
         _icon.sprite = actualValue;
         if (_icon.gameObject.activeSelf != (_icon.sprite != null)) _icon.gameObject.SetActive(_icon.sprite != null);
@@ -127,42 +113,20 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
             (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
         );
         if (TargetModule == null || _transTrough == null || _transValue == null || _transSoftBound == null || _transSoftMask == null) return;
-        _transTrough.sizeDelta = new Vector2(TargetModule.ProgressLength.Value, _transTrough.sizeDelta.y);
-        _transSoftMask.sizeDelta = new Vector2(_transTrough.sizeDelta.x, _transSoftMask.sizeDelta.y);
-        var height = _transValue.sizeDelta.y;
+        _transTrough.sizeDelta = new Vector2(_transTrough.sizeDelta.x, TargetModule.VerticalProgressLength.Value);
+        _transSoftMask.sizeDelta = new Vector2(_transSoftMask.sizeDelta.x, _transTrough.sizeDelta.y);
         var width = _transValue.sizeDelta.x;
-        var softWidth = _transSoftBound.sizeDelta.x;
-        var availableWidth = _transTrough.sizeDelta.x;
-        float currNormalized = width / availableWidth;
-        float currSoftNormalized = softWidth / availableWidth;
+        var height = _transValue.sizeDelta.y;
+        var softHeight = _transSoftBound.sizeDelta.y;
+        var availableHeight = _transTrough.sizeDelta.y;
+        float currNormalized = height / availableHeight;
+        float currSoftNormalized = softHeight / availableHeight;
         if (!Mathf.Approximately(currNormalized, normalizedValue)) {
-            _transValue.sizeDelta = new Vector2(availableWidth * normalizedValue, height);
+            _transValue.sizeDelta = new Vector2(width, availableHeight * normalizedValue);
         }
 
         if (!Mathf.Approximately(currSoftNormalized, normalizedSoftBound)) {
-            _transSoftBound.sizeDelta = new Vector2(availableWidth * normalizedSoftBound, height);
+            _transSoftBound.sizeDelta = new Vector2(width, availableHeight * normalizedSoftBound);
         }
-
-        if (_textValue != null) _textValue.SetText($"{Math.Round(TargetModule?.Value ?? 0, TargetModule?.DecimalPlaces ?? 1)}");
-    }
-
-    private void UpdateSoftBound(int _) {
-        UpdateSoftBound();
-    }
-
-    private void UpdateSoftBound(float _) {
-        UpdateSoftBound();
-    }
-
-    private void UpdateSoftBound() {
-        var value = (TargetModule?.Bound ?? 1) - (TargetModule?.BoundReduction ?? 0);
-        _textCap?.SetText($"/{Math.Round(value, TargetModule?.DecimalPlaces ?? 1)}");
-    }
-
-    private void UpdateNumbersVisibility() {
-        if (TargetModule == null || _textValue == null || _textCap == null) return;
-        bool visible = TargetModule.ProgressShowNumbers.Value;
-        if (visible != _textValue.gameObject.activeSelf) _textValue.gameObject.SetActive(visible);
-        if (visible != _textCap.gameObject.activeSelf) _textCap.gameObject.SetActive(visible);
     }
 }
