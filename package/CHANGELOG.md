@@ -1,6 +1,7 @@
 ## 0.1.5
 
 - Added config profiles
+- New modules: Boss Bars
 - New HUD modules: Rocket Fuel, Clock
 - Fixed Weapon Variant Binds not working during hitstops
 - Bounded value indicators:
