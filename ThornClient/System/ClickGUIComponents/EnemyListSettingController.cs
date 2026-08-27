@@ -1,4 +1,5 @@
 ﻿using NukeLib.UI;
+using NukeLib.Utils;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
@@ -18,6 +19,7 @@ internal class EnemyListSettingController : MonoBehaviour {
         _text = gameObject.FindRecursive("Name")?.GetComponent<TextMeshProUGUI>();
         TargetSetting.OnValueChanged += UpdateText;
         UpdateText(TargetSetting.Value);
+        ExecutionUtils.RunNextFrame(() => UpdateText(TargetSetting.Value));
     }
 
     private void UpdateText(EnemyList elist) {
