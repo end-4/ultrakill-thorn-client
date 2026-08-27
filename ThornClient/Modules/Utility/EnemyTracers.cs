@@ -40,7 +40,7 @@ public class EnemyTracers : Module {
     /// <summary>
     /// Icon of this module
     /// </summary>
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "point_dot");
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "connect");
 
     /// <summary>
     /// Tags for search

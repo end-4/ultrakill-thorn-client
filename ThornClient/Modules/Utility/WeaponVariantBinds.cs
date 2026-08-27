@@ -94,7 +94,7 @@ public class WeaponVariantBinds : Module {
     /// <summary>
     /// Icon of the module
     /// </summary>
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "gun");
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "ab_key");
 
     /// <summary>
     /// Constructor

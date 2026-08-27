@@ -25,6 +25,8 @@ public class Plugin : BaseUnityPlugin {
     public const string PluginVersion = "0.1.5";
     public static string PluginIconPath = Path.Combine(workingDir, "icon.png");
 
+    public static Harmony HarmonyInstance;
+
     private void Awake() {
         Log = Logger;
         if (Instance != null) return;
@@ -39,9 +41,9 @@ public class Plugin : BaseUnityPlugin {
         ConfigManager.LoadAll();
         ConfigManager.SetupFileWatcher();
 
-        Harmony harmony = new Harmony(PluginGUID);
-        harmony.PatchAll(typeof(OptionsManagerPatches));
-        harmony.PatchAll(typeof(CheatsManagerPatches));
+        HarmonyInstance = new Harmony(PluginGUID);
+        HarmonyInstance.PatchAll(typeof(OptionsManagerPatches));
+        HarmonyInstance.PatchAll(typeof(CheatsManagerPatches));
         Log.LogInfo($"Thorn is loaded");
     }
 

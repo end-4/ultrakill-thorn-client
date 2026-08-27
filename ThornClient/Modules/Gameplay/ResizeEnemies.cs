@@ -15,7 +15,7 @@ namespace ThornClient.Modules.Gameplay;
 public class ResizeEnemies : Module {
     // /// <inheritdoc />
     public override Sprite Icon =>
-        AssetManager.Get<Sprite>(ClickGUI.BundleKey, "small_large");
+        AssetManager.Get<Sprite>(ClickGUI.BundleKey, "grow");
 
     /// <inheritdoc />
     public override string[] Tags => ["scale", "oops all size 2", "big", "small"];

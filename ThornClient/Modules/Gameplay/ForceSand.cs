@@ -23,10 +23,8 @@ public class ForceSand : Module {
     public ForceSand() : base("thorn.forceSand", "Force Sand", "Makes enemies sanded, removing bleeding. You'll have to rely on parries for healing.", ModuleCategory.Gameplay) {
     }
 
-    /// <summary>
-    /// Why this is cheaty
-    /// </summary>
-    public override string? CheatReason => IsEnabled ? "Enables non-standard gameplay" : "";
+    /// <inheritdoc />
+    public override string CheatReason => IsEnabled ? "Enables non-standard gameplay" : "";
 
     /// <summary>
     /// Run when enabled

@@ -20,10 +20,10 @@ internal static class UserHints {
                 expireTime: 10000, iconFilePath: Path.Combine(Plugin.workingDir, "icon.png"));
         }
 
-        Version shiftedPositionVersion = new Version("0.1.5");
+        Version shiftedPositionVersion = new Version("0.2.0");
         if (shiftedPositionVersion.CompareTo(lastVersion) == 1 && lastVersion.CompareTo(neverRun) == 1) {
             NotificationSystem.NotifySend("Thorn::<color=#a5f2e2>Updated</color>",
-                $"<b>0.1.5 note</b>: Position of HUD widgets might've shifted a bit (again); really sorry about that.\nBut we have config profiles now!\nIf further issues arise, yell at @end_4 on Discord.",
+                $"<b>0.2.0 note</b>: Position of HUD widgets might've shifted a bit (again); really sorry about that.\nBut we have config profiles now!\nIf further issues arise, yell at @end_4 on Discord.",
                 expireTime: 16000, iconFilePath: Path.Combine(Plugin.workingDir, "icon.png"));
         }
 
