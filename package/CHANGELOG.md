@@ -1,4 +1,4 @@
-## 0.1.5
+## 0.2.0
 
 - Added config profiles
 - New modules: Boss Bars
@@ -7,6 +7,7 @@
 - Bounded value indicators:
   - Added vertical line and crosshair circle style
   - Made horizontal progress bar HUD elements have customizable length and can have icon/numbers hidden. You can now have clean horizontal crosshair indicators!
+- Tweaked some icons for consistency & readability
 
 ## 0.1.4
 
