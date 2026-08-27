@@ -58,7 +58,7 @@ public class BossBars : Module {
         //     "Shows an icon to the left of the health bars", true);
 
         CreateHeader("exclusions", "Exclusions",
-            "Enemies satisfying one or more conditions below do not get a boss bar");
+            "Enemies satisfying one or more conditions below don't get a boss bar");
         ExcludedEnemyTypes = CreateSetting("excludedEnemyTypes", "Enemy type blacklist",
             "Tip: Idols are instakilled, so having a health bar might not help much",
             new EnemyList());
