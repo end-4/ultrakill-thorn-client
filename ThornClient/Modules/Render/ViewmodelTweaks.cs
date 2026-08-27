@@ -85,6 +85,7 @@ public class ViewmodelTweaks : Module {
     public Setting<bool> WeaponEdges;
     public Setting<float> WeaponEdgeThickness;
     public Setting<Color> WeaponFillColor;
+    public Setting<bool> AggressiveUpdates;
 
     // Transforms: Global
     public Setting<float> ModelRollOffset;
@@ -174,6 +175,13 @@ public class ViewmodelTweaks : Module {
             "Thickness of the edges", 2f);
         WeaponFillColor = CreateSetting("weaponFillColor", "Edges: fill color",
             "Color to fill surfaces between the lines", Color.black);
+        AggressiveUpdates = CreateSetting(
+            "aggressiveUpdates", "Aggressive updates",
+            "Makes weapon transforms less likely to desync by updating more aggressively. " +
+            "Impact on performance: should be similar to Daemon's weapon utils (should be acceptable). " +
+            "Technical: Syncs the transforms on Update() instead of on weapon change",
+            false
+        );
 
         CreateHeader("transformHeader", "Transformations");
         var globalTransGroup = CreateGroup("globalTransform", "Global", "Transformations that apply to all weapons");
@@ -252,6 +260,10 @@ public class ViewmodelTweaks : Module {
         WeaponEdges.OnChanged += UpdateCurrentColor;
         WeaponFillColor.OnChanged += UpdateVariantColors;
         WeaponEdgeThickness.OnChanged += UpdateVariantColors;
+    }
+
+    public override void OnUpdate() {
+        if (AggressiveUpdates.Value) UpdateCurrent();
     }
 
     private void SubscribeStuffWhenSafe() {
