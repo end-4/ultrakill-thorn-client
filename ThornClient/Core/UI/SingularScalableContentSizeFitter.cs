@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace ThornClient.Core.UI;
@@ -22,7 +23,7 @@ public class SingularScalableContentSizeFitter : ContentSizeFitter {
         var baseSize = (fitMode == FitMode.MinSize)
             ? LayoutUtility.GetMinSize(childTrans, axis)
             : LayoutUtility.GetPreferredSize(childTrans, axis);
-        var scale = (axis == 0) ? childTrans.localScale.x : childTrans.localScale.y;
+        var scale = Math.Abs(axis == 0 ? childTrans.localScale.x : childTrans.localScale.y);
         var targetSize = baseSize * scale;
         trans.SetSizeWithCurrentAnchors((RectTransform.Axis)axis, targetSize);
     }
