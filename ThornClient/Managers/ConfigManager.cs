@@ -135,10 +135,11 @@ public static class ConfigManager {
             if (ActiveSyncs.Contains(configurable)) return;
             ActiveSyncs.Add(configurable);
         }
-        // Plugin.Log.LogInfo($"Loading {configurable.Name}");
 
         string filePath = GetConfigPath(configurable);
+        // Plugin.Log.LogInfo($"Loading {configurable.Name} with guid {configurable.GUID}, file {filePath}");
         if (!File.Exists(filePath)) {
+            // Plugin.Log.LogInfo($"Doesn't exist?");
             try {
                 ResetConfigurableToDefaults(configurable);
             } catch (Exception e) {

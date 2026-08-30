@@ -69,6 +69,26 @@ public class ThornModule : SystemModule {
     public Setting<bool> MenuButtonPositionForceConfiggyNicePosition { get; }
 
     /// <summary>
+    /// Whether to use snapping for HUD widgets
+    /// </summary>
+    public Setting<bool> SnapEnabled;
+
+    /// <summary>
+    /// The gap at which HUD widgets should be away from each other when snapped
+    /// </summary>
+    public Setting<int> SnapGap;
+
+    /// <summary>
+    /// At most how far away should HUD widgets be from a snap target to be snapped (for facing edge snaps)
+    /// </summary>
+    public Setting<int> SnapActivationDistance;
+
+    /// <summary>
+    /// At most how far away should HUD widgets be from a snap target to be snapped (for alignment snaps)
+    /// </summary>
+    public Setting<int> SnapActivationDistanceAlignment;
+
+    /// <summary>
     /// Last loaded version
     /// </summary>
     public Setting<string> LastVersion { get; }
@@ -125,6 +145,7 @@ public class ThornModule : SystemModule {
             new Color(0.65f, 0.95f, 0.89f));
 
         var uiGroup = CreateGroup("uiGroup", "More interface settings", "Stuff related to the user interface");
+        CreateHeader("uiGeneral", "General", "", parent: uiGroup);
         TimeFormat = CreateSetting("timeFormat", "Time format", "Used on the menu's top bar", TimeHourFormat.Twelve,
             uiGroup);
         TimeFormat.Hints = new InterfaceHints {
@@ -139,6 +160,26 @@ public class ThornModule : SystemModule {
             false, uiGroup
         );
         MenuButtonPositionForceConfiggyNicePosition.OnChanged += PauseMenuButton.UpdateAppearance;
+        CreateHeader("uiHud", "HUD", "", parent: uiGroup);
+        CreateHeader("uiHud", "Snapping", "", HeaderType.H2, parent: uiGroup);
+        SnapEnabled = CreateSetting("snapEnabled", "Enable",
+            "Whether widgets snap to others when dragging", true,
+            uiGroup
+        );
+        SnapGap = CreateSetting(
+            "snapGap", "Gap", "Gap between two widgets when snapped",
+            1, uiGroup
+        );
+        SnapActivationDistance = CreateSetting(
+            "snapActivationDistance", "Activation distance (facing edges)",
+            "At most how far away should HUD widgets be from a snap target to be snapped (for facing edge snaps)",
+            8, uiGroup
+        );
+        SnapActivationDistanceAlignment = CreateSetting(
+            "snapActivationDistanceAlignment", "Activation distance (alignment)",
+            "At most how far away should HUD widgets be from a snap target to be snapped (for alignment snaps)",
+            9999, uiGroup
+        );
 
         // -- ABOUT --
         var about = CreateHeader(
@@ -179,8 +220,5 @@ public class ThornModule : SystemModule {
                 OpenClickGUIUnpaused.Value.Modifier == KeyCode.Mouse0)
                 OpenClickGUIUnpaused.Reset();
         });
-    }
-
-    public override void OnUpdate() {
     }
 }

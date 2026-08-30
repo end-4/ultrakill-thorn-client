@@ -25,6 +25,7 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IBeginDrag
     private GameObject? _dragOverlay;
 
     private Vector2 _hotspot = new Vector2(48, 48);
+    private Vector2 _internalPos = Vector2.zero;
     private bool _dragging = false;
     private bool _hovering = false;
 
@@ -128,22 +129,25 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IBeginDrag
 
     public void OnBeginDrag(PointerEventData eventData) {
         _dragging = true;
+        UpdateCursor();
+        if (target != null) _internalPos = target.localPosition;
     }
 
     public void OnEndDrag(PointerEventData eventData) {
         _dragging = false;
         UpdateCursor();
         if (TargetModule == null || target == null) return;
-        // Use the target's position, as it's the element being moved.
+        // Use the target's position, as it's the element being moved
         TargetModule.PositionX.Value = (float)Math.Round(target.localPosition.x, 1);
         TargetModule.PositionY.Value = (float)Math.Round(target.localPosition.y, 1);
     }
 
     public override void OnDrag(PointerEventData eventData) {
-        if (target == null) return;
+        if (target == null || TargetModule == null) return;
         float scaleFactor = _canvas != null ? _canvas.scaleFactor : 1f;
         Vector2 canvasDelta = eventData.delta / scaleFactor;
-        target.anchoredPosition += canvasDelta;
+        _internalPos += canvasDelta;
+        target.localPosition = HudManager.Snap(TargetModule, _internalPos);
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
