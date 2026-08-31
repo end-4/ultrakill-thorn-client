@@ -178,7 +178,7 @@ public class ThornModule : SystemModule {
         SnapActivationDistanceAlignment = CreateSetting(
             "snapActivationDistanceAlignment", "Activation distance (alignment)",
             "At most how far away should HUD widgets be from a snap target to be snapped (for alignment snaps)",
-            9999, uiGroup
+            30, uiGroup
         );
 
         // -- ABOUT --
