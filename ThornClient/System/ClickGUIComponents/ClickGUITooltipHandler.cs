@@ -20,4 +20,8 @@ internal class ClickGUITooltipHandler : MonoBehaviour, IPointerEnterHandler, IPo
     public void OnPointerExit(PointerEventData eventData) {
         ClickGUI.SurrenderTooltipText(Text);
     }
+
+    private void OnDisable() {
+        ClickGUI.SurrenderTooltipText(Text);
+    }
 }
