@@ -66,33 +66,28 @@ internal class ConfigurableWindowController : MonoBehaviour {
         gameObject.UnfuckLayoutHack();
     }
 
-    private void Populate(Transform parent, IEnumerable<IConfigurableElement> elements) {
+    internal static void Populate(Transform parent, IEnumerable<IConfigurableElement> elements) {
         foreach (var element in elements) {
-            GameObject? wrapper;
-            GameObject? obj = null;
-            if (UICreatorManager.TryGetUICreator(element.GetType(), out var creator) && creator != null) {
-                obj = creator.CreateUI(element);
-            } else {
+            if (!UICreatorManager.TryGetUICreator(element.GetType(), out var creator) || creator == null) {
                 continue;
             }
 
+            var obj = creator.CreateUI(element);
+            var wrapper = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "SettingRowWrapper"), parent);
+
             if (element is Setting setting) {
-                wrapper = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "SettingRowWrapper"), parent);                
-                wrapper!.AddComponent<SettingRowController>().TargetSetting = setting;
-                obj?.transform.SetParent(wrapper.transform, false);
-            } else {
-                wrapper = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "SettingRowWrapper"), parent);
-                obj?.transform.SetParent(wrapper!.transform, false);
+                wrapper.AddComponent<SettingRowController>().TargetSetting = setting;
             }
 
-            if (element is not ConfigHeader && obj != null)
-                obj.AddComponent<SettingDescriptionController>().TargetSetting = element;
+            obj?.transform.SetParent(wrapper.transform, false);
 
-            if (wrapper != null) {
-                wrapper.UnfuckLayoutHack();
-                if (element.Hints?.Hidden ?? false) {
-                    wrapper.SetActive(false);
-                }
+            if (element is not ConfigHeader && obj != null) {
+                obj.AddComponent<SettingDescriptionController>().TargetSetting = element;
+            }
+
+            wrapper.UnfuckLayoutHack();
+            if (element.Hints?.Hidden ?? false) {
+                wrapper.SetActive(false);
             }
         }
     }
