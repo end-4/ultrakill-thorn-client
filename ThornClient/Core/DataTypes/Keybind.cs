@@ -8,6 +8,7 @@ namespace ThornClient.Core.DataTypes;
 /// A pair of KeyCodes consisting of one main key and optionally a modifier
 /// </summary>
 [JsonConverter(typeof(KeybindJsonConverter))]
+[ConfigurableUICreator(typeof(KeybindUICreator))]
 public class Keybind : IEquatable<Keybind> {
     /// <summary>
     /// The main key

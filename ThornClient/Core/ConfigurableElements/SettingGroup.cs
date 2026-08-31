@@ -5,6 +5,7 @@ namespace ThornClient.Core.ConfigurableElements;
 /// <summary>
 /// A setting group. In the config menu, items in a setting group are put on a separate panel, much like PluginConfigurator's ConfigPanels
 /// </summary>
+[ConfigurableUICreator(typeof(SettingGroupUICreator))]
 public class SettingGroup : IConfigurableElement {
     /// <summary>
     /// The identifier, unimportant as it's not saved

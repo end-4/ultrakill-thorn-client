@@ -10,6 +10,7 @@ namespace ThornClient.Core.DataTypes;
 /// List of enemy types
 /// </summary>
 [JsonConverter(typeof(EnemyListJsonConverter))]
+[ConfigurableUICreator(typeof(EnemyListUICreator))]
 public class EnemyList : IEquatable<EnemyList> {
     /// <summary>
     /// The set of enemies

@@ -8,6 +8,7 @@ namespace ThornClient.Core.ConfigurableElements;
 /// A header, for organization in the config menu. Register this to your Configurable's Elements for a header to show up in the config menu.
 /// See also SettingGroup, which puts elements in a submenu.
 /// </summary>
+[ConfigurableUICreator(typeof(ConfigHeaderUICreator))]
 public class ConfigHeader : IConfigurableElement {
     /// <summary>
     /// The unique identifier for this header. It's there but not important, as headers are not saved to config files.
