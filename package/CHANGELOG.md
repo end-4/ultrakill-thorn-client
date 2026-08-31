@@ -1,3 +1,8 @@
+## 0.3.0
+
+- Added snapping for HUD widgets
+- Added support for custom setting UI elements
+
 ## 0.2.0
 
 - Added config profiles

@@ -44,24 +44,27 @@ internal class SettingGroupWindowController : MonoBehaviour {
 
     private void Populate(Transform parent, IEnumerable<IConfigurableElement> elements) {
         foreach (var element in elements) {
+            // TODO un-copypaste from ConfigurableWindowController maybe
             GameObject? wrapper = null;
+
+            GameObject? obj = null;
+            if (UICreatorManager.TryGetUICreator(element.GetType(), out var creator) && creator != null) {
+                obj = creator.CreateUI(element);
+            } else {
+                continue;
+            }
 
             if (element is Setting setting) {
                 wrapper = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "SettingRowWrapper"), parent);
-                wrapper.AddComponent<SettingRowController>().TargetSetting = setting;
-
-                if (ConfigurableElementUICreators.SettingUICreators.TryGetValue(setting.Type, out var createUI)) {
-                    GameObject go = createUI(setting, wrapper.transform);
-                    go.AddComponent<SettingDescriptionController>().TargetSetting = setting;
-                }
-            } else if (element is SettingGroup or ConfigButtonRow or ConfigHeader) {
+                wrapper!.AddComponent<SettingRowController>().TargetSetting = setting;
+                obj?.transform.SetParent(wrapper.transform, false);
+            } else {
                 wrapper = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "SettingRowWrapper"), parent);
-                if (ConfigurableElementUICreators.MenuUICreators.TryGetValue(element.GetType(), out var createUI)) {
-                    var go = createUI(element, wrapper.transform);
-                    if (element is not ConfigHeader)
-                        go.AddComponent<SettingDescriptionController>().TargetSetting = element;
-                }
-            } // TODO un-copypaste
+                obj?.transform.SetParent(wrapper!.transform, false);
+            }
+
+            if (element is not ConfigHeader && obj != null)
+                obj.AddComponent<SettingDescriptionController>().TargetSetting = element;
 
             if (wrapper != null) {
                 wrapper.UnfuckLayoutHack();

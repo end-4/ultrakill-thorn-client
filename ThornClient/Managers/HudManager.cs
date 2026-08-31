@@ -297,7 +297,7 @@ public static class HudManager {
         var xMeetRightEdgeTargets = GetSnapCandidates(transforms, trans, hAxis, 1f, 0f, +gap, gap);
         var yMeetBottomEdgeTargets = GetSnapCandidates(transforms, trans, vAxis, 0f, 1f,  -gap, gap);
         var yMeetTopEdgeTargets = GetSnapCandidates(transforms, trans, vAxis, 1f, 0f, +gap, gap);
-        // TODO screen edges maybe
+        // TODO screen edges and center maybe
 
         SnapCandidate[] xTargets = [
             ..xCenterTargets, ..xLeftAlignTargets, ..xRightAlignTargets, ..xMeetLeftEdgeTargets, ..xMeetRightEdgeTargets

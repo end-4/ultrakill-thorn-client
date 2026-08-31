@@ -7,6 +7,7 @@ namespace ThornClient.Core.ConfigurableElements;
 /// <summary>
 /// A button row. Register this to your Configurable's Elements for a button array to show up in the config menu.
 /// </summary>
+[ConfigurableUICreator(typeof(ConfigButtonRowUICreator))]
 public class ConfigButtonRow : IConfigurableElement {
     /// <summary>
     /// The unique identifier for this button row. It's there but not important, as button rows are not saved to config files.
