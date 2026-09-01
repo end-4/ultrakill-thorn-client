@@ -17,18 +17,21 @@ public static class UICreatorManager {
     private static readonly Dictionary<Type, IConfigurableUICreator> RegisteredCreators = [];
 
     static UICreatorManager() {
-        RegisterUICreator(typeof(Setting<bool>), new BoolUICreator());
-        RegisterUICreator(typeof(Setting<Color>), new ColorUICreator());
-        RegisterUICreator(typeof(Setting<Enum>), new EnumUICreator());
-        RegisterUICreator(typeof(Setting<float>), new FloatUICreator());
-        RegisterUICreator(typeof(Setting<int>), new IntUICreator());
-        RegisterUICreator(typeof(Setting<string>), new StringUICreator());
+        RegisterUICreator(typeof(Setting<bool>), typeof(BoolUICreator));
+        RegisterUICreator(typeof(Setting<Color>), typeof(ColorUICreator));
+        RegisterUICreator(typeof(Setting<Enum>), typeof(EnumUICreator));
+        RegisterUICreator(typeof(Setting<float>), typeof(FloatUICreator));
+        RegisterUICreator(typeof(Setting<int>), typeof(IntUICreator));
+        RegisterUICreator(typeof(Setting<string>), typeof(StringUICreator));
         RegisterAttributeDeclaredCreators();
     }
 
     /// <summary>
     /// Registers a UI creator for a specific type
     /// </summary>
+    /// <param name="elementType">The type of the element</param>
+    /// <param name="creator"></param>
+    /// <exception cref="ArgumentException">When the element type isn't a configurable element</exception>
     public static void RegisterUICreator(Type elementType, IConfigurableUICreator creator) {
         if (RegisteredCreators.ContainsKey(elementType)) return;
 
@@ -37,6 +40,22 @@ public static class UICreatorManager {
         }
 
         RegisteredCreators[elementType] = creator;
+    }
+
+    /// <summary>
+    /// Registers a UI creator for a specific type
+    /// </summary>
+    /// <param name="elementType">The type of the element</param>
+    /// <param name="creatorType">The UI creator type</param>
+    /// <exception cref="ArgumentException">When the UI creator type doesn't implement IConfigurableUICreator or when the element type isn't a configurable element</exception>
+    public static void RegisterUICreator(Type elementType, Type creatorType) {
+        if (!typeof(IConfigurableUICreator).IsAssignableFrom(creatorType)) {
+            throw new ArgumentException($"Type {creatorType.Name} must implement {nameof(IConfigurableUICreator)}");
+        }
+
+        if (Activator.CreateInstance(creatorType) is IConfigurableUICreator creator) {
+            RegisterUICreator(elementType, creator);
+        }
     }
 
     /// <summary>
