@@ -40,9 +40,8 @@ internal class ConfigurableWindowController : MonoBehaviour {
         if (IsPopup) backBtn.onClick.AddListener(ClickGUI.NavigateBack);
 
         // Body
-        Transform listBody =
-            gameObject.FindRecursive("Scroll View/Viewport/Content/Modules")
-                .transform; // Note we reuse ModuleCategory prefab for this
+        Transform listBody = gameObject.FindRecursive("Scroll View/Viewport/Content/Modules")
+            .transform; // Note we reuse ModuleCategory prefab for this
 
         var desc = Instantiate(AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleDescription"), listBody);
         desc.FindRecursive("DescText").GetComponent<TextMeshProUGUI>().text = TargetConfigurable.Description;

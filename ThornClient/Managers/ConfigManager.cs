@@ -41,6 +41,17 @@ public static class ConfigManager {
         SerializerSettings.Converters.Add(converter);
     }
 
+    /// <summary>
+    /// Registers a JSON converter for a setting of custom type.
+    /// </summary>
+    /// <param name="converterType">The JSON converter type</param>
+    public static void RegisterJsonConverter(Type converterType) {
+        if (!typeof(JsonConverter).IsAssignableFrom(converterType)) return;
+        if (Activator.CreateInstance(converterType) is JsonConverter instance) {
+            RegisterJsonConverter(instance);
+        }
+    }
+
     private class ConfigDataTransferObject {
         public bool IsEnabled { get; set; }
         public Dictionary<string, JToken> Settings { get; set; } = [];
