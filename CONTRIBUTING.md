@@ -1,0 +1,4 @@
+- Use K&R braces. The repo includes an `.editorconfig` which should tell your formatter to do it correctly.
+- For new modules, we'll decide what fits in Thorn's built-in modules and what's better put in your own extension packs
+- Using AI is fine, but you must check every single line and fully understand the code
+- PRs with AI-generated description will be immediately rejected
