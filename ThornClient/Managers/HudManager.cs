@@ -297,13 +297,31 @@ public static class HudManager {
         var xMeetRightEdgeTargets = GetSnapCandidates(transforms, trans, hAxis, 1f, 0f, +gap, gap);
         var yMeetBottomEdgeTargets = GetSnapCandidates(transforms, trans, vAxis, 0f, 1f,  -gap, gap);
         var yMeetTopEdgeTargets = GetSnapCandidates(transforms, trans, vAxis, 1f, 0f, +gap, gap);
-        // TODO screen edges and center maybe
+
+        SnapCandidate[] extraXCandidates = surface == HudSurface.Overlay ? [
+            new SnapCandidate { // Screen center
+                Axis = RectTransform.Axis.Horizontal,
+                Value = 0,
+                OtherAxisRange = Tuple.Create(-9999f, 9999f)
+            }
+        ] : [];
+        SnapCandidate[] extraYCandidates = surface == HudSurface.Overlay ? [
+            new SnapCandidate {
+                Axis = RectTransform.Axis.Vertical,
+                Value = 0,
+                OtherAxisRange = Tuple.Create(-9999f, 9999f)
+            }
+        ] : [];
 
         SnapCandidate[] xTargets = [
-            ..xCenterTargets, ..xLeftAlignTargets, ..xRightAlignTargets, ..xMeetLeftEdgeTargets, ..xMeetRightEdgeTargets
+            ..xCenterTargets, ..xLeftAlignTargets, ..xRightAlignTargets,
+            ..xMeetLeftEdgeTargets, ..xMeetRightEdgeTargets,
+            ..extraXCandidates,
         ];
         SnapCandidate[] yTargets = [
-            ..yCenterTargets, ..yTopAlignTargets, ..yBottomAlignTargets, ..yMeetBottomEdgeTargets, ..yMeetTopEdgeTargets
+            ..yCenterTargets, ..yTopAlignTargets, ..yBottomAlignTargets,
+            ..yMeetBottomEdgeTargets, ..yMeetTopEdgeTargets,
+            ..extraYCandidates,
         ];
 
         var possibleXCandidates = xTargets
