@@ -34,7 +34,11 @@ public class ProfileButtonController : MonoBehaviour {
         _icon = gameObject.FindRecursive("Icon")?.GetComponent<Image>();
         _button = gameObject.GetComponent<Button>();
         _dupe = gameObject.FindRecursive("Actions/Duplicate")?.GetComponent<Button>();
+        var dupeTooltip = _dupe?.gameObject.GetOrAddComponent<ClickGUITooltipHandler>();
+        if (dupeTooltip != null) dupeTooltip.Text = "Clone profile";
         _delete = gameObject.FindRecursive("Actions/Delete")?.GetComponent<Button>();
+        var delTooltip = _delete?.gameObject.GetOrAddComponent<ClickGUITooltipHandler>();
+        if (delTooltip != null) delTooltip.Text = "Delete profile";
 
         // Update stuff
         if (_nameInput != null) {

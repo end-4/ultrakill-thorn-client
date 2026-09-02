@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NukeLib.UI;
+using NukeLib.Utils;
 using ThornClient.Core.ConfigurableElements;
 using TMPro;
 using UnityEngine;
@@ -97,6 +98,9 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     private void UpdateName(string value) {
         _textName?.SetText(value);
         gameObject.UnfuckLayoutHack();
+        ExecutionUtils.RunNextFrame(() => {
+            if (gameObject != null) gameObject.UnfuckLayoutHack();
+        });
     }
 
     private void UpdateIcon() {

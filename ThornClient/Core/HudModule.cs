@@ -75,7 +75,7 @@ public abstract class HudModule : Module {
     /// <param name="defaultPivotX">Default X pivot</param>
     /// <param name="defaultPivotY">Default Y pivot</param>
     protected HudModule(string guid, string name, string description, float defaultPositionX = 0,
-        float defaultPositionY = 0, float defaultPivotX = 0, float defaultPivotY = 1)
+        float defaultPositionY = 0, float defaultPivotX = 0.5f, float defaultPivotY = 0.5f)
         : base(guid, name, description, ModuleCategory.Hud, hasToggling: true) {
         PositionX = CreateSetting("positionX", "Position X", "Horizontal position",
             defaultPositionX);
