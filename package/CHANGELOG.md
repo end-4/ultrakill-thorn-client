@@ -2,6 +2,7 @@
 
 - Added snapping for HUD widgets
 - Added support for custom setting UI elements
+- Added an option for Run In Background to only affect menus (useful for large Angry downloads)
 
 ## 0.2.0
 
