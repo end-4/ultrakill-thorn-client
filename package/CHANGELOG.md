@@ -2,7 +2,9 @@
 
 - Added snapping for HUD widgets
 - Added support for custom setting UI elements
+- New modules: Alerts
 - Added an option for Run In Background to only affect menus (useful for large Angry downloads)
+- Fixed Freezeframe rocket ride hints flipped when doing 8-2 challenge
 
 ## 0.2.0
 
