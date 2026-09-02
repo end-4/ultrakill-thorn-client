@@ -292,7 +292,7 @@ public class ClickGUI : SystemModule {
                 txt.GetComponent<TextMeshProUGUI>().color = targetTextColor;
             }
         }
-        
+
         SurrenderTooltipText("", force: true);
         Instance.PerformInitialFocus();
     }
