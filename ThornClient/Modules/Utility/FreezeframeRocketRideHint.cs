@@ -130,17 +130,18 @@ public class FreezeframeRocketRideHint : Module {
         Vector3 cameraPos = mainCam.transform.position;
         Vector3 cameraForward = mainCam.transform.forward;
         Vector3 flatForward = new Vector3(cameraForward.x, 0, cameraForward.z).normalized;
+        Vector3 gravity = NewMovement.Instance?.rb.GetGravityDirection() ?? Vector3.down;
 
-        DrawHintLine(UpperAngle.Value, cameraPos, flatForward, thickness);
-        DrawHintLine(LowerAngle.Value, cameraPos, flatForward, thickness);
+        DrawHintLine(UpperAngle.Value, cameraPos, flatForward, gravity, thickness);
+        DrawHintLine(LowerAngle.Value, cameraPos, flatForward, gravity, thickness);
 
         GL.End();
         GL.PopMatrix();
     }
 
-    private void DrawHintLine(float angleDegrees, Vector3 cameraPos, Vector3 flatForward, float thickness) {
+    private void DrawHintLine(float angleDegrees, Vector3 cameraPos, Vector3 flatForward, Vector3 gravity, float thickness) {
         float angleInRadians = angleDegrees * -1 * Mathf.Deg2Rad;
-        Vector3 direction = flatForward * Mathf.Cos(angleInRadians) + Vector3.up * Mathf.Sin(angleInRadians);
+        Vector3 direction = flatForward * Mathf.Cos(angleInRadians) - gravity * Mathf.Sin(angleInRadians);
 
         Vector3 lineCenter = cameraPos + direction * Distance.Value;
         Vector3 lineDirection = Vector3.Cross(Vector3.up, flatForward).normalized;
