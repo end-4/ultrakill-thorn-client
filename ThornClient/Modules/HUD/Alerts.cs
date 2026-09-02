@@ -21,7 +21,7 @@ public class Alerts : FramedHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "warning");
 
     /// <inheritdoc />
-    public override string[] Tags => ["health", "hp", "low", "rocket", "whiplash", "FUP", "slam"];
+    public override string[] Tags => ["health", "hp", "low", "rocket", "whiplash", "FUP", "slam", "void", "lava"];
 
     public Setting<bool> HealthEnable;
     public Setting<int> HealthThreshold;
