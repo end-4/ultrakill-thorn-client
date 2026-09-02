@@ -40,7 +40,10 @@ public class Fist : FramedHudModule {
         return obj;
     }
 
-    private class FistController : MonoBehaviour {
+    /// <summary>
+    /// Controller for the fist indicator
+    /// </summary>
+    protected class FistController : MonoBehaviour {
         // We have these for caching the components
         private Image? _bg;
         private Image? _fg;
