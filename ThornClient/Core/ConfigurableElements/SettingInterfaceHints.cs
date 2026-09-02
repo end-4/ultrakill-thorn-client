@@ -49,9 +49,9 @@ public record InterfaceHints {
     /// <param name="from">From what</param>
     /// <param name="to">To what</param>
     /// <returns>The interface hint with (only) the range</returns>
-    public static InterfaceHints RangeHint(float from = 0, float to = 1) {
+    public static InterfaceHints RangeHint(float from = 0f, float to = 1f) {
         return new InterfaceHints {
-            Range = Tuple.Create(0f, 1f)
+            Range = Tuple.Create(from, to)
         };
     }
 }
