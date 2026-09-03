@@ -2,7 +2,7 @@
 
 - Added snapping for HUD widgets
 - Added support for custom setting UI elements
-- New HUD modules: Alerts, Freshness, Style multiplier, Style feed
+- New HUD modules: Alerts, Freshness, Style Multiplier, Style Feed, Style Rank, Style Points (of current rank)
 - Added an option for Run In Background to only affect menus (useful for large Angry downloads)
 - Fixed Freezeframe rocket ride hints flipped when doing 8-2 challenge
 

@@ -18,7 +18,7 @@ namespace ThornClient.Modules.HUD;
 /// </summary>
 public class StyleFeed : FramedHudModule {
     /// <inheritdoc />
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "style");
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "style_bonuses");
 
     /// <inheritdoc />
     public override string[] Tags => ["points", "bonus"];
