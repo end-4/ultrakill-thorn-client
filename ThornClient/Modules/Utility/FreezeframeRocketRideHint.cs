@@ -77,6 +77,7 @@ public class FreezeframeRocketRideHint : Module {
         "Draws assist lines to help with Freezeframe rocket ride aiming", ModuleCategory.Utility) {
         ShowWhen = CreateSetting("showWhen", "Show when holding", "When to show the hint lines",
             RocketHintShowWhen.Freezeframe);
+        ShowWhen.Hints = InterfaceHints.SentenceCaseEnumSubstitutions<RocketHintShowWhen>();
         LineColor = CreateSetting("lineColor", "Line color", "Color used for the hint line.",
             new Color(64f / 255f, 232f / 255f, 1f));
         LineThickness = CreateSetting("lineThickness", "Line thickness", "How thicc the line is", 2f);

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using NukeLib.Utils;
 
 namespace ThornClient.Core.ConfigurableElements;
 
@@ -52,6 +54,37 @@ public record InterfaceHints {
     public static InterfaceHints RangeHint(float from = 0f, float to = 1f) {
         return new InterfaceHints {
             Range = Tuple.Create(from, to)
+        };
+    }
+
+    /// <summary>
+    /// Generates enum display name substitutions formatted in Sentence case.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type</typeparam>
+    /// <returns>An InterfaceHints record with auto-generated Sentence case enum substitutions</returns>
+    public static InterfaceHints SentenceCaseEnumSubstitutions<TEnum>() where TEnum : struct, Enum {
+        var enumType = typeof(TEnum);
+        if (enumType == null) throw new ArgumentNullException(nameof(enumType));
+        if (!enumType.IsEnum) throw new ArgumentException("Provided type must be an enum.", nameof(enumType));
+        return new InterfaceHints {
+            EnumSubstitutions = Enum.GetNames(enumType)
+                .ToDictionary(name => name, name => name.ToSentenceCase())
+        };
+    }
+
+    /// <summary>
+    /// Generates enum display name substitutions formatted in Title Case.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type</typeparam>
+    /// <returns>An InterfaceHints record with auto-generated Title Case enum substitutions</returns>
+    public static InterfaceHints TitleCaseEnumSubstitutions<TEnum>() where TEnum : struct, Enum {
+        var enumType = typeof(TEnum);
+        if (enumType == null) throw new ArgumentNullException(nameof(enumType));
+        if (!enumType.IsEnum) throw new ArgumentException("Provided type must be an enum.", nameof(enumType));
+
+        return new InterfaceHints {
+            EnumSubstitutions = Enum.GetNames(enumType)
+                .ToDictionary(name => name, name => name.ToTitleCase())
         };
     }
 }
