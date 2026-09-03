@@ -15,7 +15,7 @@ public class StylePoints : BoundedValueHudModule {
         typeof(StyleHUD).GetField("currentMeter", BindingFlags.NonPublic | BindingFlags.Instance);
 
     /// <inheritdoc />
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "style_rank");
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "style_rank_up");
 
     /// <inheritdoc />
     public override string[] Tags => ["decay"];
