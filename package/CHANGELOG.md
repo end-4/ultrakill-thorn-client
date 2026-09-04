@@ -1,3 +1,7 @@
+## 0.4.0
+
+- Fixed railcannon charge meter jumping from 80% to full
+
 ## 0.3.0
 
 - Added snapping for HUD widgets
