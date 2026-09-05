@@ -188,7 +188,8 @@ public class ClickGUI : SystemModule {
         _canvas.SetActive(true);
         var canvasComp = _canvas.GetComponent<Canvas>();
         if (canvasComp != null) {
-            canvasComp.sortingOrder = 69; // On top of most things
+            canvasComp.sortingOrder =
+                1002; // Polarite has a persistent panel at 1001 that blocks everything below so we have to go higher
         }
 
         _canvas.UnfuckLayoutHack();

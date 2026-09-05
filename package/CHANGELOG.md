@@ -1,3 +1,9 @@
+## 0.4.0
+
+- Fixed railcannon charge meter jumping from 80% to full
+- Viewmodel Tweaks: fixed wireframe effect being applied to Piercer's charge effect/panel
+- Raised the layer of the ClickGUI so the tabs are clickable when Polarite is installed and spawns a blocking notification panel
+
 ## 0.3.0
 
 - Added snapping for HUD widgets

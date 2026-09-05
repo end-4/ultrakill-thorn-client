@@ -17,7 +17,7 @@ public class RailCharge : BoundedValueHudModule {
     public override void OnUpdate() {
         var wc = WeaponCharges.Instance;
         if (wc != null) {
-            var scaled = wc.raicharge / 5f;
+            var scaled = Mathf.Clamp01(wc.raicharge / 4f);
             Value = scaled;
         }
     }
