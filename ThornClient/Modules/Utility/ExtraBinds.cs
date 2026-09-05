@@ -31,12 +31,12 @@ public class ExtraBinds : Module {
     /// Constructor
     /// </summary>
     public ExtraBinds() : base("thorn.extraBinds", "Extra Binds",
-        "Some useful keybinds for almost everything!", ModuleCategory.Utility) {
-        RestartKeybind = CreateSetting("restartMission", "Restart mission.", "yo what do you think it does :sob:",
+        "Some useful keybinds for (almost) everything", ModuleCategory.Utility) {
+        RestartKeybind = CreateSetting("restartMission", "Restart mission", "yo what do you think it does :sob:",
             new Keybind(KeyCode.None));
         RestartKeybind.OnPress += () => OptionsManager.Instance?.RestartMission();
 
-        CheckpointKeybind = CreateSetting("restartToCheckpoint", "Go to checkpoint.", "yo what do you think it does :sob:",
+        CheckpointKeybind = CreateSetting("restartToCheckpoint", "Goes to the latest checkpoint", "yo what do you think it does :sob:",
             new Keybind(KeyCode.None));
         CheckpointKeybind.OnPress += () => OptionsManager.Instance?.RestartCheckpoint();
     }
