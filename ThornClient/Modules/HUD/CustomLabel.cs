@@ -20,7 +20,7 @@ public class CustomLabel : TextHudModule {
     /// Icon of the module
     /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "cube");
-    
+
     /// <summary>
     /// Tags for search
     /// </summary>
@@ -32,13 +32,17 @@ public class CustomLabel : TextHudModule {
     public CustomLabel() : base("thorn.customLabel", "Custom Label", "Shows a custom text") {
         CustomText = CreateSetting("customText", "Text",
             "Adds an text to the HUD", "placeholder (change this in settings!)");
-        CustomText.OnChanged += OnHudModuleEnable;
+        CustomText.OnChanged += ChangeText;
     }
 
     /// <summary>
     /// Changes the value of the label.
     /// </summary>
-    protected override void OnHudModuleEnable() {
+    public void ChangeText() {
         Text = CustomText.Value;
+    }
+
+    protected override void OnHudModuleEnable() {
+        ChangeText();
     }
 }
