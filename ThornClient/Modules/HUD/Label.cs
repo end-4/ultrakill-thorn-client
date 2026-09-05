@@ -8,11 +8,11 @@ using ThornClient.HUD;
 namespace ThornClient.Modules.HUD;
 
 /// <summary>
-/// Module that shows FPS
+/// Module that shows an custom text.
 /// </summary>
-public class Label : ContinuousCumulatedStatHudModule {
+public class Label : TextHudModule {
     /// <summary>
-    /// Setting: whether to show "FPS" text on the HUD element
+    /// Setting: The custom text that will appear on the HUD
     /// </summary>
     public Setting<string> CustomText;
 
@@ -24,23 +24,20 @@ public class Label : ContinuousCumulatedStatHudModule {
     /// <summary>
     /// Tags for search
     /// </summary>
-    public override string[] Tags => ["bonus"];
+    public override string[] Tags => ["text"];
 
     /// <summary>
     /// Constructor
     /// </summary>
-    public Label() : base("thorn.label", "Label", "Shows a custom text") {
+    public Label() : base("thorn.customLabel", "Custom Label", "Shows a custom text") {
         CustomText = CreateSetting("customText", "Text",
             "Adds an text to the HUD", "placeholder (change this in settings!)");
     }
 
-    /// <inheritdoc />
-    protected override float CollectUpdate() {
-        return 1f;
-    }
-
-    /// <inheritdoc />
-    protected override string FormatStat(float value) {
-        return CustomText.Value;
+    /// <summary>
+    /// Changes the value of the label.
+    /// </summary>
+    public override void OnUpdate() {
+        Text = CustomText.Value;
     }
 }

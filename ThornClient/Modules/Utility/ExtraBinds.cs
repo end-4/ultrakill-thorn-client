@@ -12,10 +12,10 @@ namespace ThornClient.Modules.Utility;
 /// </summary>
 public class ExtraBinds : Module {
     /// <summary>
-    /// The FOV that is applied when zooming
+    /// The settings for the keybinds
     /// </summary>
     public Setting<Keybind> RestartKeybind { get; }
-    public Setting<Keybind> RestartCheckpoint { get; }
+    public Setting<Keybind> CheckpointKeybind { get; }
 
     /// <summary>
     /// Icon of the module
@@ -31,13 +31,13 @@ public class ExtraBinds : Module {
     /// Constructor
     /// </summary>
     public ExtraBinds() : base("thorn.extraBinds", "Extra Binds",
-        "Some useful keybinds for (almost) everything! (right now its only speedruns things)", ModuleCategory.Utility) {
+        "Some useful keybinds for almost everything!", ModuleCategory.Utility) {
         RestartKeybind = CreateSetting("restartMission", "Restart mission.", "yo what do you think it does :sob:",
             new Keybind(KeyCode.None));
         RestartKeybind.OnPress += () => OptionsManager.Instance?.RestartMission();
 
-        RestartCheckpoint = CreateSetting("restartToCheckpoint", "Go to checkpoint.", "yo what do you think it does :sob:",
+        CheckpointKeybind = CreateSetting("restartToCheckpoint", "Go to checkpoint.", "yo what do you think it does :sob:",
             new Keybind(KeyCode.None));
-        RestartCheckpoint.OnPress += () => OptionsManager.Instance?.RestartCheckpoint();
+        CheckpointKeybind.OnPress += () => OptionsManager.Instance?.RestartCheckpoint();
     }
 }
