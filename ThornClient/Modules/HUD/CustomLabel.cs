@@ -8,9 +8,9 @@ using ThornClient.HUD;
 namespace ThornClient.Modules.HUD;
 
 /// <summary>
-/// Module that shows an custom text.
+/// Module that shows a custom text.
 /// </summary>
-public class Label : TextHudModule {
+public class CustomLabel : TextHudModule {
     /// <summary>
     /// Setting: The custom text that will appear on the HUD
     /// </summary>
@@ -20,7 +20,7 @@ public class Label : TextHudModule {
     /// Icon of the module
     /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "cube");
-
+    
     /// <summary>
     /// Tags for search
     /// </summary>
@@ -29,15 +29,16 @@ public class Label : TextHudModule {
     /// <summary>
     /// Constructor
     /// </summary>
-    public Label() : base("thorn.customLabel", "Custom Label", "Shows a custom text") {
+    public CustomLabel() : base("thorn.customLabel", "Custom Label", "Shows a custom text") {
         CustomText = CreateSetting("customText", "Text",
             "Adds an text to the HUD", "placeholder (change this in settings!)");
+        CustomText.OnChanged += OnHudModuleEnable;
     }
 
     /// <summary>
     /// Changes the value of the label.
     /// </summary>
-    public override void OnUpdate() {
+    protected override void OnHudModuleEnable() {
         Text = CustomText.Value;
     }
 }
