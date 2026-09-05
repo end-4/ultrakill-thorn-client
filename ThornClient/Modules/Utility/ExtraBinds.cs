@@ -10,7 +10,7 @@ namespace ThornClient.Modules.Utility;
 /// <summary>
 /// Use this shortcut to restart your mission. Good for speedruns.
 /// </summary>
-public class RestartShortcut : Module {
+public class ExtraBinds : Module {
     /// <summary>
     /// The FOV that is applied when zooming
     /// </summary>
@@ -20,7 +20,7 @@ public class RestartShortcut : Module {
     /// <summary>
     /// Icon of the module
     /// </summary>
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "dash");
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "plus");
 
     /// <summary>
     /// Tags for search
@@ -30,14 +30,14 @@ public class RestartShortcut : Module {
     /// <summary>
     /// Constructor
     /// </summary>
-    public RestartShortcut() : base("thorn.extraKeybinds", "Extra keybinds",
+    public ExtraBinds() : base("thorn.extraBinds", "Extra Binds",
         "Some useful keybinds for (almost) everything! (right now its only speedruns things)", ModuleCategory.Utility) {
         RestartKeybind = CreateSetting("restartMission", "Restart mission.", "yo what do you think it does :sob:",
-            new Keybind(KeyCode.H));
+            new Keybind(KeyCode.None));
         RestartKeybind.OnPress += () => OptionsManager.Instance?.RestartMission();
 
         RestartCheckpoint = CreateSetting("restartToCheckpoint", "Go to checkpoint.", "yo what do you think it does :sob:",
-            new Keybind(KeyCode.B));
+            new Keybind(KeyCode.None));
         RestartCheckpoint.OnPress += () => OptionsManager.Instance?.RestartCheckpoint();
     }
 }
