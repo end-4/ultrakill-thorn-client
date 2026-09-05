@@ -1,6 +1,7 @@
 ## 0.4.0
 
 - Fixed railcannon charge meter jumping from 80% to full
+- Viewmodel Tweaks: fixed wireframe effect being applied to Piercer's charge effect/panel
 
 ## 0.3.0
 
