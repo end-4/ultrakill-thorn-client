@@ -22,12 +22,12 @@ public class ExtraBinds : Module {
     /// <summary>
     /// Icon of the module
     /// </summary>
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "plus");
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "keyboard");
 
     /// <summary>
     /// Tags for search
     /// </summary>
-    public override string[] Tags => ["utility", "speedrun"];
+    public override string[] Tags => ["utility", "speedrun", "restart", "checkpoint", "pause"];
 
     /// <summary>
     /// Constructor
