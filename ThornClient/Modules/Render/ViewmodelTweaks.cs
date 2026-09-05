@@ -432,6 +432,8 @@ public class ViewmodelTweaks : Module {
         UpdateVariantColors();
     }
 
+    string[] wireframeBlacklistNames = ["ChargeEffect", "Monitor"];
+
     private void ApplyWireframe(GameObject obj, int variantIndex) {
         if (obj == null) return;
         var mat = GetVariantMat(variantIndex);
@@ -441,6 +443,8 @@ public class ViewmodelTweaks : Module {
 
         foreach (var comp in comps) {
             if (comp == null) continue;
+            var compName = comp.gameObject.name;
+            if (wireframeBlacklistNames.Any(name => compName.StartsWith(name))) continue;
 
             List<Material> sharedMats = [];
             comp.GetSharedMaterials(sharedMats);
