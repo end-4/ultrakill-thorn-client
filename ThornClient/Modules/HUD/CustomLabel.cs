@@ -19,7 +19,7 @@ public class CustomLabel : TextHudModule {
     /// <summary>
     /// Icon of the module
     /// </summary>
-    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "cube");
+    public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "text");
 
     /// <summary>
     /// Tags for search
