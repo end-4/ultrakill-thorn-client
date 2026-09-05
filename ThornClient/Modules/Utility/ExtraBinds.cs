@@ -15,7 +15,9 @@ public class ExtraBinds : Module {
     /// The settings for the keybinds
     /// </summary>
     public Setting<Keybind> RestartKeybind { get; }
+
     public Setting<Keybind> CheckpointKeybind { get; }
+    public Setting<Keybind> AltPauseKeybind { get; }
 
     /// <summary>
     /// Icon of the module
@@ -34,10 +36,39 @@ public class ExtraBinds : Module {
         "Some useful keybinds for (almost) everything", ModuleCategory.Utility) {
         RestartKeybind = CreateSetting("restartMission", "Restart mission", "Keybind to restart mission",
             new Keybind(KeyCode.None));
-        RestartKeybind.OnPress += () => OptionsManager.Instance?.RestartMission();
-
         CheckpointKeybind = CreateSetting("restartToCheckpoint", "Checkpoint Keybind", "Goes to the latest checkpoint",
             new Keybind(KeyCode.None));
-        CheckpointKeybind.OnPress += () => OptionsManager.Instance?.RestartCheckpoint();
+        AltPauseKeybind = CreateSetting("pauseKey", "Alternative pause key", "Pauses the game",
+            new Keybind(KeyCode.None));
+    }
+
+    /// <inheritdoc />
+    protected override void OnEnable() {
+        RestartKeybind.OnPress += Restart;
+        CheckpointKeybind.OnPress += Checkpoint;
+        AltPauseKeybind.OnPress += TogglePause;
+    }
+
+    /// <inheritdoc />
+    protected override void OnDisable() {
+        RestartKeybind.OnPress -= Restart;
+        CheckpointKeybind.OnPress -= Checkpoint;
+        AltPauseKeybind.OnPress -= TogglePause;
+    }
+
+    private OptionsManager? opts => OptionsManager.Instance;
+
+    private void Restart() {
+        opts?.RestartMission();
+    }
+
+    private void Checkpoint() {
+        opts?.RestartCheckpoint();
+    }
+
+    private void TogglePause() {
+        if (opts == null) return;
+        if (opts.paused) opts.UnPause();
+        else opts.Pause();
     }
 }
