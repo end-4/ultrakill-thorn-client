@@ -315,7 +315,7 @@ public class ClickGUI : SystemModule {
             bool atLeft = (i == 0);
             bool atRight = (i + 1 == pages.Count);
             var newSprite = ConnectedButtonGroupSettingController.GetSprite(atLeft, atRight, active);
-            Color targetColor = active ? ThornModule.AccentColor.GetCurrentColor() : Color.white;
+            Color targetColor = active ? ThornModule.Instance!.Accent.Value.GetCurrentColor() : Color.white;
             Color targetTextColor = active ? Color.black : Color.white;
 
             var btnObj = tabButtonRow.transform.GetChild(i);

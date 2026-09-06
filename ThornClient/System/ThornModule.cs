@@ -24,11 +24,6 @@ public class ThornModule : SystemModule {
     public static ThornModule? Instance;
 
     /// <summary>
-    /// Convenient getter for the accent color
-    /// </summary>
-    public static EnhancedColor AccentColor => Instance?.Accent.Value ?? new EnhancedColor(Color.white);
-
-    /// <summary>
     /// Keybind to open ClickGUI
     /// </summary>
     public Setting<Keybind> OpenClickGUI { get; }

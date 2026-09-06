@@ -127,7 +127,7 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IBeginDrag
                 bool thisMatches = Mathf.Approximately(pivotVal.x, TargetModule.PivotX.Value) &&
                                    Mathf.Approximately(pivotVal.y, TargetModule.PivotY.Value);
                 var iconComp = _pivotChoices[pivotName].IconComp;
-                iconComp.color = thisMatches ? ThornModule.AccentColor.GetCurrentColor() : Color.white;
+                iconComp.color = thisMatches ? ThornModule.Instance!.Accent.Value.GetCurrentColor() : Color.white;
             } catch (Exception e) {
                 Plugin.Log.LogWarning($"[HudElementPositioningController] Couldn't update pivot display: {e}");
             }

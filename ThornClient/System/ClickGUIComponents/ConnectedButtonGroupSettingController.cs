@@ -94,7 +94,7 @@ internal class ConnectedButtonGroupSettingController : MonoBehaviour {
             bool left = i == 0;
             bool right = i == total - 1;
 
-            Color targetColor = selected ? ThornModule.AccentColor.GetCurrentColor() : Color.white;
+            Color targetColor = selected ? ThornModule.Instance!.Accent.Value.GetCurrentColor() : Color.white;
             Color targetTextColor = selected ? Color.black : Color.white;
 
             imgComp.sprite = GetSprite(left, right, selected);
