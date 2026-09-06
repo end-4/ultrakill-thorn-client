@@ -59,6 +59,11 @@ public class ThornModule : SystemModule {
     public Setting<Color> Accent { get; }
 
     /// <summary>
+    /// Speed of global rainbow pulse
+    /// </summary>
+    public Setting<float> GlobalHuePulseRate { get; }
+
+    /// <summary>
     /// The time format in the ClickGUI, either 12h or 24h
     /// </summary>
     public Setting<TimeHourFormat> TimeFormat;
@@ -96,7 +101,7 @@ public class ThornModule : SystemModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "settings");
 
     /// <inheritdoc />
-    public ThornModule() : base("thorn.thorn", "Thorn", "General settings") {
+    public ThornModule() : base("thorn.thorn", "Thorn", "Global settings") {
         if (Instance != null) return;
         Instance = this;
 
@@ -137,14 +142,21 @@ public class ThornModule : SystemModule {
             new Keybind(KeyCode.PageDown, modifier: KeyCode.LeftControl), otherBinds);
         SwitchTabRight.OnPress += () => ClickGUI.CycleTab(+1);
 
+        // -- COLORS --
+        CreateHeader("colors", "Colors");
+        var themeGroup = CreateGroup("themeGroup", "Theme", "UI theme");
+        Accent = CreateSetting("accentColor", "Accent color",
+            "Color used for highlighting certain elements, preferably a bright one",
+            new Color(0.65f, 0.95f, 0.89f), themeGroup);
+        var otherColorsGroup  = CreateGroup("otherColorsGroup", "Other settings", "Color pulse rate, etc.");
+        GlobalHuePulseRate = CreateSetting("globalHuePulseRate", "Global hue pulse rate",
+            "Speed of the rainbow pulse", 0.5f, otherColorsGroup);
+
 
         // -- INTERFACE --
         CreateHeader("general", "Interface");
-        Accent = CreateSetting("accentColor", "Accent color",
-            "Color used for highlighting certain elements, preferably a bright one",
-            new Color(0.65f, 0.95f, 0.89f));
 
-        var uiGroup = CreateGroup("uiGroup", "More interface settings", "Stuff related to the user interface");
+        var uiGroup = CreateGroup("uiGroup", "Interface settings", "Stuff related to the user interface");
         CreateHeader("uiGeneral", "General", "", parent: uiGroup);
         TimeFormat = CreateSetting("timeFormat", "Time format", "Used on the menu's top bar", TimeHourFormat.Twelve,
             uiGroup);

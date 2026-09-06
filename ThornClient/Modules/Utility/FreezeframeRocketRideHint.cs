@@ -1,6 +1,7 @@
 using System;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
 using ThornClient.System;
 using UnityEngine;
@@ -39,7 +40,7 @@ public class FreezeframeRocketRideHint : Module {
     /// <summary>
     /// The color of the line.
     /// </summary>
-    public Setting<Color> LineColor { get; }
+    public Setting<EnhancedColor> LineColor { get; }
 
     /// <summary>
     /// The thickness of the line.
@@ -79,7 +80,7 @@ public class FreezeframeRocketRideHint : Module {
             RocketHintShowWhen.Freezeframe);
         ShowWhen.Hints = InterfaceHints.SentenceCaseEnumSubstitutions<RocketHintShowWhen>();
         LineColor = CreateSetting("lineColor", "Line color", "Color used for the hint line.",
-            new Color(64f / 255f, 232f / 255f, 1f));
+            new EnhancedColor(new Color(64f / 255f, 232f / 255f, 1f)));
         LineThickness = CreateSetting("lineThickness", "Line thickness", "How thicc the line is", 2f);
         LineWidth = CreateSetting("lineWidth", "Line width", "How long the line is", 1f);
         Distance = CreateSetting("distance", "Distance", "How far away from the camera to show the lines", 3f);
@@ -124,7 +125,7 @@ public class FreezeframeRocketRideHint : Module {
         GL.LoadProjectionMatrix(mainCam.projectionMatrix);
 
         GL.Begin(GL.QUADS);
-        GL.Color(LineColor.Value);
+        GL.Color(LineColor.Value.GetCurrentColor());
 
         float thickness = LineThickness.Value * 0.01f;
 

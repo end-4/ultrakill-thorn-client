@@ -27,16 +27,22 @@ public static class InputManager {
         }
     } = false;
 
-    private static readonly List<Setting<Keybind>> KeybindSettings = [];
+    private static readonly HashSet<Setting<Keybind>> KeybindSettings = [];
 
     /// <summary>
     /// Registers a keybind setting to receive input event triggers.
     /// </summary>
-    /// <param name="setting">The keybind setting to register</param>
+    /// <param name="setting">The keybind setting</param>
     public static void RegisterKeybindSetting(Setting<Keybind> setting) {
-        if (!KeybindSettings.Contains(setting)) {
-            KeybindSettings.Add(setting);
-        }
+        KeybindSettings.Add(setting);
+    }
+
+    /// <summary>
+    /// Unregisters a keybind setting for input event triggers
+    /// </summary>
+    /// <param name="setting">The keybind setting</param>
+    public static void UnregisterKeybindSetting(Setting<Keybind> setting) {
+        KeybindSettings.Remove(setting);
     }
 
     /// <summary>
