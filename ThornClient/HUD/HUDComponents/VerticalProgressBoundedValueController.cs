@@ -35,12 +35,12 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
         _transSoftBound = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound")?.GetComponent<RectTransform>();
         var valObj = gameObject.FindRecursive("Trough/Value");
         if (valObj != null) {
-            valObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
+            valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
         }
 
         var sofObj = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound");
         if (sofObj != null) {
-            sofObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
+            sofObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
         }
 
         _visibilitySyncer = gameObject.GetOrAddComponent<BatchBoolSettingVisibilitySyncer>();

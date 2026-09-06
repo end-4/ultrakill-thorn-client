@@ -26,7 +26,7 @@ public class ThornModule : SystemModule {
     /// <summary>
     /// Convenient getter for the accent color
     /// </summary>
-    public static Color AccentColor => Instance?.Accent.Value ?? Color.white;
+    public static EnhancedColor AccentColor => Instance?.Accent.Value ?? new EnhancedColor(Color.white);
 
     /// <summary>
     /// Keybind to open ClickGUI
@@ -56,7 +56,7 @@ public class ThornModule : SystemModule {
     /// <summary>
     /// Setting for the accent color
     /// </summary>
-    public Setting<Color> Accent { get; }
+    public Setting<EnhancedColor> Accent { get; }
 
     /// <summary>
     /// Speed of global rainbow pulse
@@ -147,10 +147,10 @@ public class ThornModule : SystemModule {
         var themeGroup = CreateGroup("themeGroup", "Theme", "UI theme");
         Accent = CreateSetting("accentColor", "Accent color",
             "Color used for highlighting certain elements, preferably a bright one",
-            new Color(0.65f, 0.95f, 0.89f), themeGroup);
+            0x8BF2E3.ToEnhancedColor(), themeGroup);
         var otherColorsGroup  = CreateGroup("otherColorsGroup", "Other settings", "Color pulse rate, etc.");
         GlobalHuePulseRate = CreateSetting("globalHuePulseRate", "Global hue pulse rate",
-            "Speed of the rainbow pulse", 0.5f, otherColorsGroup);
+            "Speed of the rainbow pulse", 0.4f, otherColorsGroup);
 
 
         // -- INTERFACE --

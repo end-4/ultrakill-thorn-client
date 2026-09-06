@@ -1,5 +1,6 @@
 ﻿using System;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
 using ThornClient.HUD;
 using ThornClient.Managers;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class StaminaDisplay : BoundedValueHudModule {
     public Setting<bool> Continuous;
 
     public StaminaDisplay() : base("thorn.staminaHud", "Stamina", "Shows stamina", 3,
-        defaultValueColor: new Color(0, 0.77f, 1)) {
+        defaultValueColor: new EnhancedColor(0, 0.77f, 1)) {
         Continuous = CreateSetting("continuousDisplay", "Continuous display",
             "Whether to show the value as continuous or discrete (dash count)", false);
     }

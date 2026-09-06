@@ -65,6 +65,16 @@ internal class ConnectedButtonGroupSettingController : MonoBehaviour {
         UpdateDisplay();
     }
 
+    private void OnEnable() {
+        ThornModule.Instance!.Accent.OnChanged += UpdateDisplay;
+        ThornModule.Instance!.Accent.OnEffectiveValueChanged += UpdateDisplay;
+    }
+
+    private void OnDisable() {
+        ThornModule.Instance!.Accent.OnChanged -= UpdateDisplay;
+        ThornModule.Instance!.Accent.OnEffectiveValueChanged -= UpdateDisplay;
+    }
+
     private string Substitute(string enumName) {
         if (TargetSetting == null || TargetSetting.Hints == null || TargetSetting.Hints.EnumSubstitutions == null)
             return enumName;
@@ -84,7 +94,7 @@ internal class ConnectedButtonGroupSettingController : MonoBehaviour {
             bool left = i == 0;
             bool right = i == total - 1;
 
-            Color targetColor = selected ? ThornModule.AccentColor : Color.white;
+            Color targetColor = selected ? ThornModule.AccentColor.GetCurrentColor() : Color.white;
             Color targetTextColor = selected ? Color.black : Color.white;
 
             imgComp.sprite = GetSprite(left, right, selected);

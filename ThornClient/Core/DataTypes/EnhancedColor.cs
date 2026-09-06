@@ -101,3 +101,28 @@ public enum EnhancedColorMode {
     /// </summary>
     HuePulse = 1,
 }
+
+/// <summary>
+/// Class that provides extensions related to EnhancedColor
+/// </summary>
+public static class EnhancedColorExtensions {
+    /// <summary>
+    /// Converts a hex into an EnhancedColor
+    /// </summary>
+    /// <param name="hex">The hex, like 0xFF5900</param>
+    /// <param name="mode">The enhanced color mode</param>
+    /// <returns>The EnhancedColor</returns>
+    public static EnhancedColor ToEnhancedColor(this int hex, EnhancedColorMode mode = EnhancedColorMode.Static) {
+        return new EnhancedColor(hex.ToColor(), mode);
+    }
+
+    /// <summary>
+    /// Converts a hex into an EnhancedColor
+    /// </summary>
+    /// <param name="hex">The hex, like 0xFF5900FF</param>
+    /// <param name="mode">The enhanced color mode</param>
+    /// <returns>The EnhancedColor</returns>
+    public static EnhancedColor ToEnhancedColor(this uint hex, EnhancedColorMode mode = EnhancedColorMode.Static) {
+        return new EnhancedColor(hex.ToColor(), mode);
+    }
+}

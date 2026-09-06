@@ -1,4 +1,5 @@
 ﻿using System;
+using ThornClient.Core.DataTypes;
 using ThornClient.HUD;
 using ThornClient.Managers;
 using UnityEngine;
@@ -12,7 +13,7 @@ public class HammerYellowHits : BoundedValueHudModule {
     public static readonly int MaxYellowHits = 3;
 
     public HammerYellowHits() : base("thorn.hammerYellowHits", "Hammer Yellow Hits", "Basically Hammer Stats without per-variant cooldowns", 3) {
-        ValueColor.DefaultValue = new Color(0.820f, 0.698f, 0f);
+        ValueColor.DefaultValue = new EnhancedColor(0.820f, 0.698f, 0f);
     }
 
     public override void OnUpdate() {

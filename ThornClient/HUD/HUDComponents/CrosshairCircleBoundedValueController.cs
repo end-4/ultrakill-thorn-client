@@ -24,12 +24,12 @@ internal class CrosshairCircleBoundedValueController : MonoBehaviour, IBoundedVa
         _transSoftBound = gameObject.FindRecursive("Trough/SoftBound")?.GetComponent<RectTransform>();
         var valObj = gameObject.FindRecursive("Trough/Value");
         if (valObj != null) {
-            valObj.GetOrAddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
+            valObj.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
         }
 
         var sofObj = gameObject.FindRecursive("Trough/SoftBound");
         if (sofObj != null) {
-            sofObj.GetOrAddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
+            sofObj.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
         }
 
         UpdateContainer();

@@ -1,6 +1,7 @@
 ﻿using NukeLib.Game;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
 using ThornClient.System;
 using UnityEngine;
@@ -14,7 +15,7 @@ public class VisiblePortals : Module {
     /// <summary>
     /// Fill color
     /// </summary>
-    public Setting<Color> FillColor;
+    public Setting<EnhancedColor> FillColor;
 
     /// <summary>
     /// Whether to draw border around the fill
@@ -24,7 +25,7 @@ public class VisiblePortals : Module {
     /// <summary>
     /// The color of the portal border
     /// </summary>
-    public Setting<Color> BorderColor;
+    public Setting<EnhancedColor> BorderColor;
 
     /// <summary>
     /// Distance to push the overlay away (when drawn precisely at the portal it'll constantly flash)
@@ -48,13 +49,13 @@ public class VisiblePortals : Module {
         ModuleCategory.Render) {
         FillColor = CreateSetting("fillColor", "Fill color",
             "Fill color of the portal overlays",
-            new Color(0.21f, 0.69f, 1f, 0.1f));
+            new EnhancedColor(new Color(0.21f, 0.69f, 1f, 0.1f)));
 
         BorderEnabled = CreateSetting("borderEnabled", "Enable border",
             "Whether to draw an outline", true);
 
         BorderColor = CreateSetting("borderColor", "Border color", "Color of the outline",
-            new Color(0.65f, 0.78f, 1f, 1f));
+            new EnhancedColor(new Color(0.65f, 0.78f, 1f, 1f)));
 
         var advancedGroup = CreateGroup("advanced", "Advanced", "Options that you most likely don't need to touch");
 
@@ -88,7 +89,7 @@ public class VisiblePortals : Module {
 
         // Fill
         GL.Begin(GL.QUADS);
-        GL.Color(FillColor.Value);
+        GL.Color(FillColor.Value.GetCurrentColor());
 
         foreach (var portal in portals) {
             if (portal == null || !portal.gameObject.activeInHierarchy) continue;
@@ -116,7 +117,7 @@ public class VisiblePortals : Module {
         // Borders
         if (BorderEnabled.Value && BorderColor.Value.a > 0.01f) {
             GL.Begin(GL.LINES);
-            GL.Color(BorderColor.Value);
+            GL.Color(BorderColor.Value.GetCurrentColor());
 
             foreach (var portal in portals) {
                 if (portal == null || !portal.gameObject.activeInHierarchy) continue;

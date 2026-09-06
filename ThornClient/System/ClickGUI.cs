@@ -72,14 +72,15 @@ public class ClickGUI : SystemModule {
 
         // Make the canvas
         _canvas = Object.Instantiate(basePrefab);
+        if (_canvas == null) return false;
         _canvas.hideFlags = HideFlags.DontSave;
         Object.DontDestroyOnLoad(_canvas);
         _canvas.SetActive(true); // For size updates to happen... will disable later down below, at least I think this should work
 
         // Tab bar
         _tabBar = Object.Instantiate(tabBarPrefab, _canvas.transform);
-        _tabBar.SetActive(true);
-        _tabBar.GetOrAddComponent<TabBarController>();
+        _tabBar?.SetActive(true);
+        _tabBar?.GetOrAddComponent<TabBarController>();
 
         // Make pages
         _modulePage = Object.Instantiate(_layoutedPagePrefab, _canvas.transform);
@@ -152,14 +153,14 @@ public class ClickGUI : SystemModule {
         _tabBarButtonRow = _tabBar.FindRecursive("Tabs");
         foreach (var tup in _tabPages) {
             var key = tup.Item1;
-            var tabButton = Object.Instantiate(tabButtonPrefab, _tabBarButtonRow.transform);
-            tabButton.FindRecursive("Text").GetComponent<TextMeshProUGUI>().text = key;
-            tabButton.GetComponent<Button>().onClick.AddListener(() => { SetTab(key); });
-
+            var tabButton = Object.Instantiate(tabButtonPrefab, _tabBarButtonRow?.transform);
+            if (tabButton != null) tabButton.GetComponent<Button>().onClick.AddListener(() => { SetTab(key); });
+            var textComp = tabButton?.FindRecursive("Text")?.GetComponent<TextMeshProUGUI>();
+            if (textComp != null) textComp.text = key;
             tup.Item2.SetActiveAnimated(false, PageHiddenOffset); // Add animation component
         }
 
-        _tabBarButtonRow.UnfuckLayoutHack();
+        _tabBarButtonRow?.UnfuckLayoutHack();
 
         // Tooltip
         _tooltip = Object.Instantiate(tooltipPrefab, _canvas.transform);
@@ -181,10 +182,11 @@ public class ClickGUI : SystemModule {
         return item;
     }
 
+    /// <inheritdoc />
     protected override void OnEnable() {
-        // Plugin.Log.LogInfo($"[ClickGUI] Enable");
+        // Show
         if (_canvas == null) return;
-        _canvas.transform.SetAsLastSibling(); // Show on top of everything
+        _canvas.transform.SetAsLastSibling(); // on top of everything
         _canvas.SetActive(true);
         var canvasComp = _canvas.GetComponent<Canvas>();
         if (canvasComp != null) {
@@ -194,26 +196,34 @@ public class ClickGUI : SystemModule {
 
         _canvas.UnfuckLayoutHack();
 
+        // Pause
         if (ThornModule.Instance?.MenuPausesGame.Value ?? true) Pauser.Pause(true, PauseGameStateKey);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
+        // Hooks
+        ThornModule.Instance!.Accent.OnChanged += UpdateTabsAppearance;
+        ThornModule.Instance!.Accent.OnEffectiveValueChanged += UpdateTabsAppearance;
+
+        // Initial updates
         PerformInitialFocus();
     }
 
+    /// <inheritdoc />
     protected override void OnDisable() {
-        // Plugin.Log.LogInfo($"[ClickGUI] Disable");
+        // Unhooks
+        ThornModule.Instance!.Accent.OnChanged -= UpdateTabsAppearance;
+        ThornModule.Instance!.Accent.OnEffectiveValueChanged -= UpdateTabsAppearance;
+
+        // Hide
         if (_canvas == null) return;
         _canvas.SetActive(false);
         Pauser.Pause(true, PauseGameStateKey); // Ensure consistent cursor appearance state
         Pauser.Pause(false, PauseGameStateKey);
         if (_tooltip != null) _tooltip.SetActive(false);
-        // while (_panelStack.Count > 0) {
-        //     var topPanel = Instance._panelStack.Pop();
-        //     Object.Destroy(topPanel);
-        // }
     }
 
+    /// <inheritdoc />
     public override void OnUpdate() {
         UpdateTooltipPos();
     }
@@ -226,6 +236,10 @@ public class ClickGUI : SystemModule {
         _tooltip.transform.SetAsLastSibling();
     }
 
+    /// <summary>
+    /// Gets the currently shown tooltip text
+    /// </summary>
+    /// <returns>The tooltip text</returns>
     public static string GetTooltipText() {
         if (Instance == null || Instance._tooltip == null) return "";
         var textObj = Instance._tooltip.FindRecursive("Text");
@@ -233,6 +247,10 @@ public class ClickGUI : SystemModule {
         return textObj.GetComponent<TextMeshProUGUI>().text;
     }
 
+    /// <summary>
+    /// Display a text on the tooltip
+    /// </summary>
+    /// <param name="text">The text to set</param>
     public static void SetTooltipText(string text) {
         if (text.Length == 0) return;
         var wrappedText = text.WrapText(30);
@@ -245,6 +263,11 @@ public class ClickGUI : SystemModule {
         Instance.UpdateTooltipPos();
     }
 
+    /// <summary>
+    /// Cancel a tooltip text
+    /// </summary>
+    /// <param name="text">The text to cancel</param>
+    /// <param name="force">True to force hide the tooltip, whether or not the text matches what's currently shown</param>
     public static void SurrenderTooltipText(string text, bool force = false) {
         var wrappedText = text.WrapText(30);
         if (Instance == null || Instance._tooltip == null) return;
@@ -257,11 +280,14 @@ public class ClickGUI : SystemModule {
         }
     }
 
-    public static void SetTab(string tabName, bool animated = true) {
+    /// <summary>
+    /// Set active tab by name
+    /// </summary>
+    /// <param name="tabName">Name of the tab</param>
+    /// <param name="animated">Whether to animate the tab switching</param>
+    private static void SetTab(string tabName, bool animated = true) {
         if (Instance == null) return;
         var pages = Instance._tabPages;
-        var tabButtonRow = Instance._tabBarButtonRow;
-        int currIndex = 0;
         for (int i = 0; i < pages.Count; i++) {
             var (key, val) = pages[i];
             bool active = (tabName == key);
@@ -271,31 +297,35 @@ public class ClickGUI : SystemModule {
             val.UnfuckLayoutHack();
             if (val != null && tabName == key) {
                 _lastTabName = tabName;
-                currIndex = i;
             }
         }
 
-        if (tabButtonRow != null) {
-            for (int i = 0; i < tabButtonRow.transform.childCount; i++) {
-                bool active = (i == currIndex);
-                bool atLeft = (i == 0);
-                bool atRight = (i + 1 == pages.Count);
-                var newSprite = ConnectedButtonGroupSettingController.GetSprite(atLeft, atRight, active);
-                Color targetColor = active ? ThornModule.AccentColor : Color.white;
-                Color targetTextColor = active ? Color.black : Color.white;
-
-                var btnObj = tabButtonRow.transform.GetChild(i);
-                var img = btnObj?.GetComponent<Image>();
-                var txt = btnObj?.gameObject.FindRecursive("Text");
-                if (btnObj == null || img == null || txt == null) continue;
-                img.sprite = newSprite;
-                img.color = targetColor;
-                txt.GetComponent<TextMeshProUGUI>().color = targetTextColor;
-            }
-        }
-
+        UpdateTabsAppearance();
         SurrenderTooltipText("", force: true);
         Instance.PerformInitialFocus();
+    }
+
+    private static void UpdateTabsAppearance() {
+        var tabButtonRow = Instance._tabBarButtonRow;
+        var pages = Instance._tabPages;
+        var currIndex = pages.FindIndex(tup => tup.Item1 == _lastTabName);
+        if (tabButtonRow == null) return;
+        for (int i = 0; i < tabButtonRow.transform.childCount; i++) {
+            bool active = (i == currIndex);
+            bool atLeft = (i == 0);
+            bool atRight = (i + 1 == pages.Count);
+            var newSprite = ConnectedButtonGroupSettingController.GetSprite(atLeft, atRight, active);
+            Color targetColor = active ? ThornModule.AccentColor.GetCurrentColor() : Color.white;
+            Color targetTextColor = active ? Color.black : Color.white;
+
+            var btnObj = tabButtonRow.transform.GetChild(i);
+            var img = btnObj?.GetComponent<Image>();
+            var txt = btnObj?.gameObject.FindRecursive("Text");
+            if (btnObj == null || img == null || txt == null) continue;
+            img.sprite = newSprite;
+            img.color = targetColor;
+            txt.GetComponent<TextMeshProUGUI>().color = targetTextColor;
+        }
     }
 
     private void PerformInitialFocus() {
@@ -373,6 +403,9 @@ public class ClickGUI : SystemModule {
         AddToLayoutedPage(activePanel, content);
     }
 
+    /// <summary>
+    /// Navigates to previous page
+    /// </summary>
     public static void NavigateBack() {
         if (Instance == null || !Instance.IsEnabled) return;
 
@@ -393,6 +426,10 @@ public class ClickGUI : SystemModule {
         SurrenderTooltipText("", force: true);
     }
 
+    /// <summary>
+    /// Opens a new sub-page for configuring a certain Configurable
+    /// </summary>
+    /// <param name="config">The configurable</param>
     public static void NestConfigPanel(Configurable? config) {
         if (config == null) return;
         var panel = CreateConfigPanel(config);

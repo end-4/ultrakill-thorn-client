@@ -40,12 +40,12 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         _textCap = gameObject.FindRecursive("Trough/ValueLayout/Cap")?.GetComponent<TextMeshProUGUI>();
         var valObj = gameObject.FindRecursive("Trough/Value");
         if (valObj != null) {
-            valObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
+            valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
         }
 
         var sofObj = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound");
         if (sofObj != null) {
-            sofObj.AddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
+            sofObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
         }
 
         _visibilitySyncer = gameObject.GetOrAddComponent<BatchBoolSettingVisibilitySyncer>();

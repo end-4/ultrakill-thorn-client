@@ -15,6 +15,8 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
     private Colorizer? _textColorizer;
     private GameObject? _settingIcon;
     private TextMeshProUGUI? _nameText;
+    private ClickGUITooltipHandler? _tooltipComp;
+    private string _providerName = "";
 
     private void Start() {
         if (TargetModule == null) {
@@ -49,9 +51,8 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
         if (settingButtonComp != null) settingButtonComp.onClick.AddListener(() => { ClickGUI.NestConfigPanel(TargetModule); });
 
         // Setup hover
-        var providerName = TargetModule.GetType().Assembly.GetName().Name;
-        var tooltipComp = gameObject.AddComponent<ClickGUITooltipHandler>();
-        tooltipComp.Text = $"{TargetModule.Description}<size=8>\n\n</size><size=10>[<color=#{ColorUtility.ToHtmlStringRGB(ThornModule.AccentColor)}>{providerName}</color>]</size>";
+        _providerName = TargetModule.GetType().Assembly.GetName().Name;
+        _tooltipComp = gameObject.AddComponent<ClickGUITooltipHandler>();
         // tooltipComp.text = $"{TargetModule.Description}\n\n[{providerName}.dll]";
 
         // Setup visuals
@@ -61,16 +62,26 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
         _textColorizer = _nameText.GetOrAddComponent<Colorizer>();
 
         TargetModule.OnToggleStateChanged += UpdateVisualState;
+        ThornModule.Instance!.Accent.OnChanged += UpdateTooltip;
+        ThornModule.Instance!.Accent.OnEffectiveValueChanged += UpdateTooltip;
         UpdateVisualState(TargetModule.IsEnabled);
+        UpdateTooltip();
     }
 
     private void OnDestroy() {
         if (TargetModule == null) return;
         TargetModule.OnToggleStateChanged -= UpdateVisualState;
+        ThornModule.Instance!.Accent.OnChanged -= UpdateTooltip;
+        ThornModule.Instance!.Accent.OnEffectiveValueChanged -= UpdateTooltip;
     }
 
     private void OnDisable() {
         _settingIcon?.SetActive(false);
+    }
+
+    private void UpdateTooltip() {
+        if (_tooltipComp == null || TargetModule == null) return;
+        _tooltipComp.Text = $"{TargetModule.Description}<size=8>\n\n</size><size=10>[<color=#{ColorUtility.ToHtmlStringRGB(ThornModule.AccentColor.GetCurrentColor())}>{_providerName}</color>]</size>";
     }
 
     private void UpdateVisualState(bool isEnabled) {

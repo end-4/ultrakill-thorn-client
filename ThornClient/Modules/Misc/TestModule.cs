@@ -33,6 +33,7 @@ internal abstract class TestModule : Module {
     public Setting<float> FloatSetting { get; }
     public Setting<string> StringSetting { get; }
     public Setting<Color> ColorSetting { get; }
+    public Setting<EnhancedColor> EnhancedColorSetting { get; }
     public Setting<NonEmulatorYuzu> Cutie { get; }
     public Setting<Baka> FavouriteBaka { get; }
     public Setting<EnemyList> Enemiez { get; }
@@ -57,6 +58,8 @@ internal abstract class TestModule : Module {
         StringSetting = CreateSetting("textField", "Yap field", "Here bro have a tung tung", "sahur");
         ColorSetting = CreateSetting("colorField", "Some color!", "Color field description",
             new Color(0.86f, 0.82f, 0.71f, 1f));
+        EnhancedColorSetting = CreateSetting("enhancedColorField", "Enhanced color!", "Enhanced color field description",
+            new EnhancedColor(new Color(0.86f, 0.82f, 0.71f, 1f)));
         Cutie = CreateSetting("favouriteCutie", "Favorite cutie", "h", NonEmulatorYuzu.Mako);
         Cutie.Hints = new InterfaceHints {
             EnumSubstitutions = new Dictionary<string, string> {

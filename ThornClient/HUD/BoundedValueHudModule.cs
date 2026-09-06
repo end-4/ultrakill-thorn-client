@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
 using ThornClient.Core.UI;
 using ThornClient.HUD.HUDComponents;
 using ThornClient.Managers;
@@ -146,7 +147,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     public Setting<IndicatorStyle> Style;
 
     public Setting<bool> ShowName;
-    public Setting<Color> ValueColor;
+    public Setting<EnhancedColor> ValueColor;
 
     public Setting<float> ProgressLength;
     public Setting<bool> ProgressShowIcon;
@@ -162,7 +163,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// <summary>
     /// The color of the soft bound fill element of the indicator.
     /// </summary>
-    public Setting<Color> SoftBoundColor;
+    public Setting<EnhancedColor> SoftBoundColor;
 
     public SettingGroup ColorGroup;
 
@@ -177,8 +178,8 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// <param name="displayIcon">The icon shown on the HUD element</param>
     /// <param name="decimalPlaces">The decimal places to show on the value text</param>
     public BoundedValueHudModule(string guid, string name, string description, float bound = 1, string displayName = "",
-        Sprite? displayIcon = null, int decimalPlaces = 1, Color? defaultValueColor = null,
-        Color? defaultSoftBoundColor = null) : base(guid,
+        Sprite? displayIcon = null, int decimalPlaces = 1, EnhancedColor? defaultValueColor = null,
+        EnhancedColor? defaultSoftBoundColor = null) : base(guid,
         name, description
     ) {
         // Settings
@@ -193,10 +194,10 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         ShowName = CreateSetting("showName", "Show name", "The name of the value", true);
         ColorGroup = CreateGroup("colorGroup", "Colors", "Colors used on the indicator");
         ValueColor = CreateSetting("valueColor", "Value color", "The color of the value",
-            defaultValueColor ?? new Color(0.098f, 0.624f, 0.525f), ColorGroup);
+            defaultValueColor ?? new EnhancedColor(new Color(0.098f, 0.624f, 0.525f)), ColorGroup);
         SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound color",
             "The color of the soft bound, for example HP hard damage",
-            defaultSoftBoundColor ?? new Color(1f, 1f, 1f, 0.36f), ColorGroup);
+            defaultSoftBoundColor ?? new EnhancedColor(new Color(1f, 1f, 1f, 0.36f)), ColorGroup);
         CreateHeader("stylesHeader", "Style-specific settings");
         var progressGroup = CreateGroup("styleProgress", "Progress", "Settings specific to the Progress style");
         ProgressLength = CreateSetting(
