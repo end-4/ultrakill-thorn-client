@@ -175,7 +175,7 @@ public class ViewmodelTweaks : Module {
         WeaponEdgeThickness = CreateSetting("weaponEdgeThickness", "Edge thickness",
             "Thickness of the edges", 2f);
         WeaponFillColor = CreateSetting("weaponFillColor", "Edges: fill color",
-            "Color to fill surfaces between the lines", 0x00000000.ToEnhancedColor());
+            "Color to fill surfaces between the lines", 0x000000B6.ToEnhancedColor());
         AggressiveUpdates = CreateSetting(
             "aggressiveUpdates", "Aggressive updates",
             "Makes weapon transforms less likely to desync by updating more aggressively. " +
