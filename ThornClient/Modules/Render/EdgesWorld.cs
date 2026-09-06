@@ -1,6 +1,8 @@
+using NukeLib.Utils;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
 using ThornClient.System;
 
@@ -20,14 +22,15 @@ public class EdgesWorld : Module {
     /// <inheritdoc />
     public override string[] Tags => ["wireframe", "world"];
 
-    public Setting<Color> FillColor;
+    public Setting<EnhancedColor> FillColor;
 
     /// <summary>
     /// Constructor
     /// </summary>
     public EdgesWorld() : base("thorn.edgesWorld", "Edges (World)", "Applies wireframe shader to the world",
         ModuleCategory.Render) {
-        FillColor = CreateSetting("fillColor", "Fill color", "The color that fills in the surfaces", Color.black);
+        FillColor = CreateSetting("fillColor", "Fill color", "The color that fills in the surfaces",
+            0x000007.ToEnhancedColor());
     }
 
     /// <inheritdoc />
@@ -48,7 +51,7 @@ public class EdgesWorld : Module {
 
         // Clear previous frame
         cam.clearFlags = CameraClearFlags.SolidColor;
-        cam.backgroundColor = FillColor.Value;
+        cam.backgroundColor = FillColor.Value.GetCurrentColor();
 
         // Tell Unity to use wireframe bullshit b4 this camera starts rendering anything
         GL.wireframe = true;

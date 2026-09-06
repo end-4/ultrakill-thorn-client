@@ -5,6 +5,7 @@ using NukeLib.Game;
 using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
 using ThornClient.HUD;
 using ThornClient.HUD.HUDComponents;
 using ThornClient.Managers;
@@ -19,8 +20,8 @@ public class HammerStats : FramedHudModule {
     public override string[] Tags => ["jackhammer", "alternative shotgun", "impact hammer"];
 
     public Setting<bool> ShowYellowHeatBar;
-    public Setting<Color> YellowHeatBarColor;
-    public Setting<Color> OverheatBarColor;
+    public Setting<EnhancedColor> YellowHeatBarColor;
+    public Setting<EnhancedColor> OverheatBarColor;
 
     /// <summary>
     /// Constructor
@@ -29,9 +30,9 @@ public class HammerStats : FramedHudModule {
         ShowYellowHeatBar = CreateSetting("showYellowHeatBar", "Show global heat bar",
             "Shows the number of hits before the next one overheats any hammer", true);
         YellowHeatBarColor = CreateSetting("yellowHeatBarColor", "Heat bar color",
-            "The color of the heat bar in its normal state", new Color(1f, 0.9f, 0.3f));
+            "The color of the heat bar in its normal state", new EnhancedColor(1f, 0.9f, 0.3f));
         OverheatBarColor = CreateSetting("overheatBarColor", "Overheat color",
-            "The color of the heat bar in its normal state", new Color(1f, 0f, 0f));
+            "The color of the heat bar in its normal state", new EnhancedColor(1f, 0f, 0f));
     }
 
     private GameObject _contentObject;
@@ -118,14 +119,14 @@ public class HammerStats : FramedHudModule {
                 bool overheat = newVal >= MaxYellowHits;
                 float hitPerc = 0;
                 if (overheat) {
-                    if (!_heatFill.color.Approximately(ParentModule.OverheatBarColor.Value)) {
-                        _heatFill.color = ParentModule.OverheatBarColor.Value;
+                    if (!_heatFill.color.Approximately(ParentModule.OverheatBarColor.Value.GetCurrentColor())) {
+                        _heatFill.color = ParentModule.OverheatBarColor.Value.GetCurrentColor();
                     }
 
                     hitPerc = wc.shoAltYellowsTimer / GlobalYellowCooldown;
                 } else {
-                    if (!_heatFill.color.Approximately(ParentModule.YellowHeatBarColor.Value)) {
-                        _heatFill.color = ParentModule.YellowHeatBarColor.Value;
+                    if (!_heatFill.color.Approximately(ParentModule.YellowHeatBarColor.Value.GetCurrentColor())) {
+                        _heatFill.color = ParentModule.YellowHeatBarColor.Value.GetCurrentColor();
                     }
 
                     hitPerc = (float)newVal / (float)MaxYellowHits;

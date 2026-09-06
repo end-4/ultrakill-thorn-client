@@ -138,6 +138,8 @@ internal class EnhancedColorWindowController : MonoBehaviour {
         // Hooks
         TargetSetting.OnChanged += UpdateAll;
         TargetSetting.OnEffectiveValueChanged += UpdatePreview;
+        ThornModule.Instance!.Accent.OnChanged += UpdateModeSelection;
+        ThornModule.Instance!.Accent.OnEffectiveValueChanged += UpdateModeSelection;
 
         // Init updates
         UpdateAll();
@@ -148,6 +150,8 @@ internal class EnhancedColorWindowController : MonoBehaviour {
             TargetSetting.OnChanged -= UpdateAll;
             TargetSetting.OnEffectiveValueChanged -= UpdatePreview;
         }
+        ThornModule.Instance!.Accent.OnChanged -= UpdateModeSelection;
+        ThornModule.Instance!.Accent.OnEffectiveValueChanged -= UpdateModeSelection;
     }
 
     private static float GetSafeColorValue(float value) {
@@ -177,21 +181,25 @@ internal class EnhancedColorWindowController : MonoBehaviour {
         if (_hexInput != null) _hexInput.SetTextWithoutNotify($"#{ColorUtility.ToHtmlStringRGBA(TargetSetting.Value.BaseColor)}");
 
         // Mode selection
-        for (int i = 0; i < EnhancedColorModes.Length; i++) {
-            var border = _modeBorders[i];
-            var icon = _modeIcons[i];
-            var text = _modeTexts[i];
-            var color = EnhancedColorModes[i] == TargetSetting.Value.Mode ? ThornModule.AccentColor : Color.white;
-            if (border == null || icon == null || text == null) continue;
-            border.color = color;
-            icon.color = color;
-            text.color = color;
-        }
+        UpdateModeSelection();
     }
 
     private void UpdatePreview() {
         if (TargetSetting == null || _preview == null) return;
         _preview.color = TargetSetting.Value.GetCurrentColor();
+    }
+
+    private void UpdateModeSelection() {
+        for (int i = 0; i < EnhancedColorModes.Length; i++) {
+            var border = _modeBorders[i];
+            var icon = _modeIcons[i];
+            var text = _modeTexts[i];
+            var color = EnhancedColorModes[i] == TargetSetting.Value.Mode ? ThornModule.AccentColor.GetCurrentColor() : Color.white;
+            if (border == null || icon == null || text == null) continue;
+            border.color = color;
+            icon.color = color;
+            text.color = color;
+        }
     }
 
     private void TrySaveNewHex(string hex) {

@@ -6,6 +6,7 @@ using NukeLib.Utils;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
 using ThornClient.System;
 using Object = UnityEngine.Object;
@@ -84,7 +85,7 @@ public class ViewmodelTweaks : Module {
     public Setting<bool> Bobbing;
     public Setting<bool> WeaponEdges;
     public Setting<float> WeaponEdgeThickness;
-    public Setting<Color> WeaponFillColor;
+    public Setting<EnhancedColor> WeaponFillColor;
     public Setting<bool> AggressiveUpdates;
 
     // Transforms: Global
@@ -150,7 +151,7 @@ public class ViewmodelTweaks : Module {
             var mat = _matCache[i];
             if (mat == null) continue;
             mat.SetColor("_WireframeColor", ColorUtils.GetWeaponVariantColor(i));
-            mat.SetColor("_FillColor", WeaponFillColor.Value);
+            mat.SetColor("_FillColor", WeaponFillColor.Value.GetCurrentColor());
             mat.SetFloat("_WireframeThickness", WeaponEdgeThickness.Value);
         }
     }
@@ -174,7 +175,7 @@ public class ViewmodelTweaks : Module {
         WeaponEdgeThickness = CreateSetting("weaponEdgeThickness", "Edge thickness",
             "Thickness of the edges", 2f);
         WeaponFillColor = CreateSetting("weaponFillColor", "Edges: fill color",
-            "Color to fill surfaces between the lines", Color.black);
+            "Color to fill surfaces between the lines", 0x00000000.ToEnhancedColor());
         AggressiveUpdates = CreateSetting(
             "aggressiveUpdates", "Aggressive updates",
             "Makes weapon transforms less likely to desync by updating more aggressively. " +
@@ -259,6 +260,7 @@ public class ViewmodelTweaks : Module {
         Bobbing.OnChanged += UpdateBobbing;
         WeaponEdges.OnChanged += UpdateCurrentColor;
         WeaponFillColor.OnChanged += UpdateVariantColors;
+        WeaponFillColor.OnEffectiveValueChanged += UpdateVariantColors;
         WeaponEdgeThickness.OnChanged += UpdateVariantColors;
     }
 
@@ -285,6 +287,7 @@ public class ViewmodelTweaks : Module {
         WeaponEdges.OnChanged -= UpdateCurrentColor;
         WeaponEdgeThickness.OnChanged -= UpdateVariantColors;
         WeaponFillColor.OnChanged -= UpdateVariantColors;
+        WeaponFillColor.OnEffectiveValueChanged -= UpdateVariantColors;
         Bobbing.OnChanged -= UpdateBobbing;
         SceneUtils.SafeSceneLoadedNoParam -= OnSceneLoadedWhenEnabled;
         ModelRollOffset.OnValueChanged -= UpdateCurrent;

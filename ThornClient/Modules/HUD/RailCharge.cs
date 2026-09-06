@@ -1,4 +1,5 @@
 ﻿using System;
+using ThornClient.Core.DataTypes;
 using ThornClient.HUD;
 using ThornClient.Managers;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class RailCharge : BoundedValueHudModule {
     public override string[] Tags => ["charge", "ultimate", "shock", "electric", "thunderbolt", "shot"];
 
     public RailCharge() : base("thorn.railCharge", "Railcannon Charge", "Shows the railcannon charge",
-        bound: 1, displayName: "Railcannon", defaultValueColor: new Color(0.44f, 0.52f, 1f)
+        bound: 1, displayName: "Railcannon", defaultValueColor: new EnhancedColor(0.44f, 0.52f, 1f)
     ) {
     }
 

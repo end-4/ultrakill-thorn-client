@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NukeLib.Utils;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
 using ThornClient.HUD;
 using ThornClient.Managers;
 using ThornClient.System;
@@ -27,7 +28,7 @@ public class Freshness : BoundedValueHudModule {
 
     /// <inheritdoc />
     public Freshness() : base("thorn.freshnessHud", "Freshness", "Shows freshness", MaxFreshness,
-        defaultValueColor: 0xE7C900.ToColor()) {
+        defaultValueColor: 0xE7C900.ToEnhancedColor()) {
         BarDisplay = CreateSetting("barDisplay", "Bar display mode", "What the progress bar should show",
             BarDisplayMode.CurrentTier);
         BarDisplay.Hints = new InterfaceHints {

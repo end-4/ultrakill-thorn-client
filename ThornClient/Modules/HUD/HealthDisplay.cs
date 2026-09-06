@@ -1,4 +1,5 @@
-﻿using ThornClient.HUD;
+﻿using ThornClient.Core.DataTypes;
+using ThornClient.HUD;
 using ThornClient.Managers;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ public class HealthDisplay : BoundedValueHudModule {
     /// Constructor
     /// </summary>
     public HealthDisplay() : base("thorn.healthHud", "Health", "Shows health", 100,
-        defaultValueColor: new Color(1, 0, 0)) {
+        defaultValueColor: new EnhancedColor(1, 0, 0)) {
     }
 
     /// <inheritdoc />

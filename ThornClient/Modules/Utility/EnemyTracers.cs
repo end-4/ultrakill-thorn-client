@@ -54,7 +54,7 @@ public class EnemyTracers : Module {
     public EnemyTracers() : base("thorn.enemyTracers", "Enemy Tracers", "Draws lines from you to enemies",
         ModuleCategory.Utility) {
         TracerColor = CreateSetting("tracerColor", "Tracer color", "Color used for the trace lines",
-            new EnhancedColor(0xA6F2E3B7.ToColor()));
+            0xA6F2E3B7.ToEnhancedColor());
         LineThickness = CreateSetting("lineThickness", "Line thickness", "The pixel width of the tracer lines", 2f);
         AlwaysOnTop = CreateSetting("alwaysOnTop", "Always on top",
             "Render tracer lines through walls and world geometry", true);

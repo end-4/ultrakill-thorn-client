@@ -86,7 +86,14 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IBeginDrag
         UpdatePivotDisplay();
     }
 
+    private void OnEnable() {
+        ThornModule.Instance!.Accent.OnChanged += UpdatePivotDisplay;
+        ThornModule.Instance!.Accent.OnEffectiveValueChanged += UpdatePivotDisplay;
+    }
+
     private void OnDisable() {
+        ThornModule.Instance!.Accent.OnChanged -= UpdatePivotDisplay;
+        ThornModule.Instance!.Accent.OnEffectiveValueChanged -= UpdatePivotDisplay;
         UpdateCursor();
     }
 
@@ -120,7 +127,7 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IBeginDrag
                 bool thisMatches = Mathf.Approximately(pivotVal.x, TargetModule.PivotX.Value) &&
                                    Mathf.Approximately(pivotVal.y, TargetModule.PivotY.Value);
                 var iconComp = _pivotChoices[pivotName].IconComp;
-                iconComp.color = thisMatches ? ThornModule.AccentColor : Color.white;
+                iconComp.color = thisMatches ? ThornModule.AccentColor.GetCurrentColor() : Color.white;
             } catch (Exception e) {
                 Plugin.Log.LogWarning($"[HudElementPositioningController] Couldn't update pivot display: {e}");
             }

@@ -1,5 +1,6 @@
 ﻿using NukeLib.Utils;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
 using ThornClient.HUD;
 using ThornClient.Managers;
 using ThornClient.System;
@@ -25,7 +26,7 @@ public class RocketRides : BoundedValueHudModule {
     /// <inheritdoc />
     public RocketRides() : base("thorn.rocketRides", "Rocket Rides", "Shows number of remaining effective rocket rides",
         5, displayIcon: AssetManager.Get<Sprite>(ClickGUI.BundleKey, "rocket_ride"), displayName: "Rides",
-        defaultValueColor: 0xFF5900.ToColor(), decimalPlaces: 0) {
+        defaultValueColor: 0xFF5900.ToEnhancedColor(), decimalPlaces: 0) {
         EffectiveRides = CreateSetting("effectiveRides", "Effective rides",
             "Number of effective rocket rides. There is no strict value, but the 6th one droops immediately and noticeably.",
             5);

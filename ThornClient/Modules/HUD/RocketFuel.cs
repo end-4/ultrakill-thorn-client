@@ -1,6 +1,7 @@
 using HarmonyLib;
 using NukeLib.Utils;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
 using ThornClient.HUD;
 using ThornClient.Managers;
 using ThornClient.System;
@@ -27,7 +28,7 @@ public class RocketFuel : BoundedValueHudModule {
     public RocketFuel() : base("thorn.rocketFuel", "Rocket Fuel",
         "Shows remaining rocket ride time before the rocket droops down",
         1, displayIcon: AssetManager.Get<Sprite>(ClickGUI.BundleKey, "fuel"), displayName: "Fuel",
-        defaultValueColor: 0xFF5900.ToColor(), decimalPlaces: 1) {
+        defaultValueColor: 0xFF5900.ToEnhancedColor(), decimalPlaces: 1) {
         Overstay = CreateSetting("overstay", "Overstay",
             "Difference between the point of practical \"fuel emptiness\" and the mathematical point of emptiness",
             0.1f);

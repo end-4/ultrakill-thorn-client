@@ -25,11 +25,11 @@ internal class CircularBoundedValueController : MonoBehaviour, IBoundedValueCont
         _fillSoftBound = gameObject.FindRecursive("Trough/SoftBound")?.GetComponent<Image>();
         var valObj = gameObject.FindRecursive("Trough/Value/ValueBase");
         if (valObj != null) {
-            valObj.GetOrAddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
+            valObj.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
         }
         var sofObj = gameObject.FindRecursive("Trough/SoftBound/SoftBoundBase");
         if (sofObj != null) {
-            sofObj.GetOrAddComponent<ColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
+            sofObj.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
         }
         _visibilitySyncer = gameObject.GetOrAddComponent<BatchBoolSettingVisibilitySyncer>();
         _visibilitySyncer.SyncPairs = new Dictionary<Setting<bool>, string> {

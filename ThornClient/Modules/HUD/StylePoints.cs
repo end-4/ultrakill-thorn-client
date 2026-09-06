@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using NukeLib.Utils;
+using ThornClient.Core.DataTypes;
 using ThornClient.HUD;
 using ThornClient.Managers;
 using ThornClient.System;
@@ -23,7 +24,7 @@ public class StylePoints : BoundedValueHudModule {
     /// <inheritdoc />
     public StylePoints() : base("thorn.stylePoints", "Style Points",
         "Shows points on the current style rank",
-        defaultValueColor: 0xFFFFFF.ToColor(), displayName: "Current rank") {
+        defaultValueColor: 0xFFFFFF.ToEnhancedColor(), displayName: "Current rank") {
     }
 
     /// <inheritdoc />

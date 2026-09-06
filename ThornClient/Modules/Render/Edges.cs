@@ -6,6 +6,7 @@ using NukeLib.Utils;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
 using ThornClient.Managers;
 using ThornClient.System;
 
@@ -27,54 +28,54 @@ public class Edges : Module {
     public override string[] Tags => ["wireframe", "world"];
 
     public Setting<float> EdgeThickness;
-    public Setting<Color> FillColor;
+    public Setting<EnhancedColor> FillColor;
     public Setting<bool> SwapEdgeAndFill;
-    public Dictionary<EnemyType, Setting<Color>> EnemyEdgeColors = [];
+    public Dictionary<EnemyType, Setting<EnhancedColor>> EnemyEdgeColors = [];
 
-    private static readonly Dictionary<EnemyType, Color> _defaultEnemyColors = new() {
-        { EnemyType.Cerberus, 0xFF9402.ToColor32() },
-        { EnemyType.Drone, 0x9A00FF.ToColor32() },
-        { EnemyType.HideousMass, 0xFF6D73.ToColor32() },
-        { EnemyType.Filth, 0xADD571.ToColor32() },
-        { EnemyType.MaliciousFace, 0xFFD19B.ToColor32() },
-        { EnemyType.Mindflayer, 0x00FFCB.ToColor32() },
-        { EnemyType.Streetcleaner, 0xFC710F.ToColor32() },
-        { EnemyType.Swordsmachine, 0xFFC609.ToColor32() },
-        { EnemyType.V2, 0xFF0000.ToColor32() },
-        { EnemyType.Virtue, 0x00A8FF.ToColor32() },
-        { EnemyType.Wicked, 0x7D7D7D.ToColor32() },
-        { EnemyType.Minos, 0xF100FF.ToColor32() },
-        { EnemyType.Stalker, 0xFFFF2A.ToColor32() },
-        { EnemyType.Stray, 0xFF564A.ToColor32() },
-        { EnemyType.Schism, 0xB8782C.ToColor32() },
-        { EnemyType.Soldier, 0x5DA9FF.ToColor32() },
-        { EnemyType.Gabriel, 0xF3AA36.ToColor32() },
-        { EnemyType.FleshPrison, 0xA66157.ToColor32() },
-        { EnemyType.MinosPrime, 0x86B9FF.ToColor32() },
-        { EnemyType.Sisyphus, 0xFF71B5.ToColor32() },
-        { EnemyType.Turret, 0xCFFF00.ToColor32() },
-        { EnemyType.Idol, 0x8F80FF.ToColor32() },
-        { EnemyType.V2Second, 0xFF0000.ToColor32() },
-        { EnemyType.CancerousRodent, 0x40FF40.ToColor32() },
-        { EnemyType.VeryCancerousRodent, 0x40FF40.ToColor32() },
-        { EnemyType.Mandalore, 0xFFAACB.ToColor32() },
-        { EnemyType.Ferryman, 0x00C3B8.ToColor32() },
-        { EnemyType.Leviathan, 0x00C3B8.ToColor32() },
-        { EnemyType.GabrielSecond, 0xFF3900.ToColor32() },
-        { EnemyType.SisyphusPrime, 0xFFB322.ToColor32() },
-        { EnemyType.FleshPanopticon, 0xFF9362.ToColor32() },
-        { EnemyType.Mannequin, 0xF0C4D6.ToColor32() },
-        { EnemyType.Minotaur, 0xFFFFFF.ToColor32() },
-        { EnemyType.Gutterman, 0xFF8D39.ToColor32() },
-        { EnemyType.Guttertank, 0xFF2C2C.ToColor32() },
-        { EnemyType.Centaur, 0xDDE8F3.ToColor32() },
-        { EnemyType.Puppet, 0xCB0000.ToColor32() },
-        { EnemyType.BigJohnator, 0xFF1445.ToColor32() },
-        { EnemyType.Providence, 0xFFFFDA.ToColor32() },
-        { EnemyType.Deathcatcher, 0xFF0B00.ToColor32() },
-        { EnemyType.Power, 0xF8CA32.ToColor32() },
-        { EnemyType.MirrorReaper, 0xC061A9.ToColor32() },
-        { EnemyType.Geryon, 0xFF564A.ToColor32() },
+    private static readonly Dictionary<EnemyType, EnhancedColor> _defaultEnemyColors = new() {
+        { EnemyType.Cerberus, 0xFF9402.ToEnhancedColor() },
+        { EnemyType.Drone, 0x9A00FF.ToEnhancedColor() },
+        { EnemyType.HideousMass, 0xFF6D73.ToEnhancedColor() },
+        { EnemyType.Filth, 0xADD571.ToEnhancedColor() },
+        { EnemyType.MaliciousFace, 0xFFD19B.ToEnhancedColor() },
+        { EnemyType.Mindflayer, 0x00FFCB.ToEnhancedColor() },
+        { EnemyType.Streetcleaner, 0xFC710F.ToEnhancedColor() },
+        { EnemyType.Swordsmachine, 0xFFC609.ToEnhancedColor() },
+        { EnemyType.V2, 0xFF0000.ToEnhancedColor() },
+        { EnemyType.Virtue, 0x00A8FF.ToEnhancedColor() },
+        { EnemyType.Wicked, 0x7D7D7D.ToEnhancedColor() },
+        { EnemyType.Minos, 0xF100FF.ToEnhancedColor() },
+        { EnemyType.Stalker, 0xFFFF2A.ToEnhancedColor() },
+        { EnemyType.Stray, 0xFF564A.ToEnhancedColor() },
+        { EnemyType.Schism, 0xB8782C.ToEnhancedColor() },
+        { EnemyType.Soldier, 0x5DA9FF.ToEnhancedColor() },
+        { EnemyType.Gabriel, 0xF3AA36.ToEnhancedColor() },
+        { EnemyType.FleshPrison, 0xA66157.ToEnhancedColor() },
+        { EnemyType.MinosPrime, 0x86B9FF.ToEnhancedColor() },
+        { EnemyType.Sisyphus, 0xFF71B5.ToEnhancedColor() },
+        { EnemyType.Turret, 0xCFFF00.ToEnhancedColor() },
+        { EnemyType.Idol, 0x8F80FF.ToEnhancedColor() },
+        { EnemyType.V2Second, 0xFF0000.ToEnhancedColor() },
+        { EnemyType.CancerousRodent, 0x40FF40.ToEnhancedColor() },
+        { EnemyType.VeryCancerousRodent, 0x40FF40.ToEnhancedColor() },
+        { EnemyType.Mandalore, 0xFFAACB.ToEnhancedColor() },
+        { EnemyType.Ferryman, 0x00C3B8.ToEnhancedColor() },
+        { EnemyType.Leviathan, 0x00C3B8.ToEnhancedColor() },
+        { EnemyType.GabrielSecond, 0xFF3900.ToEnhancedColor() },
+        { EnemyType.SisyphusPrime, 0xFFB322.ToEnhancedColor() },
+        { EnemyType.FleshPanopticon, 0xFF9362.ToEnhancedColor() },
+        { EnemyType.Mannequin, 0xF0C4D6.ToEnhancedColor() },
+        { EnemyType.Minotaur, 0xFFFFFF.ToEnhancedColor() },
+        { EnemyType.Gutterman, 0xFF8D39.ToEnhancedColor() },
+        { EnemyType.Guttertank, 0xFF2C2C.ToEnhancedColor() },
+        { EnemyType.Centaur, 0xDDE8F3.ToEnhancedColor() },
+        { EnemyType.Puppet, 0xCB0000.ToEnhancedColor() },
+        { EnemyType.BigJohnator, 0xFF1445.ToEnhancedColor() },
+        { EnemyType.Providence, 0xFFFFDA.ToEnhancedColor() },
+        { EnemyType.Deathcatcher, 0xFF0B00.ToEnhancedColor() },
+        { EnemyType.Power, 0xF8CA32.ToEnhancedColor() },
+        { EnemyType.MirrorReaper, 0xC061A9.ToEnhancedColor() },
+        { EnemyType.Geryon, 0xFF564A.ToEnhancedColor() },
     };
 
     /// <summary>
@@ -85,7 +86,7 @@ public class Edges : Module {
         Instance = this;
         CreateHeader("enemies", "Enemies", "Changes applied to newly spawned enemies");
         EdgeThickness = CreateSetting("edgeThickness", "Edge thickness", "How thick the edge lines are", 2f);
-        FillColor = CreateSetting("fillColor", "Fill color", "The color that fills the faces", new Color(0, 0, 0, 1f));
+        FillColor = CreateSetting("fillColor", "Fill color", "The color that fills the faces", new EnhancedColor(0, 0, 0));
         SwapEdgeAndFill = CreateSetting("swapEdgeAndFill", "Swap edge and fill colors",
             "Makes edge colors apply to fill and fill color apply to edges", false);
 
@@ -93,7 +94,7 @@ public class Edges : Module {
         var enemyTypes = Enum.GetValues(typeof(EnemyType)).Cast<EnemyType>().OrderBy(e => e.ToString());
 
         foreach (var enemyType in enemyTypes) {
-            var defaultColor = _defaultEnemyColors.TryGetValue(enemyType, out var color) ? color : Color.red;
+            var defaultColor = _defaultEnemyColors.TryGetValue(enemyType, out var color) ? color : new EnhancedColor(Color.red);
             var setting = CreateSetting(
                 $"enemyColor_{enemyType}",
                 $"{enemyType}",
@@ -108,7 +109,7 @@ public class Edges : Module {
     }
 
     private static Dictionary<EnemyType, Material> _enemyMatCache = [];
-    private readonly Dictionary<EnemyType, Action<Color>> _onColorChangedActions = [];
+    private readonly Dictionary<EnemyType, Action> _onColorChangedActions = [];
 
     private Color GetFillColor(Color edgeColor) {
         return edgeColor;
@@ -118,8 +119,8 @@ public class Edges : Module {
         foreach (var pair in _enemyMatCache) {
             var eType = pair.Key;
             var mat = pair.Value;
-            mat.SetColor(SwapEdgeAndFill.Value ? "_WireframeColor" : "_FillColor", GetFillColor(FillColor.Value));
-            mat.SetColor(SwapEdgeAndFill.Value ? "_FillColor" : "_WireframeColor", EnemyEdgeColors[eType].Value);
+            mat.SetColor(SwapEdgeAndFill.Value ? "_WireframeColor" : "_FillColor", GetFillColor(FillColor.Value.GetCurrentColor()));
+            mat.SetColor(SwapEdgeAndFill.Value ? "_FillColor" : "_WireframeColor", EnemyEdgeColors[eType].Value.GetCurrentColor());
             mat.SetFloat("_WireframeThickness", EdgeThickness.Value);
         }
     }
@@ -140,17 +141,17 @@ public class Edges : Module {
             return null;
         }
 
-        var enemyColor = Color.red;
+        var enemyColor = new EnhancedColor(Color.red);
         if (Instance.EnemyEdgeColors.TryGetValue(enemyType, out var colorSetting)) {
             enemyColor = colorSetting.Value;
         }
 
         var mat = new Material(baseMat) {
-            color = enemyColor
+            color = enemyColor.GetCurrentColor()
         };
 
-        var edgeColor = enemyColor;
-        var fillColor = Instance?.FillColor.Value ?? Color.black;
+        var edgeColor = enemyColor.GetCurrentColor();
+        var fillColor = Instance.FillColor.Value.GetCurrentColor();
         mat.SetColor("_WireframeColor", Instance.SwapEdgeAndFill.Value ? fillColor : edgeColor);
         mat.SetColor("_FillColor", Instance.SwapEdgeAndFill.Value ? edgeColor : fillColor);
         mat.SetFloat("_WireframeThickness", Instance.EdgeThickness.Value);
@@ -159,10 +160,10 @@ public class Edges : Module {
         return mat;
     }
 
-    private void OnEnemyColorChanged(EnemyType enemyType, Color newColor) {
+    private void OnEnemyColorChanged(EnemyType enemyType, EnhancedColor newColor) {
         if (_enemyMatCache.TryGetValue(enemyType, out var mat) && mat != null) {
-            mat.color = newColor;
-            mat.SetColor(SwapEdgeAndFill.Value ? "_FillColor" : "_WireframeColor", newColor);
+            mat.color = newColor.GetCurrentColor();
+            mat.SetColor(SwapEdgeAndFill.Value ? "_FillColor" : "_WireframeColor", newColor.GetCurrentColor());
             mat.SetFloat("_WireframeThickness", EdgeThickness.Value);
         }
     }
@@ -171,15 +172,17 @@ public class Edges : Module {
     protected override void OnEnable() {
         EnemyEvents.OnSpawn += AddWireframizer;
         FillColor.OnChanged += UpdateAllMats;
+        FillColor.OnEffectiveValueChanged += UpdateAllMats;
         EdgeThickness.OnChanged += UpdateAllMats;
         UpdateAllMats();
 
         foreach (var pair in EnemyEdgeColors) {
             var enemyType = pair.Key;
             var setting = pair.Value;
-            Action<Color> action = (newColor) => OnEnemyColorChanged(enemyType, newColor);
+            Action action = () => OnEnemyColorChanged(enemyType, setting.Value);
             _onColorChangedActions[enemyType] = action;
-            setting.OnValueChanged += action;
+            setting.OnChanged += action;
+            setting.OnEffectiveValueChanged += action;
             OnEnemyColorChanged(enemyType, setting.Value);
         }
     }
@@ -188,11 +191,13 @@ public class Edges : Module {
     protected override void OnDisable() {
         EnemyEvents.OnSpawn -= AddWireframizer;
         FillColor.OnChanged -= UpdateAllMats;
-        EdgeThickness.OnChanged += UpdateAllMats;
+        FillColor.OnEffectiveValueChanged -= UpdateAllMats;
+        EdgeThickness.OnChanged -= UpdateAllMats;
 
         foreach (var pair in EnemyEdgeColors) {
             if (_onColorChangedActions.TryGetValue(pair.Key, out var action)) {
-                pair.Value.OnValueChanged -= action;
+                pair.Value.OnChanged -= action;
+                pair.Value.OnEffectiveValueChanged -= action;
             }
         }
 

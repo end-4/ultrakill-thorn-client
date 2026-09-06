@@ -1,4 +1,5 @@
 ﻿using NukeLib.Utils;
+using ThornClient.Core.DataTypes;
 using ThornClient.HUD;
 using ThornClient.Managers;
 using ThornClient.System;
@@ -19,7 +20,7 @@ public class StyleMultiplier : BoundedValueHudModule {
     /// <inheritdoc />
     public StyleMultiplier() : base("thorn.styleMultiplier", "Style Multiplier",
         "Shows the multiplier for air/slide time", 3,
-        defaultValueColor: 0xff0000.ToColor(), displayName: "Style multiplier") {
+        defaultValueColor: 0xff0000.ToEnhancedColor(), displayName: "Style multiplier") {
     }
 
     public override void OnUpdate() {

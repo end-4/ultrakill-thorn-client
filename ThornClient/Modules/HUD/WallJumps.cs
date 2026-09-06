@@ -1,4 +1,5 @@
-﻿using ThornClient.HUD;
+﻿using ThornClient.Core.DataTypes;
+using ThornClient.HUD;
 using ThornClient.Managers;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ public class WallJumps : BoundedValueHudModule {
 
     public WallJumps() : base("thorn.wallJumps", "Wall Jumps", "Shows remaining wall jumps before you have to land",
         MaxWallJumps,
-        displayName: "Wall Jumps", defaultValueColor: new Color(0.78f, 0.77f, 0.38f)) {
+        displayName: "Wall Jumps", defaultValueColor: new EnhancedColor(0.78f, 0.77f, 0.38f)) {
     }
 
     protected override void OnHudModuleEnable() {
