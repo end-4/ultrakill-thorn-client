@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using NukeLib.UI;
 using ThornClient.Core.ConfigurableElements;
-using ThornClient.Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
