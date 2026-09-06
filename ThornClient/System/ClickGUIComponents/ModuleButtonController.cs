@@ -81,7 +81,7 @@ internal class ModuleButtonController : MonoBehaviour, IPointerClickHandler, IPo
 
     private void UpdateTooltip() {
         if (_tooltipComp == null || TargetModule == null) return;
-        _tooltipComp.Text = $"{TargetModule.Description}<size=8>\n\n</size><size=10>[<color=#{ColorUtility.ToHtmlStringRGB(ThornModule.AccentColor.GetCurrentColor())}>{_providerName}</color>]</size>";
+        _tooltipComp.Text = $"{TargetModule.Description}<size=8>\n\n</size><size=10>[<color=#{ColorUtility.ToHtmlStringRGB(ThornModule.Instance!.Accent.Value.GetCurrentColor())}>{_providerName}</color>]</size>";
     }
 
     private void UpdateVisualState(bool isEnabled) {

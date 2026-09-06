@@ -104,9 +104,9 @@ public class ProfileButtonController : MonoBehaviour {
 
     private void UpdateActive() {
         bool active = ProfileName == ProfileManager.ActiveProfile;
-        if (_icon != null) _icon.color = active ? ThornModule.AccentColor.GetCurrentColor() : Color.white;
+        if (_icon != null) _icon.color = active ? ThornModule.Instance!.Accent.Value.GetCurrentColor() : Color.white;
         if (_nameText != null) {
-            _nameText.color = active ? ThornModule.AccentColor.GetCurrentColor() : Color.white;
+            _nameText.color = active ? ThornModule.Instance!.Accent.Value.GetCurrentColor() : Color.white;
             _nameText.fontStyle = active ? FontStyles.Underline : FontStyles.Normal;
         }
     }

@@ -194,7 +194,7 @@ internal class EnhancedColorWindowController : MonoBehaviour {
             var border = _modeBorders[i];
             var icon = _modeIcons[i];
             var text = _modeTexts[i];
-            var color = EnhancedColorModes[i] == TargetSetting.Value.Mode ? ThornModule.AccentColor.GetCurrentColor() : Color.white;
+            var color = EnhancedColorModes[i] == TargetSetting.Value.Mode ? ThornModule.Instance!.Accent.Value.GetCurrentColor() : Color.white;
             if (border == null || icon == null || text == null) continue;
             border.color = color;
             icon.color = color;
