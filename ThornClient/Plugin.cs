@@ -50,6 +50,7 @@ public class Plugin : BaseUnityPlugin {
     private void Update() {
         ConfigManager.UpdateMainThreadQueue();
         ThornClient.Managers.InputManager.Update();
+        ColorManager.Update();
         foreach (var module in ModuleManager.Items) {
             if (module.IsEnabled) {
                 try {

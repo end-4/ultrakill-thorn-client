@@ -2,6 +2,7 @@
 using ThornClient.System;
 using UnityEngine;
 using System.Collections.Generic;
+using NukeLib.Utils;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
@@ -15,7 +16,7 @@ public class EnemyTracers : Module {
     /// <summary>
     /// The color of the lines
     /// </summary>
-    public Setting<Color> TracerColor;
+    public Setting<EnhancedColor> TracerColor;
 
     /// <summary>
     /// The thickness of the lines
@@ -53,7 +54,7 @@ public class EnemyTracers : Module {
     public EnemyTracers() : base("thorn.enemyTracers", "Enemy Tracers", "Draws lines from you to enemies",
         ModuleCategory.Utility) {
         TracerColor = CreateSetting("tracerColor", "Tracer color", "Color used for the trace lines",
-            new Color(0.65f, 0.95f, 0.89f, 0.5f));
+            new EnhancedColor(0xA6F2E3B7.ToColor()));
         LineThickness = CreateSetting("lineThickness", "Line thickness", "The pixel width of the tracer lines", 2f);
         AlwaysOnTop = CreateSetting("alwaysOnTop", "Always on top",
             "Render tracer lines through walls and world geometry", true);
@@ -117,7 +118,7 @@ public class EnemyTracers : Module {
         GL.LoadProjectionMatrix(mainCam.projectionMatrix);
 
         GL.Begin(GL.QUADS);
-        GL.Color(TracerColor.Value);
+        GL.Color(TracerColor.Value.GetCurrentColor());
 
         // Scale down or it'll be too thick
         float thickness = LineThickness.Value * 0.01f;

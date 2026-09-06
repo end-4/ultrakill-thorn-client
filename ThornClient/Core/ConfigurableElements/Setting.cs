@@ -137,10 +137,17 @@ public class Setting<T> : Setting {
     /// For Keybinds, this is emitted when the key combination is pressed down.
     /// </summary>
     public event Action? OnPress;
+
     /// <summary>
     /// For Keybinds, this is emitted when the key combination is released.
     /// </summary>
     public event Action? OnRelease;
+
+    /// <summary>
+    /// For values that indicate dynamic runtime behavior (like hue-shifting colors),
+    /// this triggers when the effective value on runtime changes
+    /// </summary>
+    public event Action? OnEffectiveValueChanged;
 
     /// <summary>
     /// Whether the setting's value is at its default
@@ -197,7 +204,7 @@ public class Setting<T> : Setting {
 
     internal void RaiseOnPress() => OnPress?.Invoke();
     internal void RaiseOnRelease() => OnRelease?.Invoke();
-
+    internal void RaiseOnEffectiveValueChanged() => OnEffectiveValueChanged?.Invoke();
 
     /// <summary>
     /// Gets the current value

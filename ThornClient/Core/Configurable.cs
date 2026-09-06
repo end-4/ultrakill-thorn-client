@@ -162,6 +162,11 @@ public abstract class Configurable {
         } else {
             parent.Elements.Add(element);
         }
+        if (element is Setting<Keybind> keybindSetting) {
+            Managers.InputManager.RegisterKeybindSetting(keybindSetting);
+        } else if (element is Setting<EnhancedColor> enhancedColorSetting) {
+            Managers.ColorManager.RegisterEnhancedColorSetting(enhancedColorSetting);
+        }
     }
 
     /// <summary>
@@ -193,10 +198,6 @@ public abstract class Configurable {
         var setting = new Setting<T>(guid, name, description, defaultValue);
 
         setting.InternalOnValueChanged += () => { ConfigManager.SaveConfig(this); };
-
-        if (setting is Setting<Keybind> keybindSetting) {
-            Managers.InputManager.RegisterKeybindSetting(keybindSetting);
-        }
 
         RegisterElement(setting, parent);
         return setting;

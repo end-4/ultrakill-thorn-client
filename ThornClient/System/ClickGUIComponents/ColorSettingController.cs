@@ -8,6 +8,10 @@ using UnityEngine.UI;
 
 namespace ThornClient.System.ClickGUIComponents;
 
+/// <summary>
+/// Controller for color settings
+/// Note: sliders range [0, 1], inputs range [0, 255]
+/// </summary>
 internal class ColorSettingController : MonoBehaviour {
     public Setting<Color>? TargetSetting;
 
@@ -95,16 +99,16 @@ internal class ColorSettingController : MonoBehaviour {
     private void UpdateDisplay(Color col) {
         if (TargetSetting == null) return;
         if (_colorPreview != null) _colorPreview.color = TargetSetting.Value;
-        if (_hexInput != null) _hexInput.text = ColorUtility.ToHtmlStringRGB(col);
+        if (_hexInput != null) _hexInput.SetTextWithoutNotify($"#{ColorUtility.ToHtmlStringRGB(col)}");
         float[] vals = [col.r, col.g, col.b, col.a];
         for (int i = 0; i < _sliders.Length; i++) {
             Slider? slider = _sliders[i];
-            if (slider != null) slider.value = vals[i];
+            if (slider != null) slider.SetValueWithoutNotify(vals[i]);
         }
 
         for (int i = 0; i < _valueInputs.Length; i++) {
             TMP_InputField? input = _valueInputs[i];
-            if (input != null) input.text = $"{(int)(255f * vals[i])}";
+            if (input != null) input.SetTextWithoutNotify($"{(int)(255f * vals[i])}");
         }
 
         gameObject.UnfuckLayoutHack();
