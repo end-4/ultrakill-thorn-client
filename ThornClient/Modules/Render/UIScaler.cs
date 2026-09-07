@@ -1,4 +1,4 @@
-﻿using NukeLib.Utils;
+using NukeLib.Utils;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using ThornClient.Managers;
 using ThornClient.System;
+using System.Linq;
+using NukeLib.UI;
 
 namespace ThornClient.Modules.Render;
 
@@ -19,6 +21,7 @@ public class UIScaler : Module {
     /// The UI scale to change to
     /// </summary>
     public Setting<float> Scale { get; }
+    public Setting<float> HUDScale { get; }
 
     /// <inheritdoc />
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "screen_scale");
@@ -32,13 +35,17 @@ public class UIScaler : Module {
     public UIScaler() : base("thorn.uiScaler", "UI Scaler", "Changes the scale of the user interface",
         ModuleCategory.Render) {
         Scale = CreateSetting("scale", "Scale", "Smaller = smaller UI elements", 1.0f);
+        HUDScale = CreateSetting("hudscale", "HUD Scale", "Changes the size of the 3D HUD", 1.0f);
+        HUDScale.Hints = InterfaceHints.RangeHint(0.1f, 1.5f);
     }
 
     /// <inheritdoc />
     protected override void OnEnable() {
         UpdateScale(Scale.Value);
-        SceneUtils.SafeSceneLoaded += UpdateScale;
+        UpdateHUDScale(HUDScale.Value);
+        SceneUtils.SafeSceneLoaded += UpdateAllScales;
         Scale.OnValueChanged += UpdateScale;
+        HUDScale.OnValueChanged += UpdateHUDScale;
     }
 
     private void UpdateScale(float value) {
@@ -68,14 +75,27 @@ public class UIScaler : Module {
         // I fucking hate working with screen sizes. Surely everyone plays on FHD in 2026.
     }
 
-    private void UpdateScale(Scene scene, LoadSceneMode mode) {
+    private void UpdateAllScales(Scene scene, LoadSceneMode mode) {
         UpdateScale(Scale.Value);
+        UpdateHUDScale(HUDScale.Value);
+    }
+
+    private void UpdateHUDScale(float value) {
+        if (!SceneUtils.IsSafe()) return;
+        GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+        var player = rootGameObjects.Where(obj => obj.name == "Player").FirstOrDefault();
+        GameObject hud = player.FindRecursive("Main Camera/HUD Camera/HUD");
+
+        if (hud == null) return;
+        hud.transform.localScale = new(value, value, 1);
     }
 
     /// <inheritdoc />
     protected override void OnDisable() {
         Scale.OnValueChanged -= UpdateScale;
-        SceneUtils.SafeSceneLoaded -= UpdateScale;
+        HUDScale.OnValueChanged -= UpdateHUDScale;
+        SceneUtils.SafeSceneLoaded -= UpdateAllScales;
         UpdateScale(1f);
+        UpdateHUDScale(1f);
     }
 }
