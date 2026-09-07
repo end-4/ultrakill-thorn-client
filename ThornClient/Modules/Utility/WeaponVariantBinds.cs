@@ -127,7 +127,7 @@ public class WeaponVariantBinds : Module {
 
         for (int i = 0; i < slotList.Count; i++) {
             var weapon = slotList[i];
-            int currVariant = GunHelper.GetVariation(weapon, weaponIndex);
+            int currVariant = GunHelper.GetVariation(weapon);
             if (currVariant == variantIndex) {
                 gcon.ForceWeapon(weapon);
                 return;
