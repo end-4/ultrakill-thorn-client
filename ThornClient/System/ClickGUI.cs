@@ -49,9 +49,10 @@ public class ClickGUI : SystemModule {
     private GameObject? _tabBarButtonRow;
     private ModuleSearchWindowController? _moduleSearchController;
     private ModuleSearchWindowController? _hudModuleSearchController;
-    private List<Tuple<string, GameObject>> _tabPages = new();
+    private List<Tuple<string, GameObject>> _tabPages = [];
     private const string ModuleTabName = "Modules";
     private const string HudTabName = "HUD";
+    private const string SettingsTabName = "Settings";
     private static readonly Vector2 PageHiddenOffset = Vector2.down * 15;
 
     private static OptionsManager? opts => OptionsManager.Instance;
@@ -90,7 +91,7 @@ public class ClickGUI : SystemModule {
 
         _tabPages.Add(Tuple.Create(ModuleTabName, _modulePage));
         _tabPages.Add(Tuple.Create(HudTabName, _hudPage));
-        _tabPages.Add(Tuple.Create("Settings", _settingsPage));
+        _tabPages.Add(Tuple.Create(SettingsTabName, _settingsPage));
         _tabPages.Add(Tuple.Create("Profiles", _profilesPage));
         _lastTabName = ModuleTabName;
 
@@ -174,8 +175,12 @@ public class ClickGUI : SystemModule {
         return true;
     }
 
-    private static GameObject AddToLayoutedPage(GameObject page, GameObject item) {
-        var layout = page.FindRecursive("Layout")?.transform;
+    internal static Transform? GetPageLayout(GameObject? page) {
+        return page?.FindRecursive("Layout")?.transform;
+    }
+
+    internal static GameObject AddToLayoutedPage(GameObject page, GameObject item) {
+        var layout = GetPageLayout(page);
         if (layout == null || item == null) return item!;
         item.transform.SetParent(layout, false);
         layout.gameObject.UnfuckLayoutHack();
@@ -404,11 +409,24 @@ public class ClickGUI : SystemModule {
     }
 
     /// <summary>
-    /// Navigates to previous page
+    /// Pop panels or navigate to previous page
     /// </summary>
     public static void NavigateBack() {
-        if (Instance == null || !Instance.IsEnabled) return;
+        if (Instance is not { IsEnabled: true }) return;
 
+        // Try to pop a window first
+        var currPanel = Instance._panelStack.Count > 0
+            ? Instance._panelStack.Peek()
+            : Instance._tabPages.Find(tup => (tup != null && tup.Item1 == _lastTabName && _lastTabName == SettingsTabName))?.Item2;
+        var layout = GetPageLayout(currPanel);
+        if (layout != null && layout.childCount > 1) {
+            var toDestroy = layout.GetChild(layout.childCount - 1).gameObject;
+            Plugin.Log.LogInfo($"To destroy {toDestroy}");
+            Object.Destroy(toDestroy);
+            return;
+        }
+
+        // Pop panel stack or close ClickGUI
         if (Instance._panelStack.Count > 0) {
             var topPanel = Instance._panelStack.Pop();
             Object.Destroy(topPanel);
