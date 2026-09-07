@@ -1,7 +1,7 @@
 ## 0.4.0
 
 - Added EnhancedColor data type. Most customizable colors can now have rainbow pulse
-- New modules: Extra Binds, Gravity Tweak
+- New modules: Visible Portals, Extra Binds, Gravity Tweak
 - New HUD widgets: Custom Label
 - Added foreground (text/icon) color customization to stat HUD elements
 - Fixed Railcannon charge meter jumping from 80% to full
