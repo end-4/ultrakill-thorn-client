@@ -2,7 +2,7 @@
 
 Freely draggable HUD elements. Key input overlay. Wireframe-style weapons & enemies
 
-<img alt="image" src="https://github.com/user-attachments/assets/f80f75ba-f595-48fb-857d-a89a9236ced7" />
+<img alt="image" src="https://github.com/user-attachments/assets/ba1feb30-bef3-429a-8ef9-4b94b466505b" />
 
 ### Gameplay modifiers
 
