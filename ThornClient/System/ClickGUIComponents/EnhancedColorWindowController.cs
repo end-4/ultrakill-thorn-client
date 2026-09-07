@@ -57,6 +57,11 @@ internal class EnhancedColorWindowController : MonoBehaviour {
         EnhancedColorMode.Static, EnhancedColorMode.HuePulse
     ];
 
+    private readonly string[] EnhancedColorTooltips = [
+        "Normal single color mode",
+        "Shifts color hue in OKLCH color space.\nTIP: Make sure the base color is not fully white/black, as colors will pulse around same perceptual lightness",
+    ];
+
     private static JsonSerializerSettings _serializerSettings = new JsonSerializerSettings {
         Converters = { new EnhancedColorJsonConverter() },
         Formatting = Formatting.Indented
@@ -125,6 +130,8 @@ internal class EnhancedColorWindowController : MonoBehaviour {
             var btn = _modeButtons[i]?.GetComponent<Button>();
             btn?.onClick.AddListener(() =>
                 TargetSetting.Value = new EnhancedColor(TargetSetting.Value.BaseColor, mode));
+            var tooltipComp = _modeBorders[i]?.GetOrAddComponent<ClickGUITooltipHandler>();
+            if (tooltipComp != null) tooltipComp.Text = EnhancedColorTooltips[i];
         }
 
         // Body: action buttons
@@ -150,6 +157,7 @@ internal class EnhancedColorWindowController : MonoBehaviour {
             TargetSetting.OnChanged -= UpdateAll;
             TargetSetting.OnEffectiveValueChanged -= UpdatePreview;
         }
+
         ThornModule.Instance!.Accent.OnChanged -= UpdateModeSelection;
         ThornModule.Instance!.Accent.OnEffectiveValueChanged -= UpdateModeSelection;
     }
@@ -178,7 +186,8 @@ internal class EnhancedColorWindowController : MonoBehaviour {
 
         // Preview
         UpdatePreview();
-        if (_hexInput != null) _hexInput.SetTextWithoutNotify($"#{ColorUtility.ToHtmlStringRGBA(TargetSetting.Value.BaseColor)}");
+        if (_hexInput != null)
+            _hexInput.SetTextWithoutNotify($"#{ColorUtility.ToHtmlStringRGBA(TargetSetting.Value.BaseColor)}");
 
         // Mode selection
         UpdateModeSelection();
@@ -194,7 +203,9 @@ internal class EnhancedColorWindowController : MonoBehaviour {
             var border = _modeBorders[i];
             var icon = _modeIcons[i];
             var text = _modeTexts[i];
-            var color = EnhancedColorModes[i] == TargetSetting.Value.Mode ? ThornModule.Instance!.Accent.Value.GetCurrentColor() : Color.white;
+            var color = EnhancedColorModes[i] == TargetSetting.Value.Mode
+                ? ThornModule.Instance!.Accent.Value.GetCurrentColor()
+                : Color.white;
             if (border == null || icon == null || text == null) continue;
             border.color = color;
             icon.color = color;
