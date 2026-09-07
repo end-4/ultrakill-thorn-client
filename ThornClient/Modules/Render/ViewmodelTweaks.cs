@@ -121,6 +121,8 @@ public class ViewmodelTweaks : Module {
                 6,
             4 => // Rocket Launcher
                 7,
+            5 => // We don't handle spawner arm
+                -1,
             _ => -1
         };
     }
@@ -130,10 +132,10 @@ public class ViewmodelTweaks : Module {
         "Rocket Launcher"
     };
 
-    private static Material?[] _matCache = new Material[3];
+    private static Material?[] _matCache = new Material[4];
 
     public static Material? GetVariantMat(int variantIndex) {
-        if (variantIndex < 0 || variantIndex > 2 || Instance == null) return null;
+        if (variantIndex < 0 || variantIndex > 3 || Instance == null) return null;
         if (_matCache[variantIndex] != null) return _matCache[variantIndex];
         var baseMat = EffectManager.GetMaterial("GeometryWireframeMaterial");
         if (baseMat == null) {
@@ -147,7 +149,7 @@ public class ViewmodelTweaks : Module {
     }
 
     private void UpdateVariantColors() {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             var mat = _matCache[i];
             if (mat == null) continue;
             mat.SetColor("_WireframeColor", ColorUtils.GetWeaponVariantColor(i));
@@ -357,8 +359,9 @@ public class ViewmodelTweaks : Module {
         // Note currentSlotIndex is 1-based for some fucking reason
         // Plugin.Log.LogInfo(
         //     $"viewmodel..., [{gc?.currentSlotIndex}, {gc?.currentVariationIndex}], gc {gc}, prefs {prefs}");
-        if (gc == null || prefs == null || gc.currentSlotIndex >= 6 || gc.currentVariationIndex >= 3) return;
+        if (gc == null || prefs == null || gc.currentSlotIndex is < 1 or > 6 || gc.currentVariationIndex >= 4) return;
         UpdateCurrentColor();
+        if (gc.currentSlotIndex is > 5 || gc.currentVariationIndex >= 3) return;
         // Plugin.Log.LogInfo("viewmodel updating");
         int middle = GetMiddleIndex(); // 0 middle, 1 right, 2 left
         // Plugin.Log.LogInfo($"Middle {middle}");
@@ -422,7 +425,7 @@ public class ViewmodelTweaks : Module {
         if (!WeaponEdges.Value || gc == null || fc == null || HookArm.Instance == null) return;
 
         // Apply gun
-        var weaponVariantIndex = GunHelper.GetVariation(gc.currentWeapon, gc.currentSlotIndex - 1);
+        var weaponVariantIndex = GunHelper.GetVariation(gc.currentWeapon);
         ApplyWireframe(gc.currentWeapon, weaponVariantIndex);
 
         // Apply arm. Note (variant / 2) transforms 0 -> 0 and 1 -> 2, because 2nd fist is red but 2nd variant is green
