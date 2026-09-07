@@ -21,13 +21,17 @@ public class UIScaler : Module {
     /// The UI scale to change to
     /// </summary>
     public Setting<float> Scale { get; }
+
+    /// <summary>
+    /// Scale of the 3D HUD
+    /// </summary>
     public Setting<float> HUDScale { get; }
 
     /// <inheritdoc />
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "screen_scale");
 
     /// <inheritdoc />
-    public override string[] Tags => ["interface", "scale"];
+    public override string[] Tags => ["interface", "scale", "hud"];
 
     /// <summary>
     /// Constructor
@@ -35,7 +39,7 @@ public class UIScaler : Module {
     public UIScaler() : base("thorn.uiScaler", "UI Scaler", "Changes the scale of the user interface",
         ModuleCategory.Render) {
         Scale = CreateSetting("scale", "Scale", "Smaller = smaller UI elements", 1.0f);
-        HUDScale = CreateSetting("hudscale", "HUD Scale", "Changes the size of the 3D HUD", 1.0f);
+        HUDScale = CreateSetting("hudScale", "Side HUD Scale", "Changes the size of the 3D HUD", 1.0f);
         HUDScale.Hints = InterfaceHints.RangeHint(0.1f, 1.5f);
     }
 
@@ -84,10 +88,10 @@ public class UIScaler : Module {
         if (!SceneUtils.IsSafe()) return;
         GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
         var player = rootGameObjects.Where(obj => obj.name == "Player").FirstOrDefault();
-        GameObject hud = player.FindRecursive("Main Camera/HUD Camera/HUD");
+        var hud = player?.FindRecursive("Main Camera/HUD Camera/HUD");
 
         if (hud == null) return;
-        hud.transform.localScale = new(value, value, 1);
+        hud.transform.localScale = new Vector3(value, value, 1);
     }
 
     /// <inheritdoc />
