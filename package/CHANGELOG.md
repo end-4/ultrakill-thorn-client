@@ -1,14 +1,13 @@
 ## 0.4.0
 
 - Added EnhancedColor data type. Most customizable colors can now have rainbow pulse
-- New modules: Extra Binds
+- New modules: Extra Binds, Gravity Tweak
 - New HUD widgets: Custom Label
 - Added foreground (text/icon) color customization to stat HUD elements
-- Fixed railcannon charge meter jumping from 80% to full
+- Fixed Railcannon charge meter jumping from 80% to full
 - Viewmodel Tweaks: Edges skin: made it work with spawner arms and fixed applied to Piercer's charge effect/panel
 - Weapon Variant Binds: added spawner arms
-- Raised the layer of the ClickGUI so the tabs are clickable when Polarite is installed and spawns a blocking notification panel
-- Made Back navigation (Esc/Mouse4) on ClickGUI pop panels before going to previous layer
+- ClickGUI: Raised the layer so the tabs are clickable when Polarite is installed and spawns a blocking notification panel; made Back navigation (Esc/Mouse4) on ClickGUI pop panels before going to previous layer
 
 ## 0.3.0
 
