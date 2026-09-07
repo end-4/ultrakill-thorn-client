@@ -1,6 +1,6 @@
 ## 0.4.0
 
-- Added Enhanced Color which allows rainbow pulse
+- Added EnhancedColor data type. Most customizable colors can now have rainbow pulse
 - New modules: Extra Binds
 - New HUD widgets: Custom Label
 - Fixed railcannon charge meter jumping from 80% to full
