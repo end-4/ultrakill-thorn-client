@@ -1,5 +1,7 @@
 ﻿using NukeLib.UI;
 using ThornClient.Core.ConfigurableElements;
+using ThornClient.Core.DataTypes;
+using ThornClient.HUD.HUDComponents;
 using ThornClient.Managers;
 using TMPro;
 using UnityEngine;
@@ -44,6 +46,11 @@ public abstract class TextHudModule : FramedHudModule {
     public Setting<bool> ShowIcon;
 
     /// <summary>
+    /// Setting: what color to use for the text
+    /// </summary>
+    public Setting<EnhancedColor> ForegroundColor;
+
+    /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="guid">The unique identifier for the module</param>
@@ -51,6 +58,7 @@ public abstract class TextHudModule : FramedHudModule {
     /// <param name="description">The description of the module</param>
     public TextHudModule(string guid, string name, string description) : base(guid, name, description) {
         ShowIcon = CreateSetting("showIcon", "Show icon", "Shows an icon next to the text (if available)", true);
+        ForegroundColor = CreateSetting("fgColor", "Foreground color", "Text/icon color", new EnhancedColor(Color.white));
         OnToggleStateChanged += _OnEnableChange;
     }
 
@@ -102,10 +110,16 @@ public abstract class TextHudModule : FramedHudModule {
     /// </summary>
     /// <returns>The content object (which is a row containing the icon and text) to put on the frame</returns>
     protected sealed override GameObject CreateContentObject() {
-        GameObject obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "TextLayout"));
+        var obj = Object.Instantiate(AssetManager.Get<GameObject>(HudManager.BundleKey, "TextLayout"));
+        if (obj == null) return null!;
         _textObj = obj.FindRecursive("Text");
         _icon = obj.FindRecursive("Icon")?.GetComponent<Image>();
-        if (_textObj != null) _textComp = _textObj.GetComponent<TextMeshProUGUI>();
+        if (_icon != null) _icon.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = ForegroundColor;
+        if (_textObj != null) {
+            _textComp = _textObj.GetComponent<TextMeshProUGUI>();
+            var colSync = _textObj.GetOrAddComponent<EnhancedColorSettingSyncer>();
+            colSync.TargetSetting = ForegroundColor;
+        }
         UpdateText(Text);
         UpdateIcon(DisplayIcon ?? Icon);
         return obj;

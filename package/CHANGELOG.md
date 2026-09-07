@@ -3,10 +3,11 @@
 - Added EnhancedColor data type. Most customizable colors can now have rainbow pulse
 - New modules: Extra Binds
 - New HUD widgets: Custom Label
-- Made Back navigation (Esc/Mouse4) on ClickGUI pop panels before going to previous layer
+- Added foreground (text/icon) color customization to stat HUD elements
 - Fixed railcannon charge meter jumping from 80% to full
 - Viewmodel Tweaks: fixed wireframe effect being applied to Piercer's charge effect/panel
 - Raised the layer of the ClickGUI so the tabs are clickable when Polarite is installed and spawns a blocking notification panel
+- Made Back navigation (Esc/Mouse4) on ClickGUI pop panels before going to previous layer
 
 ## 0.3.0
 

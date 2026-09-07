@@ -1,12 +1,13 @@
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace ThornClient.HUD.HUDComponents;
 
 /// <summary>
-/// Component that syncs the same-GameObject Image component color to that of a Thorn Setting.
+/// Component that syncs the same-GameObject Image or TextMeshProUGUI component color to that of a Thorn Setting.
 /// Just set the TargetSetting property right after creation
 /// </summary>
 public class EnhancedColorSettingSyncer : MonoBehaviour {
@@ -15,9 +16,11 @@ public class EnhancedColorSettingSyncer : MonoBehaviour {
     /// </summary>
     public Setting<EnhancedColor>? TargetSetting;
     private Image? _img;
+    private TextMeshProUGUI? _text;
     private void Start() {
         if (TargetSetting == null) return;
         _img = gameObject.GetComponent<Image>();
+        _text = gameObject.GetComponent<TextMeshProUGUI>();
         TargetSetting.OnChanged += UpdateColor;
         TargetSetting.OnEffectiveValueChanged += UpdateColor;
         UpdateColor();
@@ -30,7 +33,8 @@ public class EnhancedColorSettingSyncer : MonoBehaviour {
     }
 
     private void UpdateColor() {
-        if (_img == null || TargetSetting == null) return;
-        _img.color = TargetSetting.Value.GetCurrentColor();
+        if (TargetSetting == null) return;
+        if (_img != null) _img.color = TargetSetting.Value.GetCurrentColor();
+        if (_text != null) _text.color = TargetSetting.Value.GetCurrentColor();
     }
 }
