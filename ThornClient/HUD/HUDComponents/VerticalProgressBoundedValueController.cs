@@ -33,15 +33,15 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
         _transValue = gameObject.FindRecursive("Trough/Value")?.GetComponent<RectTransform>();
         _transSoftMask = gameObject.FindRecursive("Trough/SoftBoundMask")?.GetComponent<RectTransform>();
         _transSoftBound = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound")?.GetComponent<RectTransform>();
+        if (_textName != null)
+            _textName.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ForegroundColor;
+        if (_icon != null)
+            _icon.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
         var valObj = gameObject.FindRecursive("Trough/Value");
-        if (valObj != null) {
-            valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
-        }
-
+        if (valObj != null) valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
         var sofObj = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound");
-        if (sofObj != null) {
+        if (sofObj != null)
             sofObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
-        }
 
         _visibilitySyncer = gameObject.GetOrAddComponent<BatchBoolSettingVisibilitySyncer>();
         _visibilitySyncer.SyncPairs = new Dictionary<Setting<bool>, string> {
@@ -112,7 +112,8 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
         var normalizedSoftBound = Math.Clamp( // normalized softbound segment width
             (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
         );
-        if (TargetModule == null || _transTrough == null || _transValue == null || _transSoftBound == null || _transSoftMask == null) return;
+        if (TargetModule == null || _transTrough == null || _transValue == null || _transSoftBound == null ||
+            _transSoftMask == null) return;
         _transTrough.sizeDelta = new Vector2(_transTrough.sizeDelta.x, TargetModule.VerticalProgressLength.Value);
         _transSoftMask.sizeDelta = new Vector2(_transSoftMask.sizeDelta.x, _transTrough.sizeDelta.y);
         var width = _transValue.sizeDelta.x;

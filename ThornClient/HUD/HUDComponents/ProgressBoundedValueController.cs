@@ -38,15 +38,20 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         _transSoftBound = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound")?.GetComponent<RectTransform>();
         _textValue = gameObject.FindRecursive("Trough/ValueLayout/Value")?.GetComponent<TextMeshProUGUI>();
         _textCap = gameObject.FindRecursive("Trough/ValueLayout/Cap")?.GetComponent<TextMeshProUGUI>();
+        if (_textName != null)
+            _textName.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ForegroundColor;
+        if (_icon != null)
+            _icon.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
+        if (_textValue != null)
+            _textValue.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
+        if (_textCap != null)
+            _textCap.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
+        _textValue.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
         var valObj = gameObject.FindRecursive("Trough/Value");
-        if (valObj != null) {
-            valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
-        }
-
+        if (valObj != null) valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
         var sofObj = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound");
-        if (sofObj != null) {
+        if (sofObj != null)
             sofObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
-        }
 
         _visibilitySyncer = gameObject.GetOrAddComponent<BatchBoolSettingVisibilitySyncer>();
         _visibilitySyncer.SyncPairs = new Dictionary<Setting<bool>, string> {
@@ -130,7 +135,8 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         var normalizedSoftBound = Math.Clamp( // normalized softbound segment width
             (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
         );
-        if (TargetModule == null || _transTrough == null || _transValue == null || _transSoftBound == null || _transSoftMask == null) return;
+        if (TargetModule == null || _transTrough == null || _transValue == null || _transSoftBound == null ||
+            _transSoftMask == null) return;
         _transTrough.sizeDelta = new Vector2(TargetModule.ProgressLength.Value, _transTrough.sizeDelta.y);
         _transSoftMask.sizeDelta = new Vector2(_transTrough.sizeDelta.x, _transSoftMask.sizeDelta.y);
         var height = _transValue.sizeDelta.y;
@@ -147,7 +153,8 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
             _transSoftBound.sizeDelta = new Vector2(availableWidth * normalizedSoftBound, height);
         }
 
-        if (_textValue != null) _textValue.SetText($"{Math.Round(TargetModule?.Value ?? 0, TargetModule?.DecimalPlaces ?? 1)}");
+        if (_textValue != null)
+            _textValue.SetText($"{Math.Round(TargetModule?.Value ?? 0, TargetModule?.DecimalPlaces ?? 1)}");
     }
 
     private void UpdateSoftBound(int _) {

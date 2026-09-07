@@ -147,7 +147,9 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     public Setting<IndicatorStyle> Style;
 
     public Setting<bool> ShowName;
+    public Setting<EnhancedColor> ForegroundColor;
     public Setting<EnhancedColor> ValueColor;
+    public Setting<EnhancedColor> ValueForegroundColor;
 
     public Setting<float> ProgressLength;
     public Setting<bool> ProgressShowIcon;
@@ -179,7 +181,8 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// <param name="decimalPlaces">The decimal places to show on the value text</param>
     public BoundedValueHudModule(string guid, string name, string description, float bound = 1, string displayName = "",
         Sprite? displayIcon = null, int decimalPlaces = 1, EnhancedColor? defaultValueColor = null,
-        EnhancedColor? defaultSoftBoundColor = null) : base(guid,
+        EnhancedColor? defaultValueTextColor = null, EnhancedColor? defaultSoftBoundColor = null,
+        EnhancedColor? defaultForegroundColor = null) : base(guid,
         name, description
     ) {
         // Settings
@@ -193,8 +196,14 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         };
         ShowName = CreateSetting("showName", "Show name", "The name of the value", true);
         ColorGroup = CreateGroup("colorGroup", "Colors", "Colors used on the indicator");
+        ForegroundColor = CreateSetting("foregroundColor", "Foreground color",
+            "The color of text/icon elements that lie directly on the background",
+            defaultForegroundColor ?? new EnhancedColor(Color.white), ColorGroup);
         ValueColor = CreateSetting("valueColor", "Value color", "The color of the value",
             defaultValueColor ?? new EnhancedColor(new Color(0.098f, 0.624f, 0.525f)), ColorGroup);
+        ValueForegroundColor = CreateSetting("valueFgColor", "Value foreground color",
+            "The color of the text/icon shown on the value",
+            defaultValueTextColor ?? new EnhancedColor(Color.white), ColorGroup);
         SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound color",
             "The color of the soft bound, for example HP hard damage",
             defaultSoftBoundColor ?? new EnhancedColor(new Color(1f, 1f, 1f, 0.36f)), ColorGroup);

@@ -421,7 +421,6 @@ public class ClickGUI : SystemModule {
         var layout = GetPageLayout(currPanel);
         if (layout != null && layout.childCount > 1) {
             var toDestroy = layout.GetChild(layout.childCount - 1).gameObject;
-            Plugin.Log.LogInfo($"To destroy {toDestroy}");
             Object.Destroy(toDestroy);
             return;
         }
