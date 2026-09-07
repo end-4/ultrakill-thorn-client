@@ -5,7 +5,8 @@
 - New HUD widgets: Custom Label
 - Added foreground (text/icon) color customization to stat HUD elements
 - Fixed railcannon charge meter jumping from 80% to full
-- Viewmodel Tweaks: fixed wireframe effect being applied to Piercer's charge effect/panel
+- Viewmodel Tweaks: Edges skin: made it work with spawner arms and fixed applied to Piercer's charge effect/panel
+- Weapon Variant Binds: added spawner arms
 - Raised the layer of the ClickGUI so the tabs are clickable when Polarite is installed and spawns a blocking notification panel
 - Made Back navigation (Esc/Mouse4) on ClickGUI pop panels before going to previous layer
 
