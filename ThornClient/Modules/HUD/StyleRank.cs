@@ -19,7 +19,7 @@ public class StyleRank : FramedHudModule {
     public override string[] Tags => [""];
 
     /// <inheritdoc />
-    public StyleRank() : base("thorn.styleRank", "Style Rank", "Shows the multiplier for air/slide time") {
+    public StyleRank() : base("thorn.styleRank", "Style Rank", "Shows those Destructive/Chaotic/etc ranks") {
 
     }
 
@@ -29,6 +29,9 @@ public class StyleRank : FramedHudModule {
         return obj;
     }
 
+    /// <summary>
+    /// Component that syncs an image to be the rank image
+    /// </summary>
     protected class StyleRankSyncer : MonoBehaviour {
         private Image? _styleImg;
 

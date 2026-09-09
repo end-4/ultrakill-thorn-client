@@ -24,7 +24,7 @@ Classes and methods are also fully XML-documented.
 ## Fair play statement
 
 Thorn disables leaderboard submissions for built-in modules that alter the gameplay mechanics,
-and also offers a toggle to disable that globally.
+and also offers a module to disable leaderboards voluntarily.
 
 While the system allows modules to self-declare cheatiness, this does not
 prevent extensions from violating this rule.
