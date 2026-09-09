@@ -27,7 +27,7 @@ public class StyleFeed : FramedHudModule {
     public Setting<bool> ShowPoints;
 
     /// <inheritdoc />
-    public StyleFeed() : base("thorn.styleFeed", "Style Feed", "Shows + Style bonuses") {
+    public StyleFeed() : base("thorn.styleFeed", "Style Feed", "Shows +STYLE bonuses") {
         ShowOnlyNamedPointAdditions = CreateSetting("showOnlyNamedPointAdditions", "Show only named point additions",
             "Ignores style gains from simply damaging enemies", true);
         ShowPoints = CreateSetting("showPoints", "Show points", "Show number of style points gained next to each bonus",
