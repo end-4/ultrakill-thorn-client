@@ -72,7 +72,7 @@ public class EnhancedColor : IEquatable<EnhancedColor> {
     public bool Equals(EnhancedColor? other) {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
-        return BaseColor.Equals(other.BaseColor) && Mode == other.Mode;
+        return BaseColor.Approximately(other.BaseColor) && Mode == other.Mode;
     }
 
     public override bool Equals(object? obj) {

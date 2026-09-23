@@ -161,6 +161,9 @@ public class Setting<T> : Setting {
             if (Value is Color valColor && DefaultValue is Color defaultColor) {
                 return valColor.Approximately(defaultColor);
             }
+            if (Value is EnhancedColor eValColor && DefaultValue is EnhancedColor eDefaultColor) {
+                return eValColor.BaseColor.Approximately(eDefaultColor.BaseColor) && eValColor.Mode == eDefaultColor.Mode;
+            }
             if (Value is float valFloat && DefaultValue is float defaultFloat) {
                 return Mathf.Approximately(valFloat, defaultFloat);
             }
