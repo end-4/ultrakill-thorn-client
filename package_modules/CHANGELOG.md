@@ -9,6 +9,7 @@
 - Enemy tracers: fixed threshold being off by 1, added enemy type blacklist
 - Fixed custom style ranks (from Ultraskins or whatever) being oversized
 - Made HUD widget snapping on the sides slightly more consistent
+- Fixed duplicate cheatiness notifications
 
 ## 0.4.0
 

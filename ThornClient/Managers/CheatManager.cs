@@ -17,10 +17,10 @@ public static class CheatManager {
     private static string _hexColor = "#44ff45";
 
     static CheatManager() {
-        SceneUtils.SafeSceneLoaded += ResetCheatinessAndUpdate;
+        SceneUtils.SafeSceneLoadedNoParam += ResetCheatinessAndUpdate;
     }
 
-    private static void ResetCheatinessAndUpdate(Scene scene, LoadSceneMode mode) {
+    private static void ResetCheatinessAndUpdate() {
         ResetCheatiness();
         UpdateCheatiness();
     }
@@ -43,27 +43,29 @@ public static class CheatManager {
     /// Updates the cheatiness state and disables leaderboards if any cheaty modules are active.
     /// </summary>
     public static void UpdateCheatiness() {
-        // Plugin.Log.LogInfo(
-        //     $"Checking in scene '{SceneHelper.CurrentScene}', length = {SceneHelper.CurrentScene?.Length ?? 0}");
-        if (SceneHelper.CurrentScene == "Main Menu" || SceneHelper.CurrentScene == "Bootstrap" ||
-            !((SceneHelper.CurrentScene?.Length ?? 0) > 0)) return;
-        bool lastCheaty = _cheating;
-        var cheaties = GetActiveCheatyModules();
-        if (cheaties.Count > 0) {
-            _cheating = true;
-            LeaderboardHelper.DisableLeaderboards();
-            // Plugin.Log.LogInfo("Cheaty!");
-        }
+        // Always execute next frame to avoid race condition with the scene load check causing dupe notifications
+        ExecutionUtils.RunNextFrame(() => {
+            Plugin.Log.LogInfo($"UpdateCheatiness in scene '{SceneHelper.CurrentScene}'");
+            if (SceneHelper.CurrentScene == "Main Menu" || SceneHelper.CurrentScene == "Bootstrap" ||
+                !((SceneHelper.CurrentScene?.Length ?? 0) > 0)) return;
+            bool lastCheaty = _cheating;
+            var cheaties = GetActiveCheatyModules();
+            if (cheaties.Count > 0) {
+                _cheating = true;
+                LeaderboardHelper.DisableLeaderboards();
+                // Plugin.Log.LogInfo("Cheaty!");
+            }
 
-        if (!lastCheaty && _cheating) {
-            NotificationSystem.NotifySend(
-                $"Thorn::<color={_hexColor}>Cheats</color>",
-                "Leaderboard disabled for this run\n" +
-                string.Join("\n",
-                    cheaties.Select(
-                        module => $"- <color={_hexColor}><u>{module.Name}</u></color>: {module.CheatReason}")),
-                iconFilePath: Plugin.PluginIconPath
-            );
-        }
+            if (!lastCheaty && _cheating) {
+                NotificationSystem.NotifySend(
+                    $"Thorn::<color={_hexColor}>Cheats</color>",
+                    "Leaderboard disabled for this run\n" +
+                    string.Join("\n",
+                        cheaties.Select(module =>
+                            $"- <color={_hexColor}><u>{module.Name}</u></color>: {module.CheatReason}")),
+                    iconFilePath: Plugin.PluginIconPath
+                );
+            }
+        });
     }
 }
