@@ -208,7 +208,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
             "The color of the soft bound, for example HP hard damage",
             defaultSoftBoundColor ?? new EnhancedColor(new Color(1f, 1f, 1f, 0.36f)), ColorGroup);
         CreateHeader("stylesHeader", "Style-specific settings");
-        var progressGroup = CreateGroup("styleProgress", "Progress", "Settings specific to the Progress style");
+        var progressGroup = CreateGroup("styleProgress", "Progress", "Settings specific to the (horizontal) Progress style");
         ProgressLength = CreateSetting(
             "progressLength", "Length", "How long the bar should be",
             194f, progressGroup
@@ -233,7 +233,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         );
 
         var crosshairCircleGroup = CreateGroup("styleCrosshairCircle", "Crosshair Circle",
-            "Settings specific to the Vertical Progress style");
+            "Settings specific to the Crosshair Circle style");
         CrosshairCircleAngleFillPercentage = CreateSetting(
             "crosshairCircleAngleFillPercentage",
             "Angle fill percentage (0-1)", "How much of the circle to circle around. Value in range [0, 1]",

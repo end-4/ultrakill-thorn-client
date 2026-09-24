@@ -1,3 +1,10 @@
+## 0.5.0
+
+- Splitted Thorn's config system and the built-in modules into separate packages
+    - Existing Thorn users should also install the new Thorn Core package
+      (if using a mod manager, it'll be done automatically)
+    - Mod developers using Thorn's config system should now declare their dependency as Thorn Core instead of Thorn
+
 ## 0.4.0
 
 - Added EnhancedColor data type. Most customizable colors can now have rainbow pulse
@@ -7,7 +14,8 @@
 - Fixed Railcannon charge meter jumping from 80% to full
 - Viewmodel Tweaks: Edges skin: made it work with spawner arms and fixed applied to Piercer's charge effect/panel
 - Weapon Variant Binds: added spawner arms
-- ClickGUI: Raised the layer so the tabs are clickable when Polarite is installed and spawns a blocking notification panel; made Back navigation (Esc/Mouse4) on ClickGUI pop panels before going to previous layer
+- ClickGUI: Raised the layer so the tabs are clickable when Polarite is installed and spawns a blocking notification
+  panel; made Back navigation (Esc/Mouse4) on ClickGUI pop panels before going to previous layer
 
 ## 0.3.0
 
@@ -24,8 +32,9 @@
 - New HUD modules: Rocket Fuel, Clock
 - Fixed Weapon Variant Binds not working during hitstops
 - Bounded value indicators:
-  - Added vertical line and crosshair circle style
-  - Made horizontal progress bar HUD elements have customizable length and can have icon/numbers hidden. You can now have clean horizontal crosshair indicators!
+    - Added vertical line and crosshair circle style
+    - Made horizontal progress bar HUD elements have customizable length and can have icon/numbers hidden. You can now
+      have clean horizontal crosshair indicators!
 - Tweaked some icons for consistency & readability
 
 ## 0.1.4
@@ -40,7 +49,8 @@
 
 ## 0.1.3
 
-- Added FixPluginTypesSerialization dependency (basically makes dependent mods like Billion Nemesis load properly without Angry already installed)
+- Added FixPluginTypesSerialization dependency (basically makes dependent mods like Billion Nemesis load properly
+  without Angry already installed)
 - Fixed weird bounded value hud module style selection
 - Use a new menu for big enums (tmp dropdown sucks)
 - Prevent setting group buttons from spawning many children window
