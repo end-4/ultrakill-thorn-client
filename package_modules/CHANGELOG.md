@@ -4,6 +4,8 @@
     - Existing Thorn users should also install the new Thorn Core package
       (if using a mod manager, it'll be done automatically)
     - Mod developers using Thorn's config system should now declare their dependency as Thorn Core instead of Thorn
+- Enemy tracers: fixed threshold being off by 1, added enemy type blacklist
+- Fixed custom style ranks (from Ultraskins or whatever) being oversized
 
 ## 0.4.0
 
