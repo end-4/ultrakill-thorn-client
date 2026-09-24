@@ -1,9 +1,9 @@
 {
-    "name": "Thorn",
+    "name": "Thorn_Core",
     "author": "end_4",
-    "version_number": "0.4.0",
+    "version_number": "0.5.0",
     "website_url": "https://github.com/end-4/ultrakill-thorn-client",
-    "description": "Utilty mod offering Extremely customizable HUD + Gameplay modifiers + Config system.",
+    "description": "The powerful config system behind Thorn.",
     "dependencies": [
         "BepInEx-BepInExPack-5.4.2100",
         "end_4-NukeLib-0.10.0",

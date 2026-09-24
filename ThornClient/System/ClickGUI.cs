@@ -19,7 +19,7 @@ namespace ThornClient.System;
 /// The module for the Thorn menu
 /// </summary>
 public class ClickGUI : SystemModule {
-    internal static ClickGUI? Instance;
+    public static ClickGUI? Instance;
     private const string PauseGameStateKey = "Thorn_ClickGUI";
     private static readonly string BundlePath = Path.Combine(Plugin.workingDir, "assets", "thorn_clickgui.bundle");
     public static readonly string BundleKey = "clickGui";

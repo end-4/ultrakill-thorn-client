@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThornClient", "ThornClient\ThornClient.csproj", "{231D445A-A1B5-4A38-BBED-01B9D3A823D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThornClientModules", "ThornClientModules\ThornClientModules.csproj", "{0C25D2F9-58C4-45A8-838F-3D534673923F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{231D445A-A1B5-4A38-BBED-01B9D3A823D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{231D445A-A1B5-4A38-BBED-01B9D3A823D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{231D445A-A1B5-4A38-BBED-01B9D3A823D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C25D2F9-58C4-45A8-838F-3D534673923F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C25D2F9-58C4-45A8-838F-3D534673923F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C25D2F9-58C4-45A8-838F-3D534673923F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C25D2F9-58C4-45A8-838F-3D534673923F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

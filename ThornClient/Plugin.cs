@@ -15,7 +15,7 @@ namespace ThornClient;
 [BepInDependency("com.github.end-4.nukeLib")]
 [BepInDependency("com.github.end-4.notiffy")]
 public class Plugin : BaseUnityPlugin {
-    internal static ManualLogSource Log;
+    public static ManualLogSource Log;
     public static Plugin Instance { get; private set; }
 
     public static string workingPath = Assembly.GetExecutingAssembly().Location;
