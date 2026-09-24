@@ -73,7 +73,7 @@ internal class EnhancedColorWindowController : MonoBehaviour {
         if (_body == null) return;
 
         // Header: Dragging, text, back btn
-        gameObject.FindRecursive("Header")?.AddComponent<TitlebarDragHandler>();
+        gameObject.FindRecursive("Header")?.AddComponent<TitlebarDragIgnoreLayoutHandler>();
 
         var title = gameObject.FindRecursive("Header/TitleName")?.GetComponent<TextMeshProUGUI>();
         title?.SetText(TargetSetting.Name);

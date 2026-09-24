@@ -37,7 +37,7 @@ internal class ModuleCategoryController : MonoBehaviour {
         var categoryText = gameObject.FindRecursive("Header/TitleName").GetComponent<TextMeshProUGUI>();
         categoryIcon.sprite = AssetManager.Get<Sprite>(ClickGUI.BundleKey, _iconNameMap[Category]);
         categoryText.text = Category.ToString().ToUpper();
-        gameObject.FindRecursive("Header")?.GetOrAddComponent<TitlebarDragHandler>();
+        gameObject.FindRecursive("Header")?.GetOrAddComponent<TitlebarDragIgnoreLayoutHandler>();
 
         // Populate with modules
         if (AssetManager.Get<GameObject>(ClickGUI.BundleKey, "ModuleButton") == null) {

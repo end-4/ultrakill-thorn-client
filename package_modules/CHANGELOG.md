@@ -6,6 +6,7 @@
     - Mod developers utilizing the config system: it's recommended to declare Thorn Core
       instead of Thorn as the dependency. This gives your users a clean version of Thorn without
       the modules, in case they don't want them.
+- Made the ClickGUI windows not go back to their previous position after dragging
 - Enemy tracers: fixed threshold being off by 1, added enemy type blacklist
 - Fixed custom style ranks (from Ultraskins or whatever) being oversized
 - Made HUD widget snapping on the sides slightly more consistent
