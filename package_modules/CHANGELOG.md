@@ -10,6 +10,7 @@
 - Fixed custom style ranks (from Ultraskins or whatever) being oversized
 - Made HUD widget snapping on the sides slightly more consistent
 - Fixed duplicate cheatiness notifications
+- Edges (Enemies): Added indication for sanded and made deathcatched enemies follow puppet's color
 
 ## 0.4.0
 

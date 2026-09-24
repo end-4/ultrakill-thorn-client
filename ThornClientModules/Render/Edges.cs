@@ -30,6 +30,7 @@ public class Edges : Module {
 
     public Setting<float> EdgeThickness;
     public Setting<EnhancedColor> FillColor;
+    public Setting<EnhancedColor> SandedFillColor;
     public Setting<bool> SwapEdgeAndFill;
     public Dictionary<EnemyType, Setting<EnhancedColor>> EnemyEdgeColors = [];
 
@@ -82,20 +83,26 @@ public class Edges : Module {
     /// <summary>
     /// Constructor
     /// </summary>
-    public Edges() : base("thorn.edges", "Edges (Enemies)", "Applies wireframe shader to enemies", ModuleCategory.Render) {
+    public Edges() : base("thorn.edges", "Edges (Enemies)", "Applies wireframe shader to enemies",
+        ModuleCategory.Render) {
         if (Instance != null) return;
         Instance = this;
         CreateHeader("enemies", "Enemies", "Changes applied to newly spawned enemies");
         EdgeThickness = CreateSetting("edgeThickness", "Edge thickness", "How thick the edge lines are", 2f);
-        FillColor = CreateSetting("fillColor", "Fill color", "The color that fills the faces", new EnhancedColor(0, 0, 0));
+        var enemyColorGroup = CreateGroup("enemyColors", "Enemy Colors", "Colors for each enemy type");
+        FillColor = CreateSetting("fillColor", "Fill color", "The color that fills the faces",
+            new EnhancedColor(0, 0, 0));
+        SandedFillColor = CreateSetting("fillColorSanded", "Sanded fill color",
+            "The color that fills the faces when enemy is sanded", new EnhancedColor(0.941f, 0.808f, 0.463f, 0.9f));
         SwapEdgeAndFill = CreateSetting("swapEdgeAndFill", "Swap edge and fill colors",
             "Makes edge colors apply to fill and fill color apply to edges", false);
 
-        var enemyColorGroup = CreateGroup("enemyColors", "Enemy Colors", "Colors for each enemy type");
         var enemyTypes = Enum.GetValues(typeof(EnemyType)).Cast<EnemyType>().OrderBy(e => e.ToString());
 
         foreach (var enemyType in enemyTypes) {
-            var defaultColor = _defaultEnemyColors.TryGetValue(enemyType, out var color) ? color : new EnhancedColor(Color.red);
+            var defaultColor = _defaultEnemyColors.TryGetValue(enemyType, out var color)
+                ? color
+                : new EnhancedColor(Color.red);
             var setting = CreateSetting(
                 $"enemyColor_{enemyType}",
                 $"{enemyType}",
@@ -109,19 +116,19 @@ public class Edges : Module {
         SwapEdgeAndFill.OnChanged += UpdateAllMats;
     }
 
-    private static Dictionary<EnemyType, Material> _enemyMatCache = [];
+    private static Dictionary<(EnemyType, bool), Material> _enemyMatCache = [];
     private readonly Dictionary<EnemyType, Action> _onColorChangedActions = [];
-
-    private Color GetFillColor(Color edgeColor) {
-        return edgeColor;
-    }
 
     private void UpdateAllMats() {
         foreach (var pair in _enemyMatCache) {
-            var eType = pair.Key;
+            var (eType, isSanded) = pair.Key;
             var mat = pair.Value;
-            mat.SetColor(SwapEdgeAndFill.Value ? "_WireframeColor" : "_FillColor", GetFillColor(FillColor.Value.GetCurrentColor()));
-            mat.SetColor(SwapEdgeAndFill.Value ? "_FillColor" : "_WireframeColor", EnemyEdgeColors[eType].Value.GetCurrentColor());
+            var edgeColor = EnemyEdgeColors.TryGetValue(eType, out var colorSetting)
+                ? colorSetting.Value.GetCurrentColor()
+                : Color.red;
+            var fillColor = (isSanded ? SandedFillColor : FillColor).Value.GetCurrentColor();
+            mat.SetColor(SwapEdgeAndFill.Value ? "_WireframeColor" : "_FillColor", fillColor);
+            mat.SetColor(SwapEdgeAndFill.Value ? "_FillColor" : "_WireframeColor", edgeColor);
             mat.SetFloat("_WireframeThickness", EdgeThickness.Value);
         }
     }
@@ -130,10 +137,12 @@ public class Edges : Module {
     /// Gets (cached) wireframe enemy material
     /// </summary>
     /// <param name="enemyType">The enemy type</param>
+    /// <param name="isSanded">Whether the enemy is sanded</param>
     /// <returns>The material for the enemy</returns>
-    public static Material? GetEnemyMat(EnemyType enemyType) {
+    public static Material? GetEnemyMat(EnemyType enemyType, bool isSanded = false) {
         if (Instance == null) return null;
-        if (_enemyMatCache.TryGetValue(enemyType, out var cached) && cached != null)
+        var key = (enemyType, isSanded);
+        if (_enemyMatCache.TryGetValue(key, out var cached) && cached != null)
             return cached;
 
         var baseMat = EffectManager.GetMaterial("GeometryWireframeMaterial");
@@ -152,20 +161,25 @@ public class Edges : Module {
         };
 
         var edgeColor = enemyColor.GetCurrentColor();
-        var fillColor = Instance.FillColor.Value.GetCurrentColor();
+        var fillColor = (isSanded ? Instance.SandedFillColor : Instance.FillColor).Value.GetCurrentColor();
         mat.SetColor("_WireframeColor", Instance.SwapEdgeAndFill.Value ? fillColor : edgeColor);
         mat.SetColor("_FillColor", Instance.SwapEdgeAndFill.Value ? edgeColor : fillColor);
         mat.SetFloat("_WireframeThickness", Instance.EdgeThickness.Value);
         // Plugin.Log.LogInfo($"Enemy color {enemyColor}");
-        _enemyMatCache[enemyType] = mat;
+        _enemyMatCache[key] = mat;
         return mat;
     }
 
     private void OnEnemyColorChanged(EnemyType enemyType, EnhancedColor newColor) {
-        if (_enemyMatCache.TryGetValue(enemyType, out var mat) && mat != null) {
-            mat.color = newColor.GetCurrentColor();
-            mat.SetColor(SwapEdgeAndFill.Value ? "_FillColor" : "_WireframeColor", newColor.GetCurrentColor());
-            mat.SetFloat("_WireframeThickness", EdgeThickness.Value);
+        foreach (var isSanded in new[] { false, true }) {
+            if (_enemyMatCache.TryGetValue((enemyType, isSanded), out var mat) && mat != null) {
+                mat.color = newColor.GetCurrentColor();
+                var edgeColor = newColor.GetCurrentColor();
+                var fillColor = (isSanded ? SandedFillColor : FillColor).Value.GetCurrentColor();
+                mat.SetColor(SwapEdgeAndFill.Value ? "_WireframeColor" : "_FillColor", fillColor);
+                mat.SetColor(SwapEdgeAndFill.Value ? "_FillColor" : "_WireframeColor", edgeColor);
+                mat.SetFloat("_WireframeThickness", EdgeThickness.Value);
+            }
         }
     }
 
@@ -174,6 +188,8 @@ public class Edges : Module {
         EnemyEvents.OnSpawn += AddWireframizer;
         FillColor.OnChanged += UpdateAllMats;
         FillColor.OnEffectiveValueChanged += UpdateAllMats;
+        SandedFillColor.OnChanged += UpdateAllMats;
+        SandedFillColor.OnEffectiveValueChanged += UpdateAllMats;
         EdgeThickness.OnChanged += UpdateAllMats;
         UpdateAllMats();
 
@@ -193,6 +209,8 @@ public class Edges : Module {
         EnemyEvents.OnSpawn -= AddWireframizer;
         FillColor.OnChanged -= UpdateAllMats;
         FillColor.OnEffectiveValueChanged -= UpdateAllMats;
+        SandedFillColor.OnChanged -= UpdateAllMats;
+        SandedFillColor.OnEffectiveValueChanged -= UpdateAllMats;
         EdgeThickness.OnChanged -= UpdateAllMats;
 
         foreach (var pair in EnemyEdgeColors) {
@@ -207,15 +225,15 @@ public class Edges : Module {
 
     private void AddWireframizer(EnemyIdentifier eid) {
         var comp = eid.gameObject.AddComponent<EnemyWireframizer>();
-        comp.TargetEnemyType = eid.enemyType;
+        comp.TargetEnemyId = eid;
     }
 
     private class EnemyWireframizer : MonoBehaviour {
-        public EnemyType? TargetEnemyType;
+        public EnemyIdentifier? TargetEnemyId;
         private Renderer[] _renderers = [];
 
         private void Start() {
-            if (TargetEnemyType == null) return;
+            if (TargetEnemyId == null) return;
             ExecutionUtils.RunNextFrame(FindReplacementTargets);
         }
 
@@ -226,9 +244,10 @@ public class Edges : Module {
         }
 
         private void Update() {
-            if (TargetEnemyType == null || _renderers.Length == 0) return;
+            if (TargetEnemyId == null || _renderers.Length == 0) return;
 
-            var mat = Edges.GetEnemyMat((EnemyType)TargetEnemyType);
+            var enemyType = TargetEnemyId.puppet ? EnemyType.Puppet : TargetEnemyId.enemyType;
+            var mat = GetEnemyMat(enemyType, TargetEnemyId.sandified);
             if (mat == null) return;
 
             foreach (var comp in _renderers) {
