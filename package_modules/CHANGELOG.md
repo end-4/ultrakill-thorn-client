@@ -1,11 +1,14 @@
 ## 0.5.0
 
-- Splitted Thorn's config system and the built-in modules into separate packages
-    - Existing Thorn users should also install the new Thorn Core package
-      (if using a mod manager, it'll be done automatically)
-    - Mod developers using Thorn's config system should now declare their dependency as Thorn Core instead of Thorn
+- Splitted Thorn's config system and the built-in modules into separate packages: Thorn and Thorn Core.
+  The former contains the modules and the latter contains the config system.
+    - Regular users: no action is required if you use a mod manager. Otherwise get the Thorn Core package.
+    - Mod developers utilizing the config system: it's recommended to declare Thorn Core
+      instead of Thorn as the dependency. This gives your users a clean version of Thorn without
+      the modules, in case they don't want them.
 - Enemy tracers: fixed threshold being off by 1, added enemy type blacklist
 - Fixed custom style ranks (from Ultraskins or whatever) being oversized
+- Made HUD widget snapping on the sides slightly more consistent
 
 ## 0.4.0
 
