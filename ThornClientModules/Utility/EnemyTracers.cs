@@ -2,7 +2,9 @@
 using ThornClient.System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using NukeLib.Utils;
+using ThornClient;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
 using ThornClient.Core.DataTypes;
@@ -39,6 +41,11 @@ public class EnemyTracers : Module {
     public Setting<EnemyList> ForceTraceEnemies;
 
     /// <summary>
+    /// Never draw lines to these enemies
+    /// </summary>
+    public Setting<EnemyList> ForceNotTraceEnemies;
+
+    /// <summary>
     /// Icon of this module
     /// </summary>
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "connect");
@@ -62,6 +69,9 @@ public class EnemyTracers : Module {
             "Display tracers when there are this many enemies left", 5);
         ForceTraceEnemies = CreateSetting("forceTraceEnemies", "Force trace enemies",
             "Always trace these enemy types regardless of the total count/threshold. Useful for e.g. Mindflayers",
+            new EnemyList());
+        ForceNotTraceEnemies = CreateSetting("forceNotTraceEnemies", "Force NOT trace enemies",
+            "Blacklist. Enemies in here won't be traced",
             new EnemyList());
     }
 
@@ -94,7 +104,7 @@ public class EnemyTracers : Module {
 
     private bool IsEnemyMeaningful(EnemyIdentifier enemy) {
         return enemy != null && !enemy.dead && enemy.gameObject != null &&
-               enemy.gameObject.activeInHierarchy;
+               enemy.gameObject.activeInHierarchy && !ForceNotTraceEnemies.Value.Includes(enemy.enemyType);
     }
 
     /// <summary>
@@ -129,18 +139,14 @@ public class EnemyTracers : Module {
         Vector3 tracerOrigin = cameraPos + (cameraForward * 1.5f);
 
         int targetCount = tracker.enemies.Count;
-        int remainingCount = 0;
-        for (int i = 0; i < targetCount; i++) {
-            var enemy = tracker.enemies[i];
-            remainingCount += IsEnemyMeaningful(enemy) ? 1 : 0;
-        }
+        int remainingCount = tracker.enemies.Where(IsEnemyMeaningful).Count();
 
         for (int i = 0; i < targetCount; i++) {
             var enemy = tracker.enemies[i];
 
             // Skip if not meaningful or not in non-threshold-triggered whitelist
-            if (!IsEnemyMeaningful(enemy) || (remainingCount >= EnemyCountThreshold.Value &&
-                                              !ForceTraceEnemies.Value.Includes(enemy.enemyType))) {
+            if (!IsEnemyMeaningful(enemy) ||
+                (remainingCount > EnemyCountThreshold.Value && !ForceTraceEnemies.Value.Includes(enemy.enemyType))) {
                 continue;
             }
 
