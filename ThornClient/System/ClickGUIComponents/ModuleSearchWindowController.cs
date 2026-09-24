@@ -42,7 +42,7 @@ internal class ModuleSearchWindowController : MonoBehaviour {
         if (inputObj != null) _input = inputObj.GetComponent<TMP_InputField>();
         PopulateIfNeeded();
         if (_input != null) _input.onValueChanged.AddListener(Query);
-        gameObject.FindRecursive("Header")?.GetOrAddComponent<TitlebarDragHandler>();
+        gameObject.FindRecursive("Header")?.GetOrAddComponent<TitlebarDragIgnoreLayoutHandler>();
         Query("");
     }
 

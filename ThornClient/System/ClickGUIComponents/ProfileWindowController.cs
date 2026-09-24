@@ -30,7 +30,7 @@ public class ProfileWindowController : MonoBehaviour {
         );
 
         // Set up stuff
-        titlebar?.GetOrAddComponent<TitlebarDragHandler>();
+        titlebar?.GetOrAddComponent<TitlebarDragIgnoreLayoutHandler>();
         if (_newBtn != null) _newBtn.onClick.AddListener(ProfileManager.CreateProfile);
         ProfileManager.ProfilesChanged += RepopulateNextFrame; // Somehow delaying a frame prevents crashes
         Repopulate();

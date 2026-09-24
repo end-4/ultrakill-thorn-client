@@ -35,7 +35,7 @@ public class EnumWindowController : MonoBehaviour {
         var categoryText = gameObject.FindRecursive("Header/TitleName")!.GetComponent<TextMeshProUGUI>();
 
         categoryText.text = TargetSetting.Name;
-        gameObject.FindRecursive("Header")?.AddComponent<TitlebarDragHandler>();
+        gameObject.FindRecursive("Header")?.AddComponent<TitlebarDragIgnoreLayoutHandler>();
         var backBtn = gameObject.FindRecursive("Header/TitleButton")?.GetComponent<Button>();
 
         gameObject.FindRecursive("Header/TitleButton")!.GetComponent<Button>().interactable = true;

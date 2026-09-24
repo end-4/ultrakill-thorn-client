@@ -18,7 +18,7 @@ internal class EnemyListController : MonoBehaviour {
     private Transform? _trueList;
 
     private void Start() {
-        gameObject.FindRecursive("Header")?.AddComponent<TitlebarDragHandler>();
+        gameObject.FindRecursive("Header")?.AddComponent<TitlebarDragIgnoreLayoutHandler>();
         SetupModules();
     }
 

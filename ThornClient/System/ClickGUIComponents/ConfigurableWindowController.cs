@@ -33,7 +33,7 @@ internal class ConfigurableWindowController : MonoBehaviour {
         }
 
         categoryText.text = TargetConfigurable.Name;
-        gameObject.FindRecursive("Header")?.AddComponent<TitlebarDragHandler>();
+        gameObject.FindRecursive("Header")?.AddComponent<TitlebarDragIgnoreLayoutHandler>();
         var backBtn = gameObject.FindRecursive("Header/TitleButton")?.GetComponent<Button>();
         gameObject.FindRecursive("Header/TitleButton").GetComponent<Button>().interactable = IsPopup;
         gameObject.FindRecursive("Header/TitleButton/BackIcon")?.SetActive(IsPopup);
