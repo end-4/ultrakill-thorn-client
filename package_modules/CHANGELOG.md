@@ -11,6 +11,7 @@
 - Made HUD widget snapping on the sides slightly more consistent
 - Fixed duplicate cheatiness notifications
 - Edges (Enemies): Added indication for sanded and made deathcatched enemies follow puppet's color
+- Made gun HUD widget empty by default instead of having a black saw hammer
 
 ## 0.4.0
 
