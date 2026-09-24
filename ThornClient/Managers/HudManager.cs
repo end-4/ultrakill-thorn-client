@@ -275,15 +275,11 @@ public static class HudManager {
         var trans = hudMod.UIElement!.GetComponent<RectTransform>();
 
         var surface = hudMod.Surface.Value;
-        HudModule[] sameSurfaceMods = [
-            .. ModuleManager.Items
-                .OfType<HudModule>()
-                .Where(m => m.Surface.Value == surface && m != hudMod && m.IsEnabled)
+        RectTransform[] transforms = [
+            .. trans.parent
+                .GetComponentsInChildren<RectTransform>(false)
+                .Where(rt => rt != trans)
         ];
-        // Plugin.Log.LogInfo($"======\nother modules: {sameSurfaceMods.Stringify()}\n======");
-        RectTransform[] transforms = sameSurfaceMods
-            .Select(m => m.UIElement!.GetComponent<RectTransform>())
-            .ToArray();
 
         var hAxis = RectTransform.Axis.Horizontal;
         var vAxis = RectTransform.Axis.Vertical;
