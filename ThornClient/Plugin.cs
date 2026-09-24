@@ -22,7 +22,7 @@ public class Plugin : BaseUnityPlugin {
     public static string workingDir = Path.GetDirectoryName(workingPath);
     public const string PluginGUID = "com.github.end-4.thornClient";
     public const string PluginName = "Thorn";
-    public const string PluginVersion = "0.4.0";
+    public const string PluginVersion = "0.5.0";
     public static string PluginIconPath = Path.Combine(workingDir, "icon.png");
 
     public static Harmony HarmonyInstance;
@@ -32,8 +32,8 @@ public class Plugin : BaseUnityPlugin {
         if (Instance != null) return;
         Instance = this;
 
-        ProfileManager.Initialize();
         AssetManager.Initialize();
+        ProfileManager.Initialize();
         HudManager.Initialize();
         EffectManager.Initialize();
         ModuleManager.Initialize();

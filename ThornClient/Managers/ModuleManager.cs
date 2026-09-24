@@ -30,6 +30,7 @@ public static class ModuleManager {
     public static void Initialize() {
         Plugin.Log.LogInfo($"[Module Manager] Starting...");
         var moduleType = typeof(Module);
+        var systemModuleType = typeof(SystemModule);
         List<Type> discoveredTypes = [];
 
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
@@ -40,6 +41,11 @@ public static class ModuleManager {
                 }
             }
         }
+
+        // Instantiates SystemModule subclasses first
+        discoveredTypes = discoveredTypes
+            .OrderByDescending(t => ReflectionUtils.SafeIsAssignableFrom(systemModuleType, t))
+            .ToList();
 
         foreach (var type in discoveredTypes) {
             try {
