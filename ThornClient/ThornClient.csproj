@@ -22,6 +22,9 @@
       <Reference Include="BepInEx">
         <HintPath>..\libs\BepInEx.dll</HintPath>
       </Reference>
+      <Reference Include="Fireman">
+        <HintPath>..\libs\Fireman.dll</HintPath>
+      </Reference>
       <Reference Include="Newtonsoft.Json">
         <HintPath>..\libs\Newtonsoft.Json.dll</HintPath>
       </Reference>

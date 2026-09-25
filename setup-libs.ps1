@@ -71,8 +71,14 @@ $r2Dlls = @(
     "BepInEx\plugins\end_4-NukeLib\NukeLib.xml"
     "BepInEx\plugins\NukeLib\NukeLib.dll"
     "BepInEx\plugins\NukeLib\NukeLib.xml"
+    "BepInEx\plugins\Notiffy\Notiffy\Notiffy.dll"
+    "BepInEx\plugins\Notiffy\Notiffy\Notiffy.xml"
     "BepInEx\plugins\end_4-Notiffy\Notiffy\Notiffy.dll"
     "BepInEx\plugins\end_4-Notiffy\Notiffy\Notiffy.xml"
+    "BepInEx\plugins\Fireman\Fireman.dll"
+    "BepInEx\plugins\Fireman\Fireman.xml"
+    "BepInEx\plugins\end_4-Fireman\Fireman.dll"
+    "BepInEx\plugins\end_4-Fireman\Fireman.xml"
 )
 
 foreach ($dll in $r2Dlls) {

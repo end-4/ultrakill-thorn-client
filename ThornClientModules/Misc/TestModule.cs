@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Notiffy.API;
+using ThornClient;
 using UnityEngine;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
@@ -40,6 +41,8 @@ internal abstract class TestModule : Module {
     public Setting<float> Slippery { get; }
     public SettingGroup NestedGroup { get; }
     public SettingGroup DoubleNestedGroup { get; }
+    public Setting<FilePath> FileSetting;
+    public Setting<FolderPath> FolderSetting;
 
     public override string[] Tags => ["system", "debug", "developer"];
 
@@ -58,7 +61,8 @@ internal abstract class TestModule : Module {
         StringSetting = CreateSetting("textField", "Yap field", "Here bro have a tung tung", "sahur");
         ColorSetting = CreateSetting("colorField", "Some color!", "Color field description",
             new Color(0.86f, 0.82f, 0.71f, 1f));
-        EnhancedColorSetting = CreateSetting("enhancedColorField", "Enhanced color!", "Enhanced color field description",
+        EnhancedColorSetting = CreateSetting("enhancedColorField", "Enhanced color!",
+            "Enhanced color field description",
             new EnhancedColor(new Color(0.86f, 0.82f, 0.71f, 1f)));
         Cutie = CreateSetting("favouriteCutie", "Favorite cutie", "h", NonEmulatorYuzu.Mako);
         Cutie.Hints = new InterfaceHints {
@@ -82,6 +86,10 @@ internal abstract class TestModule : Module {
             }
         };
         DoubleNestedGroup = CreateGroup("nestederGroup", "Nestier group", "Nesty testy", NestedGroup);
+        FileSetting = CreateSetting("fileSetting", "File setting!!", "This should default Thorn's DLL file",
+            new FilePath(Plugin.workingPath), NestedGroup);
+        FolderSetting = CreateSetting("folderSetting", "Folder setting!!",
+            "This should default to Thorn's DLL's folder", new FolderPath(Plugin.workingDir), NestedGroup);
         CreateHeader("subcat2", "Subcategory 2", headerType: HeaderType.H2);
         Enemiez = CreateSetting("enemiez", "Funny monsters field", "spooky scary skeleton", new EnemyList(),
             NestedGroup);
