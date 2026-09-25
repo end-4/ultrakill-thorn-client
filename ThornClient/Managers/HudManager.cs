@@ -43,7 +43,7 @@ public static class HudManager {
 
         // Hook
         SceneUtils.SafeSceneLoadedDelayed += OnSceneLoaded;
-        FinalRankHelper.RankShown += HideHud;
+        // FinalRankHelper.RankShown += HideHud; // The StatsManager hud should already do it
         CheckpointEvents.CheckpointLoadedNoParam += ShowHud;
     }
 
@@ -59,14 +59,14 @@ public static class HudManager {
         forceComp.ForceUpdate();
     }
 
-    private static void HideHud() {
+    public static void HideHud() {
         foreach (GameObject? go in _surfaces.Values) {
             if (go == null) continue;
             go.SetActive(false);
         }
     }
 
-    private static void ShowHud() {
+    public static void ShowHud() {
         foreach (GameObject? go in _surfaces.Values) {
             if (go == null) continue;
             ForceEnableHudPanel(go);
@@ -310,14 +310,14 @@ public static class HudManager {
         ] : [];
 
         SnapCandidate[] xTargets = [
-            ..xCenterTargets, ..xLeftAlignTargets, ..xRightAlignTargets,
-            ..xMeetLeftEdgeTargets, ..xMeetRightEdgeTargets,
-            ..extraXCandidates,
+            .. xCenterTargets, .. xLeftAlignTargets, .. xRightAlignTargets,
+            .. xMeetLeftEdgeTargets, .. xMeetRightEdgeTargets,
+            .. extraXCandidates,
         ];
         SnapCandidate[] yTargets = [
-            ..yCenterTargets, ..yTopAlignTargets, ..yBottomAlignTargets,
-            ..yMeetBottomEdgeTargets, ..yMeetTopEdgeTargets,
-            ..extraYCandidates,
+            .. yCenterTargets, .. yTopAlignTargets, .. yBottomAlignTargets,
+            .. yMeetBottomEdgeTargets, .. yMeetTopEdgeTargets,
+            .. extraYCandidates,
         ];
 
         var possibleXCandidates = xTargets
