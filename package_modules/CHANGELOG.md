@@ -7,6 +7,7 @@
       instead of Thorn as the dependency. This gives your users a clean version of Thorn without
       the modules, in case they don't want them.
     - Also made the package structure more manual install-friendly, although we recommend against this.
+- Added FolderPath and FilePath config data types
 - Made the ClickGUI windows not go back to their previous position after dragging
 - Enemy tracers: fixed threshold being off by 1, added enemy type blacklist
 - Fixed custom style ranks (from Ultraskins or whatever) being oversized
