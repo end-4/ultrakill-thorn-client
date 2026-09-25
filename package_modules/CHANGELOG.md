@@ -1,11 +1,12 @@
 ## 0.5.0
 
-- Splitted Thorn's config system and the built-in modules into separate packages: Thorn and Thorn Core.
+- Packaging: Splitted Thorn's config system and the built-in modules into separate packages: Thorn and Thorn Core.
   The former contains the modules and the latter contains the config system.
     - Regular users: no action is required if you use a mod manager. Otherwise get the Thorn Core package.
     - Mod developers utilizing the config system: it's recommended to declare Thorn Core
       instead of Thorn as the dependency. This gives your users a clean version of Thorn without
       the modules, in case they don't want them.
+    - Also made the package structure more manual install-friendly, although we recommend against this.
 - Made the ClickGUI windows not go back to their previous position after dragging
 - Enemy tracers: fixed threshold being off by 1, added enemy type blacklist
 - Fixed custom style ranks (from Ultraskins or whatever) being oversized

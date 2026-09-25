@@ -69,12 +69,14 @@ public class EnhancedColor : IEquatable<EnhancedColor> {
 
     // Equalities ///////////////////////////
     // RE-GENERATE THESE WHEN CHANGING/ADDING FIELDS
+    /// <inheritdoc />
     public bool Equals(EnhancedColor? other) {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
         return BaseColor.Approximately(other.BaseColor) && Mode == other.Mode;
     }
 
+    /// <inheritdoc />
     public override bool Equals(object? obj) {
         if (obj is null) return false;
         if (ReferenceEquals(this, obj)) return true;
@@ -82,6 +84,7 @@ public class EnhancedColor : IEquatable<EnhancedColor> {
         return Equals((EnhancedColor)obj);
     }
 
+    /// <inheritdoc />
     public override int GetHashCode() {
         return HashCode.Combine(BaseColor, (int)Mode);
     }
