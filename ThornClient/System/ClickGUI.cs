@@ -179,7 +179,7 @@ public class ClickGUI : SystemModule {
         return page?.FindRecursive("Layout")?.transform;
     }
 
-    internal static GameObject AddToLayoutedPage(GameObject page, GameObject item) {
+    public static GameObject AddToLayoutedPage(GameObject page, GameObject item) {
         var layout = GetPageLayout(page);
         if (layout == null || item == null) return item!;
         item.transform.SetParent(layout, false);
