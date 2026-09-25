@@ -5,9 +5,10 @@
     "website_url": "https://github.com/end-4/ultrakill-thorn-client",
     "description": "The powerful config system behind Thorn, for any mod.",
     "dependencies": [
+        "averyocean65-FixPluginTypesSerialization-1.0.0",
         "BepInEx-BepInExPack-5.4.2100",
         "end_4-NukeLib-0.11.0",
         "end_4-Notiffy-0.1.4",
-        "averyocean65-FixPluginTypesSerialization-1.0.0"
+        "end_4-Fireman-0.1.1"
     ]
 }
