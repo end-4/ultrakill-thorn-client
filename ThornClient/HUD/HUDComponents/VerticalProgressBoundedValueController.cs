@@ -21,26 +21,30 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
     private RectTransform? _transTrough;
     private RectTransform? _transChargeValue;
     private RectTransform? _transValue;
-    private RectTransform? _transSoftMask;
+    // private RectTransform? _transSoftMask;
     private RectTransform? _transSoftBound;
     private Image? _icon;
+    private Image? _valueIcon;
     private BatchBoolSettingVisibilitySyncer? _visibilitySyncer;
 
     private void Start() {
         if (TargetModule == null) return;
         _textName = gameObject.FindRecursive("Name")?.GetComponent<TextMeshProUGUI>();
         _icon = gameObject.FindRecursive("Trough/Icon")?.GetComponent<Image>();
+        _valueIcon = gameObject.FindRecursive("Trough/ValueMask/Value/Icon")?.GetComponent<Image>();
         _transTrough = gameObject.FindRecursive("Trough")?.GetComponent<RectTransform>();
-        _transValue = gameObject.FindRecursive("Trough/Value")?.GetComponent<RectTransform>();
+        _transValue = gameObject.FindRecursive("Trough/ValueMask/Value")?.GetComponent<RectTransform>();
         _transChargeValue = gameObject.FindRecursive("Trough/ChargeValue")?.GetComponent<RectTransform>();
-        _transSoftMask = gameObject.FindRecursive("Trough/SoftBoundMask")?.GetComponent<RectTransform>();
-        _transSoftBound = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound")?.GetComponent<RectTransform>();
+        // _transSoftMask = gameObject.FindRecursive("Trough/SoftBoundMask")?.GetComponent<RectTransform>();
+        _transSoftBound = gameObject.FindRecursive("Trough/ValueMask/SoftBound")?.GetComponent<RectTransform>();
         if (_textName != null)
             _textName.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ForegroundColor;
         if (_icon != null)
-            _icon.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
+            _icon.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ForegroundColor;
+        if (_valueIcon != null)
+            _valueIcon.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
 
-        var valObj = gameObject.FindRecursive("Trough/Value");
+        var valObj = gameObject.FindRecursive("Trough/ValueMask/Value");
         if (valObj != null)
             valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
 
@@ -48,7 +52,7 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
         if (chargeObj != null)
             chargeObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ChargeValueColor;
 
-        var sofObj = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound");
+        var sofObj = gameObject.FindRecursive("Trough/ValueMask/SoftBound");
         if (sofObj != null)
             sofObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
 
@@ -101,13 +105,19 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
     }
 
     private void UpdateIcon(Sprite? value) {
-        if (_icon == null || TargetModule == null) return;
+        if (_icon == null || _valueIcon == null || TargetModule == null) return;
         // Plugin.Log.LogInfo($"Set icon to {value}");
         var actualValue = value;
         if (!TargetModule.VerticalProgressShowIcon.Value) actualValue = null;
+
         if (_icon.sprite == actualValue) return;
         _icon.sprite = actualValue;
-        if (_icon.gameObject.activeSelf != (_icon.sprite != null)) _icon.gameObject.SetActive(_icon.sprite != null);
+        _valueIcon.sprite = actualValue;
+
+        if (_icon.gameObject.activeSelf != (_icon.sprite != null)) {
+            _icon.gameObject.SetActive(_icon.sprite != null);
+            _valueIcon.gameObject.SetActive(_valueIcon.sprite != null);
+        }
     }
 
     private void UpdateValue(float _) {
@@ -125,10 +135,9 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
             (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
         );
         if (TargetModule == null || _transTrough == null || _transValue == null || _transChargeValue == null ||
-            _transSoftBound == null || _transSoftMask == null) return;
+            _transSoftBound == null) return;
 
         _transTrough.sizeDelta = new Vector2(_transTrough.sizeDelta.x, TargetModule.VerticalProgressLength.Value);
-        _transSoftMask.sizeDelta = new Vector2(_transSoftMask.sizeDelta.x, _transTrough.sizeDelta.y);
         var width = _transValue.sizeDelta.x;
         var height = _transValue.sizeDelta.y;
         var chargeHeight = _transChargeValue.sizeDelta.y;
