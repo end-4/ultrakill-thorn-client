@@ -13,7 +13,7 @@ public class RocketGreenCharge : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "ball");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => ["srs", "ball", "cerberus", "sentry", "virtue", "cooldown"];
 
     /// <inheritdoc />
     public RocketGreenCharge() : base("thorn.rocketGreenCharge", "Rocket: <color=#44ff45>Cannonball</color>",

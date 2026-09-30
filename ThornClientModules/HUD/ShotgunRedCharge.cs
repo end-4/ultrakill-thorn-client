@@ -14,7 +14,7 @@ public class ShotgunRedCharge : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "chainsaw");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => ["cooldown", "chainsaw", "red", "groovy", "sawed-on"];
 
     /// <inheritdoc />
     public ShotgunRedCharge() : base("thorn.shotgunRedCharge", "Shotgun: <color=#f00>Saw</color>",

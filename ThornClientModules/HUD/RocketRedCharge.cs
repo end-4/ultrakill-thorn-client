@@ -14,7 +14,9 @@ public class RocketRedCharge : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "oil");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => [
+        "cooldown", "burn", "fire", "flame", "cybergrind opener", "slippery", "guttertank"
+    ];
 
     /// <inheritdoc />
     public RocketRedCharge() : base("thorn.rocketRedCharge", "Rocket: <color=#f00>Oil</color> charge",

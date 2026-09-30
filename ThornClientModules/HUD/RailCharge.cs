@@ -14,10 +14,13 @@ public class RailCharge : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "bolt");
 
     /// <inheritdoc />
-    public override string[] Tags => ["charge", "ultimate", "shock", "electric", "thunderbolt", "shot"];
+    public override string[] Tags => [
+        "charge", "ultimate", "shock", "electric", "thunderbolt", "shot", "sentry", "virtue"
+    ];
 
     /// <inheritdoc />
-    public RailCharge() : base("thorn.railCharge", "Railcannon: <color=#40e7ff>Charge</color>", "Shows the railcannon charge",
+    public RailCharge() : base("thorn.railCharge", "Railcannon: <color=#40e7ff>Charge</color>",
+        "Shows the railcannon charge",
         bound: 1, displayName: "Railcannon", defaultValueColor: new EnhancedColor(0.44f, 0.52f, 1f)
     ) {
     }

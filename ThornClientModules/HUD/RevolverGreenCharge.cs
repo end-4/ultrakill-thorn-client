@@ -14,7 +14,7 @@ public class RevolverGreenCharge : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "coin");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => ["marksman", "cooldown", "penny", "coin", "ricoshot", "green"];
 
     /// <inheritdoc />
     public RevolverGreenCharge() : base("thorn.revolverCoins", "Revolver: <color=#44ff45>Coins</color>",

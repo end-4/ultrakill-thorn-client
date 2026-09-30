@@ -14,7 +14,7 @@ public class NailgunRedCharge : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "plug");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => ["shock", "zap", "electric", "cooldown"];
 
     /// <inheritdoc />
     public NailgunRedCharge() : base("thorn.nailgunRedCharge", "Nailgun: <color=#f00>Jumpstart cable</color> charge",
