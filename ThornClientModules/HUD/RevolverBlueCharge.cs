@@ -31,14 +31,35 @@ public class RevolverBlueCharge : BoundedValueHudModule {
     private Revolver? _rev;
 
     /// <inheritdoc />
+    protected override void OnHudModuleEnable() {
+        if (GunControl.Instance != null) GunControl.Instance.OnWeaponChange += TryRecordWeapon;
+        SceneUtils.SafeSceneLoadedNoParam += ResubWeaponChange;
+    }
+
+    /// <inheritdoc />
+    protected override void OnHudModuleDisable() {
+        if (GunControl.Instance != null) GunControl.Instance.OnWeaponChange -= TryRecordWeapon;
+        SceneUtils.SafeSceneLoadedNoParam -= ResubWeaponChange;
+    }
+
+    private void ResubWeaponChange() {
+        if (GunControl.Instance == null) return;
+        GunControl.Instance.OnWeaponChange -= TryRecordWeapon;
+        GunControl.Instance.OnWeaponChange += TryRecordWeapon;
+    }
+
+    private void TryRecordWeapon(GameObject weapon) {
+        if (_rev != null || weapon == null) return;
+        var comp = weapon.GetComponent<Revolver>();
+        if (comp == null) return;
+        if (comp.gunVariation == 0) _rev = comp;
+    }
+
+    /// <inheritdoc />
     public override void OnUpdate() {
         var gc = GunControl.Instance;
         var wc = WeaponCharges.Instance;
         if (gc == null || wc == null) return;
-
-        if (_rev == null) {
-            _rev = Object.FindObjectsOfType<Revolver>().FirstOrDefault(r => r.gunVariation == 0);
-        }
 
         if (_rev == null) return;
 
