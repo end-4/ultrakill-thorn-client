@@ -196,7 +196,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     private static EnhancedColor GetForegroundColor(EnhancedColor bg) {
         bg.BaseColor.RGBToOKLCH(out var l, out var c, out var h);
         var isLight = l > 0.6f;
-        var contrastedL = isLight ? 0.35f : 0.9f;
+        var contrastedL = isLight ? 0.25f : 0.9f;
         return new EnhancedColor(ColorUtils.OKLCHToRGB(contrastedL, c, h, bg.a));
         // return new EnhancedColor(Color.white);
     }
