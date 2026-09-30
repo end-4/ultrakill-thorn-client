@@ -9,15 +9,15 @@ namespace ThornClientModules.HUD;
 /// <summary>
 /// Shows core (blue) shotgun charge
 /// </summary>
-public class ShotgunBlueCharge : BoundedValueHudModule {
+public class ShotgunBlueChargeAlt : BoundedValueHudModule {
     /// <inheritdoc />
-    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "cube");
+    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "jackhammer_core");
 
     /// <inheritdoc />
     public override string[] Tags => ["cooldown"];
 
     /// <inheritdoc />
-    public ShotgunBlueCharge() : base("thorn.shotgunBlueCharge", "Shotgun: <color=#40e7ff>Core</color> charge (hammer)",
+    public ShotgunBlueChargeAlt() : base("thorn.shotgunBlueChargeAlt", "Shotgun: <color=#40e7ff>Core</color> charge (hammer)",
         "Shows the blue hammer's core availability",
         bound: 1, displayName: "Hammer Core", defaultValueColor: new EnhancedColor(0.25f, 0.91f, 1f)
     ) {

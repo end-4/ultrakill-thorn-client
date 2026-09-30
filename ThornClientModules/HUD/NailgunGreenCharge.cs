@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using NukeLib.Utils;
 using ThornClient.Core.DataTypes;
 using ThornClient.HUD;
 using ThornClient.Managers;
@@ -14,7 +15,7 @@ namespace ThornClientModules.HUD;
 /// </summary>
 public class NailgunGreenCharge : BoundedValueHudModule {
     /// <inheritdoc />
-    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "cube");
+    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "nail_overheat");
 
     /// <inheritdoc />
     public override string[] Tags => ["cooldown"];
