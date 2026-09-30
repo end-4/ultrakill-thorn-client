@@ -14,11 +14,11 @@ public class NailgunBlueAmmoAlt : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "saw_silver");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => ["attractor", "cooldown", "ammo", "bullets", "traps", "spinning", "ricochet"];
 
     /// <inheritdoc />
     public NailgunBlueAmmoAlt() : base("thorn.nailgunBlueAmmoAlt", "Nailgun: <color=#40e7ff>Silver Saws</color>",
-        "Shows saws (ammo) for the blue sawgun (alt nailgun)",
+        "Shows saws for the blue sawgun (alt nailgun)",
         bound: 10, displayName: "Silver Saws", defaultValueColor: new EnhancedColor(0.25f, 0.91f, 1f)
     ) {
     }

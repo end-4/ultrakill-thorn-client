@@ -14,7 +14,7 @@ public class NailgunBlueCharge : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "nailgun_magnet");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => ["cooldown", "attractor", "sticky", "pull"];
 
     /// <inheritdoc />
     public NailgunBlueCharge() : base("thorn.nailgunBlueCharge", "Nailgun: <color=#40e7ff>Magnets</color>",

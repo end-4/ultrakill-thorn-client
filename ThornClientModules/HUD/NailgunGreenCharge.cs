@@ -18,7 +18,7 @@ public class NailgunGreenCharge : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "nail_overheat");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => ["overheat", "cooldown", "fire", "burst", "spread", "burn"];
 
     /// <inheritdoc />
     public NailgunGreenCharge() : base("thorn.nailgunGreenCharge", "Nailgun: <color=#44ff45>Nail Heatsinks</color>",

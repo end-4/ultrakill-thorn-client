@@ -14,7 +14,9 @@ public class RocketBlueCharge : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "freeze");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => [
+        "freezeframe", "fup", "insta ride", "cooldown", "round trip", "frozen", "time stop"
+    ];
 
     /// <inheritdoc />
     public RocketBlueCharge() : base("thorn.rocketBlueCharge",

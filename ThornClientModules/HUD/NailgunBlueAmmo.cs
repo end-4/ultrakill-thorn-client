@@ -14,11 +14,11 @@ public class NailgunBlueAmmo : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "nail_silver");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => ["attractor", "cooldown", "ammo", "bullets", "angel killer"];
 
     /// <inheritdoc />
     public NailgunBlueAmmo() : base("thorn.nailgunBlueAmmo", "Nailgun: <color=#40e7ff>Silver Nails</color>",
-        "Shows nails (ammo) for the blue nailgun",
+        "Shows nails for the blue nailgun",
         bound: 100, displayName: "Silver Nails", defaultValueColor: new EnhancedColor(0.25f, 0.91f, 1f)
     ) {
     }

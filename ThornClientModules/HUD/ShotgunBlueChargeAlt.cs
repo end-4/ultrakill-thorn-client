@@ -14,7 +14,7 @@ public class ShotgunBlueChargeAlt : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "jackhammer_core");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => ["cooldown", "core eject", "nuke", "blue", "explosion"];
 
     /// <inheritdoc />
     public ShotgunBlueChargeAlt() : base("thorn.shotgunBlueChargeAlt", "Shotgun: <color=#40e7ff>Core</color> charge (hammer)",

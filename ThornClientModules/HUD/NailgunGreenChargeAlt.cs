@@ -15,7 +15,7 @@ public class NailgunGreenChargeAlt : BoundedValueHudModule {
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "saw_overheat");
 
     /// <inheritdoc />
-    public override string[] Tags => ["cooldown"];
+    public override string[] Tags => ["overheat", "cooldown", "fire", "burn", "bounce", "ricochet"];
 
     /// <inheritdoc />
     public NailgunGreenChargeAlt() : base("thorn.nailgunGreenChargeAlt",
