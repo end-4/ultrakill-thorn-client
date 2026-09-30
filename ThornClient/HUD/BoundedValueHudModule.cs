@@ -193,11 +193,12 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// </summary>
     protected SettingGroup ColorGroup;
 
-    private static EnhancedColor GetHarmoniousContrastedColor(EnhancedColor bg) {
+    private static EnhancedColor GetForegroundColor(EnhancedColor bg) {
         bg.BaseColor.RGBToOKLCH(out var l, out var c, out var h);
         var isLight = l > 0.6f;
         var contrastedL = isLight ? 0.35f : 0.9f;
         return new EnhancedColor(ColorUtils.OKLCHToRGB(contrastedL, c, h, bg.a));
+        // return new EnhancedColor(Color.white);
     }
 
     /// <summary>
@@ -234,7 +235,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
             defaultValueColor ?? new EnhancedColor(new Color(0.098f, 0.624f, 0.525f)), ColorGroup);
         ValueForegroundColor = CreateSetting("valueFgColor", "Value foreground color",
             "The color of the text/icon shown on the value",
-            defaultValueTextColor ?? GetHarmoniousContrastedColor(ValueColor.DefaultValue),
+            defaultValueTextColor ?? GetForegroundColor(ValueColor.DefaultValue),
             ColorGroup);
         SoftBoundColor = CreateSetting("softBoundColor", "Soft bound color",
             "The color of the soft bound, for example HP hard damage",

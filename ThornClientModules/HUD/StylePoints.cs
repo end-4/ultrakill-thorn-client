@@ -24,7 +24,8 @@ public class StylePoints : BoundedValueHudModule {
     /// <inheritdoc />
     public StylePoints() : base("thorn.stylePoints", "Style Points",
         "Shows points on the current style rank",
-        defaultValueColor: 0xFFFFFF.ToEnhancedColor(), displayName: "Current rank") {
+        defaultValueColor: 0xFFFFFF.ToEnhancedColor(), displayName: "Current rank",
+        decimalPlaces: 0) {
     }
 
     /// <inheritdoc />

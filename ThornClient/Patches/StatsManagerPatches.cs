@@ -21,7 +21,7 @@ internal static class StatsManagerPatches {
     [HarmonyPatch(nameof(StatsManager.HideShit))]
     internal static void HideShit_Postfix(StatsManager __instance) {
         try {
-            Plugin.Log.LogInfo("HIDE shit");
+            // Plugin.Log.LogInfo("HIDE shit");
             HudManager.HideHud();
         } catch {
             Plugin.Log.LogWarning("[StatsManagerPatches] Failed to hide shit");

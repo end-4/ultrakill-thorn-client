@@ -23,34 +23,46 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     private RectTransform? _transValue;
     private RectTransform? _transChargeValue;
     private RectTransform? _transSoftBound;
-    private RectTransform? _transSoftMask;
+    private RectTransform? _transValueLayout;
     private Image? _icon;
     private TextMeshProUGUI? _textValue;
     private TextMeshProUGUI? _textCap;
+    private Image? _valueIcon;
+    private TextMeshProUGUI? _valueTextValue;
+    private TextMeshProUGUI? _valueTextCap;
     private BatchBoolSettingVisibilitySyncer? _visibilitySyncer;
 
     private void Start() {
         if (TargetModule == null) return;
         _textName = gameObject.FindRecursive("NameLayout/Name")?.GetComponent<TextMeshProUGUI>();
-        _icon = gameObject.FindRecursive("Trough/ValueLayout/Icon")?.GetComponent<Image>();
-        _transTrough = gameObject.FindRecursive("Trough")?.GetComponent<RectTransform>();
-        _transValue = gameObject.FindRecursive("Trough/Value")?.GetComponent<RectTransform>();
-        _transChargeValue = gameObject.FindRecursive("Trough/ChargeValue")?.GetComponent<RectTransform>();
-        _transSoftMask = gameObject.FindRecursive("Trough/SoftBoundMask")?.GetComponent<RectTransform>();
-        _transSoftBound = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound")?.GetComponent<RectTransform>();
-        _textValue = gameObject.FindRecursive("Trough/ValueLayout/Value")?.GetComponent<TextMeshProUGUI>();
-        _textCap = gameObject.FindRecursive("Trough/ValueLayout/Cap")?.GetComponent<TextMeshProUGUI>();
+        var trough = gameObject.FindRecursive("Trough");
+        _transTrough = trough?.GetComponent<RectTransform>();
+        _transValue = trough?.FindRecursive("ValueMask/Value")?.GetComponent<RectTransform>();
+        _transChargeValue = trough?.FindRecursive("ChargeValue")?.GetComponent<RectTransform>();
+        _transSoftBound = trough?.FindRecursive("ValueMask/SoftBound")?.GetComponent<RectTransform>();
+        _transValueLayout = trough?.FindRecursive("ValueMask/Value/ValueLayout")?.GetComponent<RectTransform>();
+        _icon = trough?.FindRecursive("ValueLayout/Icon")?.GetComponent<Image>();
+        _textValue = trough?.FindRecursive("ValueLayout/Value")?.GetComponent<TextMeshProUGUI>();
+        _textCap = trough?.FindRecursive("ValueLayout/Cap")?.GetComponent<TextMeshProUGUI>();
+        _valueIcon = trough?.FindRecursive("ValueMask/Value/ValueLayout/Icon")?.GetComponent<Image>();
+        _valueTextValue = trough?.FindRecursive("ValueMask/Value/ValueLayout/Value")?.GetComponent<TextMeshProUGUI>();
+        _valueTextCap = trough?.FindRecursive("ValueMask/Value/ValueLayout/Cap")?.GetComponent<TextMeshProUGUI>();
         if (_textName != null)
             _textName.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ForegroundColor;
         if (_icon != null)
-            _icon.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
+            _icon.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ForegroundColor;
         if (_textValue != null)
-            _textValue.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
+            _textValue.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ForegroundColor;
         if (_textCap != null)
-            _textCap.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
-        _textValue.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
+            _textCap.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ForegroundColor;
+        if (_valueIcon != null)
+            _valueIcon.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
+        if (_valueTextValue != null)
+            _valueTextValue.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
+        if (_valueTextCap != null)
+            _valueTextCap.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
 
-        var valObj = gameObject.FindRecursive("Trough/Value");
+        var valObj = gameObject.FindRecursive("Trough/ValueMask/Value");
         if (valObj != null)
             valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
 
@@ -58,7 +70,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         if (chargeObj != null)
             chargeObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ChargeValueColor;
 
-        var sofObj = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound");
+        var sofObj = gameObject.FindRecursive("Trough/ValueMask/SoftBound");
         if (sofObj != null)
             sofObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
 
@@ -124,13 +136,19 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     }
 
     private void UpdateIcon(Sprite? value) {
-        if (_icon == null || TargetModule == null) return;
+        if (_icon == null || _valueIcon == null || TargetModule == null) return;
         // Plugin.Log.LogInfo($"Set icon to {value}");
         var actualValue = value;
         if (!TargetModule.ProgressShowIcon.Value) actualValue = null;
+
         if (_icon.sprite == actualValue) return;
         _icon.sprite = actualValue;
-        if (_icon.gameObject.activeSelf != (_icon.sprite != null)) _icon.gameObject.SetActive(_icon.sprite != null);
+        _valueIcon.sprite = actualValue;
+
+        if (_icon.gameObject.activeSelf != (_icon.sprite != null)) {
+            _icon.gameObject.SetActive(_icon.sprite != null);
+            _valueIcon.gameObject.SetActive(_valueIcon.sprite != null);
+        }
     }
 
     private void UpdateValue(float _) {
@@ -148,9 +166,9 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
             (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
         );
         if (TargetModule == null || _transTrough == null || _transValue == null || _transChargeValue == null ||
-            _transSoftBound == null || _transSoftMask == null) return;
+            _transSoftBound == null || _transValueLayout == null) return;
         _transTrough.sizeDelta = new Vector2(TargetModule.ProgressLength.Value, _transTrough.sizeDelta.y);
-        _transSoftMask.sizeDelta = new Vector2(_transTrough.sizeDelta.x, _transSoftMask.sizeDelta.y);
+        _transValueLayout.sizeDelta = new Vector2(TargetModule.ProgressLength.Value, _transValueLayout.sizeDelta.y);
         var height = _transValue.sizeDelta.y;
         var width = _transValue.sizeDelta.x;
         var chargeWidth = _transChargeValue.sizeDelta.x;
@@ -174,6 +192,9 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
 
         if (_textValue != null)
             _textValue.SetText($"{Math.Round(TargetModule?.Value ?? 0, TargetModule?.DecimalPlaces ?? 1)}");
+
+        if (_valueTextValue != null)
+            _valueTextValue.SetText($"{Math.Round(TargetModule?.Value ?? 0, TargetModule?.DecimalPlaces ?? 1)}");
     }
 
     private void UpdateSoftBound(int _) {
@@ -187,6 +208,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     private void UpdateSoftBound() {
         var value = (TargetModule?.Bound ?? 1) - (TargetModule?.BoundReduction ?? 0);
         _textCap?.SetText($"/{Math.Round(value, TargetModule?.DecimalPlaces ?? 1)}");
+        _valueTextCap?.SetText($"/{Math.Round(value, TargetModule?.DecimalPlaces ?? 1)}");
     }
 
     private void UpdateNumbersVisibility() {
