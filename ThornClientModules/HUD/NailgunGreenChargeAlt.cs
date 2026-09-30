@@ -32,17 +32,36 @@ public class NailgunGreenChargeAlt : BoundedValueHudModule {
         "heatSinks", BindingFlags.NonPublic | BindingFlags.Instance);
 
     /// <inheritdoc />
+    protected override void OnHudModuleEnable() {
+        if (GunControl.Instance != null) GunControl.Instance.OnWeaponChange += TryRecordWeapon;
+        SceneUtils.SafeSceneLoadedNoParam += ResubWeaponChange;
+    }
+
+    /// <inheritdoc />
+    protected override void OnHudModuleDisable() {
+        if (GunControl.Instance != null) GunControl.Instance.OnWeaponChange -= TryRecordWeapon;
+        SceneUtils.SafeSceneLoadedNoParam -= ResubWeaponChange;
+    }
+
+    private void ResubWeaponChange() {
+        if (GunControl.Instance == null) return;
+        GunControl.Instance.OnWeaponChange -= TryRecordWeapon;
+        GunControl.Instance.OnWeaponChange += TryRecordWeapon;
+    }
+
+    private void TryRecordWeapon(GameObject weapon) {
+        if (_nai != null || weapon == null) return;
+        var comp = weapon.GetComponent<Nailgun>();
+        if (comp == null) return;
+        // Note that green is 0 somehow
+        if (comp is { variation: 0, altVersion: true }) _nai = comp;
+    }
+
+    /// <inheritdoc />
     public override void OnUpdate() {
         var gc = GunControl.Instance;
         var wc = WeaponCharges.Instance;
-        if (gc == null || wc == null) return;
-
-        if (_nai == null) {
-            // Green is 0 somehow
-            _nai = Object.FindObjectsOfType<Nailgun>().FirstOrDefault(n => n.variation == 0 && n.altVersion);
-        }
-
-        if (_nai == null) return;
+        if (gc == null || wc == null || _nai == null) return;
 
         var rawVal = gc.currentWeapon == _nai.gameObject
             ? (NailgunHeatsinkField?.GetValue(_nai) as float? ?? 0)
