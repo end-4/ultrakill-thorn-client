@@ -10,7 +10,7 @@ namespace ThornClientModules.HUD;
 /// </summary>
 public class RocketGreenCharge : BoundedValueHudModule {
     /// <inheritdoc />
-    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "cube");
+    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "ball");
 
     /// <inheritdoc />
     public override string[] Tags => ["cooldown"];

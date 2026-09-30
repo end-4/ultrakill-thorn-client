@@ -11,7 +11,7 @@ namespace ThornClientModules.HUD;
 /// </summary>
 public class RevolverGreenCharge : BoundedValueHudModule {
     /// <inheritdoc />
-    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "cube");
+    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "coin");
 
     /// <inheritdoc />
     public override string[] Tags => ["cooldown"];

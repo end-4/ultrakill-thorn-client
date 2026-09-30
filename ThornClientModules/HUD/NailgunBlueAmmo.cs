@@ -11,7 +11,7 @@ namespace ThornClientModules.HUD;
 /// </summary>
 public class NailgunBlueAmmo : BoundedValueHudModule {
     /// <inheritdoc />
-    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "cube");
+    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "nail_silver");
 
     /// <inheritdoc />
     public override string[] Tags => ["cooldown"];

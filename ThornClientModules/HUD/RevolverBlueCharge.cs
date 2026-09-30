@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using NukeLib.Utils;
 using ThornClient;
 using ThornClient.Core.DataTypes;
 using ThornClient.HUD;
@@ -14,7 +15,7 @@ namespace ThornClientModules.HUD;
 /// </summary>
 public class RevolverBlueCharge : BoundedValueHudModule {
     /// <inheritdoc />
-    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "cube");
+    public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "piercer");
 
     /// <inheritdoc />
     public override string[] Tags => ["cooldown"];

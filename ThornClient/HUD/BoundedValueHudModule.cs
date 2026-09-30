@@ -188,7 +188,17 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// </summary>
     public Setting<EnhancedColor> ChargeValueColor;
 
-    public SettingGroup ColorGroup;
+    /// <summary>
+    /// Setting group for color settings
+    /// </summary>
+    protected SettingGroup ColorGroup;
+
+    private static EnhancedColor GetHarmoniousContrastedColor(EnhancedColor bg) {
+        bg.BaseColor.RGBToOKLCH(out var l, out var c, out var h);
+        var isLight = l > 0.6f;
+        var contrastedL = isLight ? 0.35f : 0.9f;
+        return new EnhancedColor(ColorUtils.OKLCHToRGB(contrastedL, c, h, bg.a));
+    }
 
     /// <summary>
     /// Constructor
@@ -224,7 +234,8 @@ public abstract class BoundedValueHudModule : FramedHudModule {
             defaultValueColor ?? new EnhancedColor(new Color(0.098f, 0.624f, 0.525f)), ColorGroup);
         ValueForegroundColor = CreateSetting("valueFgColor", "Value foreground color",
             "The color of the text/icon shown on the value",
-            defaultValueTextColor ?? new EnhancedColor(Color.white), ColorGroup);
+            defaultValueTextColor ?? GetHarmoniousContrastedColor(ValueColor.DefaultValue),
+            ColorGroup);
         SoftBoundColor = CreateSetting("softBoundColor", "Soft bound color",
             "The color of the soft bound, for example HP hard damage",
             defaultSoftBoundColor ?? new EnhancedColor(new Color(1f, 1f, 1f, 0.36f)), ColorGroup);
@@ -232,7 +243,8 @@ public abstract class BoundedValueHudModule : FramedHudModule {
             "The color of the live charging value, if applicable",
             new EnhancedColor(ValueColor.DefaultValue.BaseColor.Transparentize(0.75f)), ColorGroup);
         CreateHeader("stylesHeader", "Style-specific settings");
-        var progressGroup = CreateGroup("styleProgress", "Progress", "Settings specific to the (horizontal) Progress style");
+        var progressGroup = CreateGroup("styleProgress", "Progress",
+            "Settings specific to the (horizontal) Progress style");
         ProgressLength = CreateSetting(
             "progressLength", "Length", "How long the bar should be",
             194f, progressGroup
