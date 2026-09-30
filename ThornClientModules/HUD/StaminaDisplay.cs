@@ -7,23 +7,27 @@ using UnityEngine;
 
 namespace ThornClientModules.HUD;
 
+/// <summary>
+/// HUD widget that shows stamina
+/// </summary>
 public class StaminaDisplay : BoundedValueHudModule {
+    /// <inheritdoc />
     public override Sprite Icon => AssetManager.Get<Sprite>(HudManager.BundleKey, "dash");
+
+    /// <inheritdoc />
     public override string[] Tags => ["dash", "boost", "fast", "shift"];
 
-    public Setting<bool> Continuous;
-
+    /// <inheritdoc />
     public StaminaDisplay() : base("thorn.staminaHud", "Stamina", "Shows stamina", 3,
         defaultValueColor: new EnhancedColor(0, 0.77f, 1)) {
-        Continuous = CreateSetting("continuousDisplay", "Continuous display",
-            "Whether to show the value as continuous or discrete (dash count)", false);
     }
 
+    /// <inheritdoc />
     public override void OnUpdate() {
         var nm = NewMovement.Instance;
-        if (nm != null) {
-            var scaled = nm.boostCharge / 100f;
-            Value = Continuous.Value ? scaled : (float)Math.Floor(scaled);
-        }
+        if (nm == null) return;
+        var scaled = nm.boostCharge / 100f;
+        Value = Mathf.Floor(scaled);
+        ChargeValue = scaled;
     }
 }

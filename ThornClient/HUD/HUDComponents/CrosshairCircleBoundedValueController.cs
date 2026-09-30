@@ -12,6 +12,7 @@ internal class CrosshairCircleBoundedValueController : MonoBehaviour, IBoundedVa
     public BoundedValueHudModule? TargetModule { get; set; }
 
     private Image? _fillValue;
+    private Image? _fillChargeValue;
     private Image? _fillSoftBound;
     private RectTransform? _transTrough;
     private RectTransform? _transSoftBound;
@@ -19,12 +20,19 @@ internal class CrosshairCircleBoundedValueController : MonoBehaviour, IBoundedVa
     private void Start() {
         if (TargetModule == null) return;
         _fillValue = gameObject.FindRecursive("Trough/Value")?.GetComponent<Image>();
+        _fillChargeValue = gameObject.FindRecursive("Trough/ChargeValue")?.GetComponent<Image>();
         _fillSoftBound = gameObject.FindRecursive("Trough/SoftBound")?.GetComponent<Image>();
         _transTrough = gameObject.FindRecursive("Trough")?.GetComponent<RectTransform>();
         _transSoftBound = gameObject.FindRecursive("Trough/SoftBound")?.GetComponent<RectTransform>();
+
         var valObj = gameObject.FindRecursive("Trough/Value");
         if (valObj != null) {
             valObj.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
+        }
+
+        var chargeObj = gameObject.FindRecursive("Trough/ChargeValue");
+        if (chargeObj != null) {
+            chargeObj.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ChargeValueColor;
         }
 
         var sofObj = gameObject.FindRecursive("Trough/SoftBound");
@@ -37,6 +45,7 @@ internal class CrosshairCircleBoundedValueController : MonoBehaviour, IBoundedVa
 
         // Hook.
         TargetModule.ValueChanged += UpdateValue;
+        TargetModule.ChargeValueChanged += UpdateValue;
         TargetModule.BoundChanged += UpdateValue;
         TargetModule.SoftBoundChanged += UpdateValue;
         TargetModule.DecimalPlacesChanged += UpdateValue;
@@ -48,6 +57,7 @@ internal class CrosshairCircleBoundedValueController : MonoBehaviour, IBoundedVa
     private void OnDestroy() {
         if (TargetModule == null) return;
         TargetModule.ValueChanged -= UpdateValue;
+        TargetModule.ChargeValueChanged -= UpdateValue;
         TargetModule.BoundChanged -= UpdateValue;
         TargetModule.SoftBoundChanged -= UpdateValue;
         TargetModule.DecimalPlacesChanged -= UpdateValue;
@@ -83,17 +93,21 @@ internal class CrosshairCircleBoundedValueController : MonoBehaviour, IBoundedVa
 
     private void UpdateValue() {
         var normalizedValue = Math.Clamp((TargetModule?.Value ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f);
+        var normalizedChargeValue = Math.Clamp((TargetModule?.ChargeValue ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f);
         var normalizedSoftBound = Math.Clamp( // normalized softbound segment width
             (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
         );
         var multiplier = Mathf.Clamp01(TargetModule?.CrosshairCircleAngleFillPercentage.Value ?? 1);
-        if (_fillValue == null || _fillSoftBound == null) return;
+        if (_fillValue == null || _fillChargeValue == null || _fillSoftBound == null) return;
 
         var valueFillAmount = normalizedValue * multiplier;
+        var chargeValueFillAmount = normalizedChargeValue * multiplier;
         var softBoundFillAmount = normalizedSoftBound * multiplier;
 
         if (!Mathf.Approximately(_fillValue.fillAmount, valueFillAmount))
             _fillValue.fillAmount = valueFillAmount;
+        if (!Mathf.Approximately(_fillChargeValue.fillAmount, chargeValueFillAmount))
+            _fillChargeValue.fillAmount = chargeValueFillAmount;
         if (!Mathf.Approximately(_fillSoftBound.fillAmount, softBoundFillAmount))
             _fillSoftBound.fillAmount = softBoundFillAmount;
     }

@@ -13,8 +13,7 @@ using Object = UnityEngine.Object;
 namespace ThornClient.HUD;
 
 /// <summary>
-/// HUD element with a background,
-/// dynamically sized based on content (you need min size/preferred size on your content element for that)
+/// HUD widget for a limited resource or whatever with an upper bound
 /// </summary>
 public abstract class BoundedValueHudModule : FramedHudModule {
     /// <summary>
@@ -67,7 +66,7 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     }
 
     /// <summary>
-    /// Current value (raw, not normalized)
+    /// Current effectively available value
     /// </summary>
     public float Value {
         get;
@@ -76,7 +75,19 @@ public abstract class BoundedValueHudModule : FramedHudModule {
             field = value;
             ValueChanged?.Invoke(value);
         }
-    }
+    } = 0f;
+
+    /// <summary>
+    /// Current continuous, live charging value
+    /// </summary>
+    public float ChargeValue {
+        get;
+        set {
+            if (Mathf.Approximately(field, value)) return;
+            field = value;
+            ChargeValueChanged?.Invoke(value);
+        }
+    } = 0f;
 
     /// <summary>
     /// Max value (raw, not normalized)
@@ -130,6 +141,11 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     public event Action<float> ValueChanged;
 
     /// <summary>
+    /// Event fired when the ChargeValue changes.
+    /// </summary>
+    public event Action<float> ChargeValueChanged;
+
+    /// <summary>
     /// Event fired when the Bound changes.
     /// </summary>
     public event Action<float> BoundChanged;
@@ -166,6 +182,11 @@ public abstract class BoundedValueHudModule : FramedHudModule {
     /// The color of the soft bound fill element of the indicator.
     /// </summary>
     public Setting<EnhancedColor> SoftBoundColor;
+
+    /// <summary>
+    /// The color of the live charging value, if applicable
+    /// </summary>
+    public Setting<EnhancedColor> ChargeValueColor;
 
     public SettingGroup ColorGroup;
 
@@ -204,9 +225,12 @@ public abstract class BoundedValueHudModule : FramedHudModule {
         ValueForegroundColor = CreateSetting("valueFgColor", "Value foreground color",
             "The color of the text/icon shown on the value",
             defaultValueTextColor ?? new EnhancedColor(Color.white), ColorGroup);
-        SoftBoundColor = CreateSetting("softBoundColor", "Soft Bound color",
+        SoftBoundColor = CreateSetting("softBoundColor", "Soft bound color",
             "The color of the soft bound, for example HP hard damage",
             defaultSoftBoundColor ?? new EnhancedColor(new Color(1f, 1f, 1f, 0.36f)), ColorGroup);
+        ChargeValueColor = CreateSetting("chargeValueColor", "Charge value color",
+            "The color of the live charging value, if applicable",
+            new EnhancedColor(ValueColor.DefaultValue.BaseColor.Transparentize(0.75f)), ColorGroup);
         CreateHeader("stylesHeader", "Style-specific settings");
         var progressGroup = CreateGroup("styleProgress", "Progress", "Settings specific to the (horizontal) Progress style");
         ProgressLength = CreateSetting(

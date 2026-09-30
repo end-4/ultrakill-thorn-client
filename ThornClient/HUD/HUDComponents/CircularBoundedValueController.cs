@@ -13,6 +13,7 @@ internal class CircularBoundedValueController : MonoBehaviour, IBoundedValueCont
 
     private TextMeshProUGUI? _textName;
     private Image? _fillValue;
+    private Image? _fillChargeValue;
     private Image? _fillSoftBound;
     private Image? _icon;
     private BatchBoolSettingVisibilitySyncer? _visibilitySyncer;
@@ -22,15 +23,23 @@ internal class CircularBoundedValueController : MonoBehaviour, IBoundedValueCont
         _textName = gameObject.FindRecursive("Name")?.GetComponent<TextMeshProUGUI>();
         _icon = gameObject.FindRecursive("Trough/Icon")?.GetComponent<Image>();
         _fillValue = gameObject.FindRecursive("Trough/Value")?.GetComponent<Image>();
+        _fillChargeValue = gameObject.FindRecursive("Trough/ChargeValue")?.GetComponent<Image>();
         _fillSoftBound = gameObject.FindRecursive("Trough/SoftBound")?.GetComponent<Image>();
         if (_textName != null)
             _textName.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ForegroundColor;
         if (_icon != null)
             _icon.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ForegroundColor;
+
         var valObj = gameObject.FindRecursive("Trough/Value/ValueBase");
         if (valObj != null) {
             valObj.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
         }
+
+        var chargeObj = gameObject.FindRecursive("Trough/ChargeValue/ChargeValueBase");
+        if (chargeObj != null) {
+            chargeObj.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ChargeValueColor;
+        }
+
         var sofObj = gameObject.FindRecursive("Trough/SoftBound/SoftBoundBase");
         if (sofObj != null) {
             sofObj.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
@@ -49,6 +58,7 @@ internal class CircularBoundedValueController : MonoBehaviour, IBoundedValueCont
         TargetModule.NameChanged += UpdateName;
         TargetModule.IconChanged += UpdateIcon;
         TargetModule.ValueChanged += UpdateValue;
+        TargetModule.ChargeValueChanged += UpdateValue;
         TargetModule.BoundChanged += UpdateValue;
         TargetModule.SoftBoundChanged += UpdateValue;
         TargetModule.DecimalPlacesChanged += UpdateValue;
@@ -59,6 +69,7 @@ internal class CircularBoundedValueController : MonoBehaviour, IBoundedValueCont
         TargetModule.NameChanged -= UpdateName;
         TargetModule.IconChanged -= UpdateIcon;
         TargetModule.ValueChanged -= UpdateValue;
+        TargetModule.ChargeValueChanged -= UpdateValue;
         TargetModule.BoundChanged -= UpdateValue;
         TargetModule.SoftBoundChanged -= UpdateValue;
         TargetModule.DecimalPlacesChanged -= UpdateValue;
@@ -93,13 +104,19 @@ internal class CircularBoundedValueController : MonoBehaviour, IBoundedValueCont
 
     private void UpdateValue() {
         var normalizedValue = Math.Clamp((TargetModule?.Value ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f);
+        var normalizedChargeValue = Math.Clamp((TargetModule?.ChargeValue ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f);
         var normalizedSoftBound = Math.Clamp( // normalized softbound segment width
             (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
         );
 
-        if (_fillValue == null || _fillSoftBound == null) return;
+        if (_fillValue == null || _fillChargeValue == null || _fillSoftBound == null) return;
+
         if (!Mathf.Approximately(_fillValue.fillAmount, normalizedValue)) {
             _fillValue.fillAmount = normalizedValue;
+        }
+
+        if (!Mathf.Approximately(_fillChargeValue.fillAmount, normalizedChargeValue)) {
+            _fillChargeValue.fillAmount = normalizedChargeValue;
         }
 
         if (!Mathf.Approximately(_fillSoftBound.fillAmount, normalizedSoftBound)) {

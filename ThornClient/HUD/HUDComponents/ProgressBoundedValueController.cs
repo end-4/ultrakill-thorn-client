@@ -21,6 +21,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
     private TextMeshProUGUI? _textName;
     private RectTransform? _transTrough;
     private RectTransform? _transValue;
+    private RectTransform? _transChargeValue;
     private RectTransform? _transSoftBound;
     private RectTransform? _transSoftMask;
     private Image? _icon;
@@ -34,6 +35,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         _icon = gameObject.FindRecursive("Trough/ValueLayout/Icon")?.GetComponent<Image>();
         _transTrough = gameObject.FindRecursive("Trough")?.GetComponent<RectTransform>();
         _transValue = gameObject.FindRecursive("Trough/Value")?.GetComponent<RectTransform>();
+        _transChargeValue = gameObject.FindRecursive("Trough/ChargeValue")?.GetComponent<RectTransform>();
         _transSoftMask = gameObject.FindRecursive("Trough/SoftBoundMask")?.GetComponent<RectTransform>();
         _transSoftBound = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound")?.GetComponent<RectTransform>();
         _textValue = gameObject.FindRecursive("Trough/ValueLayout/Value")?.GetComponent<TextMeshProUGUI>();
@@ -47,8 +49,15 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         if (_textCap != null)
             _textCap.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
         _textValue.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
+
         var valObj = gameObject.FindRecursive("Trough/Value");
-        if (valObj != null) valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
+        if (valObj != null)
+            valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
+
+        var chargeObj = gameObject.FindRecursive("Trough/ChargeValue");
+        if (chargeObj != null)
+            chargeObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ChargeValueColor;
+
         var sofObj = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound");
         if (sofObj != null)
             sofObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
@@ -69,6 +78,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         TargetModule.NameChanged += UpdateName;
         TargetModule.IconChanged += UpdateIcon;
         TargetModule.ValueChanged += UpdateValue;
+        TargetModule.ChargeValueChanged += UpdateValue;
         TargetModule.BoundChanged += UpdateValue;
         TargetModule.BoundChanged += UpdateSoftBound;
         TargetModule.SoftBoundChanged += UpdateValue;
@@ -85,6 +95,7 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
         TargetModule.NameChanged -= UpdateName;
         TargetModule.IconChanged -= UpdateIcon;
         TargetModule.ValueChanged -= UpdateValue;
+        TargetModule.ChargeValueChanged -= UpdateValue;
         TargetModule.BoundChanged -= UpdateValue;
         TargetModule.BoundChanged -= UpdateSoftBound;
         TargetModule.SoftBoundChanged -= UpdateValue;
@@ -132,21 +143,29 @@ public class ProgressBoundedValueController : MonoBehaviour, IBoundedValueContro
 
     private void UpdateValue() {
         var normalizedValue = Math.Clamp((TargetModule?.Value ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f);
+        var normalizedChargeValue = Math.Clamp((TargetModule?.ChargeValue ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f);
         var normalizedSoftBound = Math.Clamp( // normalized softbound segment width
             (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
         );
-        if (TargetModule == null || _transTrough == null || _transValue == null || _transSoftBound == null ||
-            _transSoftMask == null) return;
+        if (TargetModule == null || _transTrough == null || _transValue == null || _transChargeValue == null ||
+            _transSoftBound == null || _transSoftMask == null) return;
         _transTrough.sizeDelta = new Vector2(TargetModule.ProgressLength.Value, _transTrough.sizeDelta.y);
         _transSoftMask.sizeDelta = new Vector2(_transTrough.sizeDelta.x, _transSoftMask.sizeDelta.y);
         var height = _transValue.sizeDelta.y;
         var width = _transValue.sizeDelta.x;
+        var chargeWidth = _transChargeValue.sizeDelta.x;
         var softWidth = _transSoftBound.sizeDelta.x;
         var availableWidth = _transTrough.sizeDelta.x;
         float currNormalized = width / availableWidth;
+        float currChargeNormalized = chargeWidth / availableWidth;
         float currSoftNormalized = softWidth / availableWidth;
+
         if (!Mathf.Approximately(currNormalized, normalizedValue)) {
             _transValue.sizeDelta = new Vector2(availableWidth * normalizedValue, height);
+        }
+
+        if (!Mathf.Approximately(currChargeNormalized, normalizedChargeValue)) {
+            _transChargeValue.sizeDelta = new Vector2(availableWidth * normalizedChargeValue, height);
         }
 
         if (!Mathf.Approximately(currSoftNormalized, normalizedSoftBound)) {
