@@ -5,9 +5,13 @@
     - Regular users: no action is required if you use a mod manager. Otherwise get the Thorn Core package.
     - Mod developers utilizing the config system: it's recommended to declare Thorn Core
       instead of Thorn as the dependency. This gives your users a clean version of Thorn without
-      the modules, in case they don't want them.
+      the modules, in case they don't want them. No code change is required.
     - Also made the package structure more manual install-friendly, although we recommend against this.
 - Added FolderPath and FilePath config data types
+- New HUD modules:
+  - Weapon cooldowns: revolver coins, revolver blue charge, revolver red charge, jackhammer core, shotty/hammer saw,
+    blue nails, blue saws, blue magnets, overheat nails, overheat saws, jumpstart cable, freezeframe juice,
+    firestarter oil, srs cannonball
 - Made the ClickGUI windows not go back to their previous position after dragging
 - Enemy tracers: fixed threshold being off by 1, added enemy type blacklist
 - Fixed custom style ranks (from Ultraskins or whatever) being oversized
@@ -15,6 +19,7 @@
 - Fixed duplicate cheatiness notifications
 - Edges (Enemies): Added indication for sanded and made deathcatched enemies follow puppet's color
 - Made gun HUD widget empty by default instead of having a black saw hammer
+- Made stamina and railcannon charge HUD modules display both live charging and readily usable values
 
 ## 0.4.0
 

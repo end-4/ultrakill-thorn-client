@@ -19,6 +19,7 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
 
     private TextMeshProUGUI? _textName;
     private RectTransform? _transTrough;
+    private RectTransform? _transChargeValue;
     private RectTransform? _transValue;
     private RectTransform? _transSoftMask;
     private RectTransform? _transSoftBound;
@@ -31,14 +32,22 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
         _icon = gameObject.FindRecursive("Trough/Icon")?.GetComponent<Image>();
         _transTrough = gameObject.FindRecursive("Trough")?.GetComponent<RectTransform>();
         _transValue = gameObject.FindRecursive("Trough/Value")?.GetComponent<RectTransform>();
+        _transChargeValue = gameObject.FindRecursive("Trough/ChargeValue")?.GetComponent<RectTransform>();
         _transSoftMask = gameObject.FindRecursive("Trough/SoftBoundMask")?.GetComponent<RectTransform>();
         _transSoftBound = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound")?.GetComponent<RectTransform>();
         if (_textName != null)
             _textName.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ForegroundColor;
         if (_icon != null)
             _icon.GetOrAddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueForegroundColor;
+
         var valObj = gameObject.FindRecursive("Trough/Value");
-        if (valObj != null) valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
+        if (valObj != null)
+            valObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ValueColor;
+
+        var chargeObj = gameObject.FindRecursive("Trough/ChargeValue");
+        if (chargeObj != null)
+            chargeObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.ChargeValueColor;
+
         var sofObj = gameObject.FindRecursive("Trough/SoftBoundMask/SoftBound");
         if (sofObj != null)
             sofObj.AddComponent<EnhancedColorSettingSyncer>().TargetSetting = TargetModule.SoftBoundColor;
@@ -57,6 +66,7 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
         TargetModule.NameChanged += UpdateName;
         TargetModule.IconChanged += UpdateIcon;
         TargetModule.ValueChanged += UpdateValue;
+        TargetModule.ChargeValueChanged += UpdateValue;
         TargetModule.BoundChanged += UpdateValue;
         TargetModule.SoftBoundChanged += UpdateValue;
         TargetModule.DecimalPlacesChanged += UpdateValue;
@@ -69,6 +79,7 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
         TargetModule.NameChanged -= UpdateName;
         TargetModule.IconChanged -= UpdateIcon;
         TargetModule.ValueChanged -= UpdateValue;
+        TargetModule.ChargeValueChanged -= UpdateValue;
         TargetModule.BoundChanged -= UpdateValue;
         TargetModule.SoftBoundChanged -= UpdateValue;
         TargetModule.DecimalPlacesChanged -= UpdateValue;
@@ -109,21 +120,30 @@ public class VerticalProgressBoundedValueController : MonoBehaviour, IBoundedVal
 
     private void UpdateValue() {
         var normalizedValue = Math.Clamp((TargetModule?.Value ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f);
+        var normalizedChargeValue = Math.Clamp((TargetModule?.ChargeValue ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f);
         var normalizedSoftBound = Math.Clamp( // normalized softbound segment width
             (TargetModule?.BoundReduction ?? 0) / (TargetModule?.Bound ?? 1), 0f, 1f
         );
-        if (TargetModule == null || _transTrough == null || _transValue == null || _transSoftBound == null ||
-            _transSoftMask == null) return;
+        if (TargetModule == null || _transTrough == null || _transValue == null || _transChargeValue == null ||
+            _transSoftBound == null || _transSoftMask == null) return;
+
         _transTrough.sizeDelta = new Vector2(_transTrough.sizeDelta.x, TargetModule.VerticalProgressLength.Value);
         _transSoftMask.sizeDelta = new Vector2(_transSoftMask.sizeDelta.x, _transTrough.sizeDelta.y);
         var width = _transValue.sizeDelta.x;
         var height = _transValue.sizeDelta.y;
+        var chargeHeight = _transChargeValue.sizeDelta.y;
         var softHeight = _transSoftBound.sizeDelta.y;
         var availableHeight = _transTrough.sizeDelta.y;
         float currNormalized = height / availableHeight;
+        float currChargeNormalized = chargeHeight / availableHeight;
         float currSoftNormalized = softHeight / availableHeight;
+
         if (!Mathf.Approximately(currNormalized, normalizedValue)) {
             _transValue.sizeDelta = new Vector2(width, availableHeight * normalizedValue);
+        }
+
+        if (!Mathf.Approximately(currChargeNormalized, normalizedChargeValue)) {
+            _transChargeValue.sizeDelta = new Vector2(width, availableHeight * normalizedChargeValue);
         }
 
         if (!Mathf.Approximately(currSoftNormalized, normalizedSoftBound)) {

@@ -162,6 +162,7 @@ internal class HudElementPositioningController : FreeMoveDragHandler, IBeginDrag
         UpdateCursor();
         if (_dragOverlay == null) return;
         _dragOverlay.SetActive(true);
+        _dragOverlay.UnfuckLayoutHack();
         _dragOverlay.transform.SetAsLastSibling();
     }
 
