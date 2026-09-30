@@ -1,4 +1,5 @@
-﻿using NukeLib.UI;
+﻿using System.Linq;
+using NukeLib.UI;
 using NukeLib.Utils;
 using ThornClient.Core;
 using ThornClient.Core.ConfigurableElements;
@@ -15,6 +16,11 @@ namespace ThornClient.HUD;
 /// dynamically sized based on content (you need a min size on your content element for that)
 /// </summary>
 public abstract class FramedHudModule : HudModule {
+    /// <summary>
+    /// Hides the background when the content is empty
+    /// </summary>
+    public virtual bool HideBackgroundWhenEmpty { get; set; } = false;
+
     /// <summary>
     /// Setting: whether to show a frame behind the content
     /// </summary>
@@ -41,16 +47,25 @@ public abstract class FramedHudModule : HudModule {
     public FramedHudModule(string guid, string name, string description) : base(guid, name, description) {
         ShowBackground = CreateSetting("showBackground", "Show background",
             "Whether to show a frame behind the content", true);
-        ShowBackground.OnValueChanged += SetShowBackground;
+        ShowBackground.OnChanged += UpdateShowBackground;
         Scale = CreateSetting("scale", "Scale", "Makes the content bigger or smaller", 1f);
         Scale.OnChanged += SetScaleNextFrame;
         PivotX.OnChanged += UpdatePivotNextFrame;
         PivotY.OnChanged += UpdatePivotNextFrame;
         OnToggleStateChanged += _ => {
-            SetShowBackground(ShowBackground.Value);
+            UpdateShowBackground();
             SetScaleNextFrame();
             UpdatePivotNextFrame();
+            UnOrSubscribeDynamicBackgroundHiding();
         };
+    }
+
+    private void UnOrSubscribeDynamicBackgroundHiding() {
+        if (Background == null || Fitter == null) return;
+        if (IsEnabled) {
+            Fitter.LayoutUpdated -= UpdateShowBackground;
+            Fitter.LayoutUpdated += UpdateShowBackground;
+        } else Fitter.LayoutUpdated -= UpdateShowBackground;
     }
 
     private void UpdatePivotNextFrame() {
@@ -69,8 +84,20 @@ public abstract class FramedHudModule : HudModule {
         UpdateOverlay();
     }
 
-    private void SetShowBackground(bool value) {
-        if (_opacitySyncer != null) _opacitySyncer.ForceTransparent = !value;
+    private void UpdateShowBackground() {
+        if (_opacitySyncer == null || FramedContent == null) return;
+        var emptyCondition = false;
+        if (HideBackgroundWhenEmpty) {
+            var trans = FramedContent.GetComponent<RectTransform>();
+            var rect = trans.rect;
+            var zeroSize = (rect.width == 0 || rect.height == 0);
+            var allChildrenHiddenInLayout =
+                FramedContent.GetComponent<LayoutGroup>() is { enabled: true } &&
+                Enumerable.Range(0, trans.childCount).All(i => !trans.GetChild(i).gameObject.activeSelf);
+            emptyCondition = zeroSize || allChildrenHiddenInLayout;
+        }
+
+        _opacitySyncer.ForceTransparent = !ShowBackground.Value || emptyCondition;
     }
 
     private void SetScaleNextFrame() {
@@ -126,6 +153,7 @@ public abstract class FramedHudModule : HudModule {
                 hfit = confitNormal.horizontalFit;
                 vfit = confitNormal.verticalFit;
             }
+
             Fitter = obj.GetOrAddComponent<SingularScalableContentSizeFitter>();
             Fitter.horizontalFit = hfit;
             Fitter.verticalFit = vfit;
@@ -138,6 +166,7 @@ public abstract class FramedHudModule : HudModule {
 
         UpdatePivotNextFrame();
         SetScaleNextFrame();
+        UnOrSubscribeDynamicBackgroundHiding();
 
         return obj;
     }

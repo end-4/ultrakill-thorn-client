@@ -18,6 +18,9 @@ namespace ThornClientModules.HUD;
 /// </summary>
 public class Alerts : FramedHudModule {
     /// <inheritdoc />
+    public override bool HideBackgroundWhenEmpty => true;
+
+    /// <inheritdoc />
     public override Sprite Icon => AssetManager.Get<Sprite>(ClickGUI.BundleKey, "warning");
 
     /// <inheritdoc />

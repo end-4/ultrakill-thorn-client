@@ -10,6 +10,8 @@ namespace ThornClient.Core.UI;
 [ExecuteAlways]
 [RequireComponent(typeof(LayoutElement))]
 public class SingularScalableContentSizeFitter : ContentSizeFitter {
+    public event Action? LayoutUpdated;
+
     /// <summary>
     /// Sets the size to fit, to be run after HandleSelfFittingAlongAxis
     /// </summary>
@@ -26,6 +28,7 @@ public class SingularScalableContentSizeFitter : ContentSizeFitter {
         var scale = Math.Abs(axis == 0 ? childTrans.localScale.x : childTrans.localScale.y);
         var targetSize = baseSize * scale;
         trans.SetSizeWithCurrentAnchors((RectTransform.Axis)axis, targetSize);
+        LayoutUpdated?.Invoke();
     }
 
     /// <inheritdoc />
