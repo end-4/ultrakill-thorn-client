@@ -11,7 +11,7 @@ internal class SettingDescriptionController : MonoBehaviour {
     private void Start() {
         var targetObj = gameObject.FindRecursive("Name", warnings: false);
         if (targetObj == null) targetObj = gameObject.FindRecursive("TopRow/Name", warnings: false);
-        if (targetObj == null) targetObj = gameObject.FindRecursive("MainField/Name");
+        if (targetObj == null) targetObj = gameObject.FindRecursive("MainField/Name", warnings: false);
         if (targetObj == null) return;
         var targetComp = targetObj.GetComponent<TextMeshProUGUI>();
         targetComp.text = TargetSetting.Name;
