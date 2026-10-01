@@ -28,7 +28,7 @@ public class HatsModConfig : Module
     public static Setting<EnhancedColor> HatColor = null!;
     public static Setting<FilePath> HatTexture = null!;
 
-    public HatsModConfig() : base("myHatsMod.config", "Hats Mod", "Adds custom hat to enemies", ModuleCategory.Gameplay) 
+    public HatsModConfig() : base("myHatsMod.config", "Hats Mod", "Adds custom hat to enemies", ModuleCategory.Render) 
     {
         FunkyMode = CreateSetting("funkyMode", "Funky Mode", "Funny effects", false);
         HatColor = CreateSetting("color", "Hat Color", "The color for the custom hat", new EnhancedColor(0.66f, 1f, 0.97f, 0.5f));
