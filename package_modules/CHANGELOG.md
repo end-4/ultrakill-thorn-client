@@ -1,3 +1,5 @@
+_0.5.1: description edit on thunderstore (i typed "utility" wrong lol)_
+
 ## 0.5.0
 
 _Thorn has been split into two packages. This release note is the same for both, but for later versions_
