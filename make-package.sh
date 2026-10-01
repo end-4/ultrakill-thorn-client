@@ -34,16 +34,16 @@ print_info "Repository root: $ROOT_DIR"
 print_info "Building solution using configuration: $CONFIGURATION"
 (cd "$ROOT_DIR" && dotnet build -c "$CONFIGURATION")
 
-# 2) Define packaging targets: Name, ProjectDir, PackageDir, AssemblyName, DocName, IncludeAssets
+# 2) Define packaging targets: Name, ProjectDir, PackageDir, AssemblyName, DocName, AssetsDir
 TARGETS=(
-    "Thorn_Core:ThornClient:package:ThornClient.dll:ThornClient.xml:true"
-    "Thorn:ThornClientModules:package_modules:ThornClientModules.dll:ThornClientModules.xml:false"
+    "Thorn_Core:ThornClient:package:ThornClient.dll:ThornClient.xml:assets"
+    "Thorn:ThornClientModules:package_modules:ThornClientModules.dll:ThornClientModules.xml:assets_modules"
 )
 
 CREATED_ZIPS=()
 
 for TARGET in "${TARGETS[@]}"; do
-    IFS=":" read -r T_NAME T_PROJECT_DIR T_PACKAGE_DIR T_ASSEMBLY_NAME T_DOC_NAME T_INCLUDE_ASSETS <<< "$TARGET"
+    IFS=":" read -r T_NAME T_PROJECT_DIR T_PACKAGE_DIR T_ASSEMBLY_NAME T_DOC_NAME T_ASSETS_DIR <<< "$TARGET"
 
     print_info ""
     print_info "--- Packaging $T_NAME ---"
@@ -107,8 +107,8 @@ for TARGET in "${TARGETS[@]}"; do
     fi
 
     # Copy assets if requested
-    if [ "$T_INCLUDE_ASSETS" = "true" ]; then
-        ASSETS_SRC="$ROOT_DIR/assets"
+    if [ -n "$T_ASSETS_DIR" ]; then
+        ASSETS_SRC="$ROOT_DIR/$T_ASSETS_DIR"
         ASSETS_DEST="$PLUGIN_DIR/assets"
         print_info "Creating assets destination: $ASSETS_DEST"
         mkdir -p "$ASSETS_DEST"

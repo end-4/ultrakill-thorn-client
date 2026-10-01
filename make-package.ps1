@@ -37,7 +37,7 @@ $targets = @(
         PackageDir    = "package"
         AssemblyName  = "ThornClient.dll"
         DocName       = "ThornClient.xml"
-        IncludeAssets = $true
+        AssetsDir     = "assets"
     },
     @{
         Name          = "Thorn"
@@ -45,7 +45,7 @@ $targets = @(
         PackageDir    = "package_modules"
         AssemblyName  = "ThornClientModules.dll"
         DocName       = "ThornClientModules.xml"
-        IncludeAssets = $false
+        AssetsDir     = "assets_modules"
     }
 )
 
@@ -100,8 +100,8 @@ foreach ($target in $targets) {
     }
 
     # Copy assets if requested
-    if ($target.IncludeAssets) {
-        $assetsSrc = Join-Path $root 'assets'
+    if ($target.AssetsDir) {
+        $assetsSrc = Join-Path $root $target.AssetsDir
         $assetsDest = Join-Path $pluginDir 'assets'
         Write-Host "Creating assets destination: $assetsDest"
         New-Item -ItemType Directory -Path $assetsDest -Force | Out-Null
