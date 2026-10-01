@@ -49,16 +49,24 @@ public abstract class FileSystemPathSettingController<T> : MonoBehaviour where T
         if (_clickHandler != null) _clickHandler.OnPress -= Pick;
     }
 
+    private FileManager? _fm;
+
     private void Pick() {
-        var fm = FileManager.CreatePicker(Path.GetDirectoryName(TargetSetting?.Value.Path),
+        if (_fm != null) return;
+        _fm = FileManager.CreatePicker(Path.GetDirectoryName(TargetSetting?.Value.Path),
             isSelectionFolder: IsFolder);
-        fm.ItemsPicked += SetValue;
-        var obj = fm.gameObject;
+        _fm.ItemsPicked += SetValue;
+        var obj = _fm.gameObject;
         var layoutElement = obj.GetOrAddComponent<LayoutElement>();
         layoutElement.ignoreLayout = true;
         var rt = obj.GetComponent<RectTransform>();
         ClickGUI.SpawnContent(obj);
         rt.sizeDelta = new Vector2(570, 380);
+        rt.anchorMax = new Vector2(0, 1);
+        rt.anchorMin = new Vector2(0, 1);
+        rt.pivot = new Vector2(0, 1);
+        rt.anchoredPosition = new Vector2(10, -10);
+
     }
 
     private void SetValue(string[] paths) {
