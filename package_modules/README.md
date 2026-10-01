@@ -16,12 +16,12 @@ Submerged. Force-radiance. Enemy multiplication. Floor is Lava.
 
 - Bring it up with a keybind (`RightShift` by default)
 - Has a modern NocturnalOS style, yet familiar UI to Minecraft client users
-- Use it for your mod, like PluginConfig and Configgy! See the [Wiki](https://github.com/end-4/ultrakill-thorn-client/wiki).
+- Can be used for any mod, like PluginConfig and Configgy. See the [Wiki](https://github.com/end-4/ultrakill-thorn-client/wiki).
 
 ## It's extensible
 
 For developers, there's the [wiki](https://github.com/end-4/ultrakill-thorn-client/wiki) available.
-Classes and methods are also fully XML-documented.
+Classes and methods are also XML-documented.
 
 ## Fair play statement
 
@@ -34,7 +34,7 @@ Cheating is not a technical problem and cannot be solved technically.
 
 ## Copyleft
 
-Thorn's **code** is released under the **LGPL-3.0** license, which means you are free to use its config system in your mod, whether or not it's open source; modifications to Thorn's code itself however are required to be open-sourced.
+Thorn's **code** is released under the **LGPL-3.0** license, which means you are free to use its config system in your mod, whether or not it's open source; modifications to Thorn itself however are required to be open-sourced under the same terms.
 
 **Assets** are released under the **CC BY-SA 4.0** license. This means you are free to reuse them as long as you give attribution and maintain the same license for derivative works.
 
