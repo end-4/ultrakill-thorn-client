@@ -50,3 +50,25 @@ public class FilePath : FileSystemPath {
     public FilePath(string path) : base(path) { }
 }
 
+/// <summary>
+/// Extension methods for FileSystemPath
+/// </summary>
+public static class FileSystemPathExtensions {
+    /// <summary>
+    /// Converts a path string to a FolderPath
+    /// </summary>
+    /// <param name="path">The path string</param>
+    /// <returns>The FolderPath</returns>
+    public static FolderPath ToFolderPath(this string path) {
+        return new FolderPath(path);
+    }
+
+    /// <summary>
+    /// Converts a path string to a FilePath
+    /// </summary>
+    /// <param name="path">The path string</param>
+    /// <returns>The FilePath</returns>
+    public static FilePath ToFilePath(this string path) {
+        return new FilePath(path);
+    }
+}

@@ -8,10 +8,12 @@
       the modules, in case they don't want them. No code change is required.
     - Also made the package structure more manual install-friendly, although we recommend against this.
 - Added FolderPath and FilePath config data types
-- New HUD modules:
-  - Weapon cooldowns: revolver coins, revolver blue charge, revolver red charge, jackhammer core, shotty/hammer saw,
+- New modules:
+  - Custom Style Ranks (with a very fancy image picker)
+  - HUD: Weapon cooldowns: revolver coins, revolver blue charge, revolver red charge, jackhammer core, shotty/hammer saw,
     blue nails, blue saws, blue magnets, overheat nails, overheat saws, jumpstart cable, freezeframe juice,
     firestarter oil, srs cannonball
+- Made bounded value HUD modules more readable by default
 - Made the ClickGUI windows not go back to their previous position after dragging
 - Enemy tracers: fixed threshold being off by 1, added enemy type blacklist
 - Fixed custom style ranks (from Ultraskins or whatever) being oversized
