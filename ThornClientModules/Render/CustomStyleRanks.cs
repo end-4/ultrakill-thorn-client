@@ -26,7 +26,7 @@ public class CustomStyleRanks : Module {
     /// The directory containing the default style rank images of this module
     /// </summary>
     public static readonly string DefaultStyleDir = Path.Combine(
-        Plugin.workingDir, "assets", "skins", "style_ranks", "vcr_osd_glow"
+        Plugin.workingDir, "assets", "skins", "style_ranks", "glow"
     );
 
     /// <inheritdoc />
