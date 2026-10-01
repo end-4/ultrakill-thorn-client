@@ -1,5 +1,8 @@
 ## 0.5.0
 
+_Thorn has been split into two packages. This release note is the same for both, but for later versions_
+_changes will be listed in their own packages._
+
 - Packaging: Splitted Thorn's config system and the built-in modules into separate packages: Thorn and Thorn Core.
   The former contains the modules and the latter contains the config system.
     - Regular users: no action is required if you use a mod manager. Otherwise get the Thorn Core package.
