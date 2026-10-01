@@ -1,14 +1,16 @@
+[GitHub](https://github.com/end-4/ultrakill-thorn-client)  ||  [API Docs](https://github.com/end-4/ultrakill-thorn-client/wiki)
+
 ### Customize to your ❤️'s content
 
 Freely draggable HUD elements. Key input overlay. Wireframe-style weapons & enemies
 
-<img alt="image" src="https://github.com/user-attachments/assets/ba1feb30-bef3-429a-8ef9-4b94b466505b" />
+<img alt="thorn_thumbnail" src="https://github.com/user-attachments/assets/15fca3d1-35e9-41c9-8fcb-1f88f1483d88" />
 
 ### Gameplay modifiers
 
 Submerged. Force-radiance. Enemy multiplication. Floor is Lava.
 
-<img alt="image" src="https://github.com/user-attachments/assets/1ebd4269-a036-4af9-bbbd-3fe384741cca" />
+<img alt="thorn_modules_thumbnail" src="https://github.com/user-attachments/assets/6e2dd17b-5d7b-4188-b62b-dc94bcf33715" />
 
 ### A comfy config system
 
@@ -27,17 +29,19 @@ Thorn disables leaderboard submissions for built-in modules that alter the gamep
 and also offers a module to disable leaderboards voluntarily.
 
 While the system allows modules to self-declare cheatiness, this does not
-prevent extensions from violating this rule.
+prevent extensions from making violations.
 Cheating is not a technical problem and cannot be solved technically.
 
-## Open source
+## Copyleft
 
-Source code available [on GitHub](https://github.com/end-4/ultrakill-thorn-client), under LGPL 3.0 license.
-You are free to use and republish it as you wish,
-under the condition that all changes to Thorn's source code
-must also be open sourced under the same terms.
+Thorn's **code** is released under the **LGPL-3.0** license, which means you are free to use its config system in your mod, whether or not it's open source; modifications to Thorn's code itself however are required to be open-sourced.
 
-Assets released under CC BY-SA 4.0.
+**Assets** are released under the **CC BY-SA 4.0** license. This means you are free to reuse them as long as you give attribution and maintain the same license for derivative works.
+
+
+## Technical description
+
+Thorn as a whole is an utility mod, with its own config system featuring a compact UI to house its 50+ modules. This package contains those modules.
 
 ## Acknowledgements
 
