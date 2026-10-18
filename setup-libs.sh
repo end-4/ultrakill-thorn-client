@@ -91,10 +91,10 @@ R2_DLLS=(
     "BepInEx/plugins/NukeLib/NukeLib.xml"
     "BepInEx/plugins/end_4-Notiffy/Notiffy/Notiffy.dll"
     "BepInEx/plugins/end_4-Notiffy/Notiffy/Notiffy.xml"
-    "BepInEx\plugins\Fireman\Fireman.dll"
-    "BepInEx\plugins\Fireman\Fireman.xml"
-    "BepInEx\plugins\end_4-Fireman\Fireman.dll"
-    "BepInEx\plugins\end_4-Fireman\Fireman.xml"
+    "BepInEx/plugins/Fireman/Fireman/Fireman.dll"
+    "BepInEx/plugins/Fireman/Fireman/Fireman.xml"
+    "BepInEx/plugins/end_4-Fireman/Fireman.dll"
+    "BepInEx/plugins/end_4-Fireman/Fireman.xml"
 )
 
 for dll in "${R2_DLLS[@]}"; do

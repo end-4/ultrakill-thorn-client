@@ -16,7 +16,9 @@ public class ExtraBinds : Module {
     /// </summary>
     public Setting<Keybind> RestartKeybind { get; }
     public Setting<Keybind> QuitKeybind { get; }
-    public Setting<Keybind> ChangeLevelKeybind { get; }
+
+    public Setting<Keybind> NextlevelKeybind { get; }
+    public Setting<Keybind> PreviouslevelKeybind { get; }
 
     public Setting<Keybind> CheckpointKeybind { get; }
     public Setting<Keybind> AltPauseKeybind { get; }
@@ -40,7 +42,9 @@ public class ExtraBinds : Module {
             new Keybind(KeyCode.None));
         QuitKeybind = CreateSetting("quitMission", "Quit mission key", "Quits the mission",
             new Keybind(KeyCode.None));
-        ChangeLevelKeybind = CreateSetting("changeLevelKeybind", "Change level key", "Changes the level to the next one",
+        NextlevelKeybind = CreateSetting("nextLevelKeybind", "Next Level key", "Changes the level to the next one",
+            new Keybind(KeyCode.None));
+        PreviouslevelKeybind = CreateSetting("previousLevelKeybind", "Previous Level key", "Changes the level to the previous one",
             new Keybind(KeyCode.None));
         CheckpointKeybind = CreateSetting("restartToCheckpoint", "Checkpoint Keybind", "Goes to the latest checkpoint",
             new Keybind(KeyCode.None));
@@ -52,7 +56,8 @@ public class ExtraBinds : Module {
     protected override void OnEnable() {
         RestartKeybind.OnPress += Restart;
         QuitKeybind.OnPress += QuitMission;
-        ChangeLevelKeybind.OnPress += ChangeLevel;
+        NextlevelKeybind.OnPress += NextLevel;
+        PreviouslevelKeybind.OnPress += PreviousLevel;
         CheckpointKeybind.OnPress += Checkpoint;
         AltPauseKeybind.OnPress += TogglePause;
     }
@@ -61,7 +66,8 @@ public class ExtraBinds : Module {
     protected override void OnDisable() {
         RestartKeybind.OnPress -= Restart;
         QuitKeybind.OnPress -= QuitMission;
-        ChangeLevelKeybind.OnPress -= ChangeLevel;
+        NextlevelKeybind.OnPress -= NextLevel;
+        PreviouslevelKeybind.OnPress -= PreviousLevel;
         CheckpointKeybind.OnPress -= Checkpoint;
         AltPauseKeybind.OnPress -= TogglePause;
     }
@@ -76,13 +82,25 @@ public class ExtraBinds : Module {
         opts?.QuitMission();
     }
 
-    private void ChangeLevel() {
+    private void NextLevel() {
         if (opts == null) return;
         var nextLevel = SceneHelper.CurrentLevelNumber + 1;
+        // Skip 9-2, P-3 and 9-E (doing ts because then everything breaks)
         if (nextLevel == 668 || nextLevel == 109 || nextLevel == 35)
             return;
-        
+
         var name = GetMissionName.GetSceneName(nextLevel);
+        opts?.ChangeLevel(name);
+    }
+
+    private void PreviousLevel() {
+        if (opts == null) return;
+        var previousLevel = SceneHelper.CurrentLevelNumber - 1;
+        // Skip 0-1, O-E and P-1
+        if (previousLevel == 665 || previousLevel == 100 || previousLevel == 0)
+            return;
+
+        var name = GetMissionName.GetSceneName(previousLevel);
         opts?.ChangeLevel(name);
     }
 
