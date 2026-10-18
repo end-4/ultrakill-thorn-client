@@ -15,6 +15,8 @@ public class ExtraBinds : Module {
     /// The settings for the keybinds
     /// </summary>
     public Setting<Keybind> RestartKeybind { get; }
+    public Setting<Keybind> QuitKeybind { get; }
+    public Setting<Keybind> ChangeLevelKeybind { get; }
 
     public Setting<Keybind> CheckpointKeybind { get; }
     public Setting<Keybind> AltPauseKeybind { get; }
@@ -36,6 +38,10 @@ public class ExtraBinds : Module {
         "Some useful keybinds for (almost) everything", ModuleCategory.Utility) {
         RestartKeybind = CreateSetting("restartMission", "Restart mission", "Keybind to restart mission",
             new Keybind(KeyCode.None));
+        QuitKeybind = CreateSetting("quitMission", "Quit mission key", "Quits the mission",
+            new Keybind(KeyCode.None));
+        ChangeLevelKeybind = CreateSetting("changeLevelKeybind", "Change level key", "Changes the level to the next one",
+            new Keybind(KeyCode.None));
         CheckpointKeybind = CreateSetting("restartToCheckpoint", "Checkpoint Keybind", "Goes to the latest checkpoint",
             new Keybind(KeyCode.None));
         AltPauseKeybind = CreateSetting("pauseKey", "Alternative pause key", "Pauses the game",
@@ -45,6 +51,8 @@ public class ExtraBinds : Module {
     /// <inheritdoc />
     protected override void OnEnable() {
         RestartKeybind.OnPress += Restart;
+        QuitKeybind.OnPress += QuitMission;
+        ChangeLevelKeybind.OnPress += ChangeLevel;
         CheckpointKeybind.OnPress += Checkpoint;
         AltPauseKeybind.OnPress += TogglePause;
     }
@@ -52,6 +60,8 @@ public class ExtraBinds : Module {
     /// <inheritdoc />
     protected override void OnDisable() {
         RestartKeybind.OnPress -= Restart;
+        QuitKeybind.OnPress -= QuitMission;
+        ChangeLevelKeybind.OnPress -= ChangeLevel;
         CheckpointKeybind.OnPress -= Checkpoint;
         AltPauseKeybind.OnPress -= TogglePause;
     }
@@ -60,6 +70,20 @@ public class ExtraBinds : Module {
 
     private void Restart() {
         opts?.RestartMission();
+    }
+
+    private void QuitMission() {
+        opts?.QuitMission();
+    }
+
+    private void ChangeLevel() {
+        if (opts == null) return;
+        var nextLevel = SceneHelper.CurrentLevelNumber + 1;
+        if (nextLevel == 668 || nextLevel == 109 || nextLevel == 35)
+            return;
+        
+        var name = GetMissionName.GetSceneName(nextLevel);
+        opts?.ChangeLevel(name);
     }
 
     private void Checkpoint() {
