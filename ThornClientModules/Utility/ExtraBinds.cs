@@ -40,15 +40,15 @@ public class ExtraBinds : Module {
         "Some useful keybinds for (almost) everything", ModuleCategory.Utility) {
         RestartKeybind = CreateSetting("restartMission", "Restart mission", "Keybind to restart mission",
             new Keybind(KeyCode.None));
-        QuitKeybind = CreateSetting("quitMission", "Quit mission key", "Quits the mission",
+        QuitKeybind = CreateSetting("quitMission", "Quit mission", "Quits the mission",
             new Keybind(KeyCode.None));
-        NextlevelKeybind = CreateSetting("nextLevelKeybind", "Next Level key", "Changes the level to the next one",
+        NextlevelKeybind = CreateSetting("nextLevelKeybind", "Next level", "Changes the level to the next one",
             new Keybind(KeyCode.None));
-        PreviouslevelKeybind = CreateSetting("previousLevelKeybind", "Previous Level key", "Changes the level to the previous one",
+        PreviouslevelKeybind = CreateSetting("previousLevelKeybind", "Previous level", "Changes the level to the previous one",
             new Keybind(KeyCode.None));
-        CheckpointKeybind = CreateSetting("restartToCheckpoint", "Checkpoint Keybind", "Goes to the latest checkpoint",
+        CheckpointKeybind = CreateSetting("restartToCheckpoint", "Checkpoint keybind", "Goes to the latest checkpoint",
             new Keybind(KeyCode.None));
-        AltPauseKeybind = CreateSetting("pauseKey", "Alternative pause key", "Pauses the game",
+        AltPauseKeybind = CreateSetting("pauseKey", "Alternative pause", "Pauses the game",
             new Keybind(KeyCode.None));
     }
 
@@ -84,23 +84,18 @@ public class ExtraBinds : Module {
 
     private void NextLevel() {
         if (opts == null) return;
-        var nextLevel = SceneHelper.CurrentLevelNumber + 1;
-        // Skip 9-2, P-3 and 9-E (doing ts because then everything breaks)
-        if (nextLevel == 668 || nextLevel == 109 || nextLevel == 35)
-            return;
-
-        var name = GetMissionName.GetSceneName(nextLevel);
-        opts?.ChangeLevel(name);
+        IncrementLevel(1);
     }
 
     private void PreviousLevel() {
         if (opts == null) return;
-        var previousLevel = SceneHelper.CurrentLevelNumber - 1;
-        // Skip 0-1, O-E and P-1
-        if (previousLevel == 665 || previousLevel == 100 || previousLevel == 0)
-            return;
+        IncrementLevel(-1);
+    }
 
-        var name = GetMissionName.GetSceneName(previousLevel);
+    private void IncrementLevel(int diff) {
+        var nextLevel = SceneHelper.CurrentLevelNumber + diff;
+        var name = GetMissionName.GetSceneName(nextLevel);
+
         opts?.ChangeLevel(name);
     }
 
